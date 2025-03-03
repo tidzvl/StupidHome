@@ -1,0 +1,675 @@
+@page
+@model StupidHome.Pages.IndexModel
+@{
+  Layout = "Layouts/_FrontLayout";
+  ViewData["Title"] = "Landing Page - Front Pages";
+}
+
+@section VendorStyles{
+  <link rel="stylesheet" href="~/vendor/libs/nouislider/nouislider.dist.css" />
+  <link rel="stylesheet" href="~/vendor/libs/swiper/swiper.dist.css" />
+}
+@section PageStyles {
+<link rel="stylesheet" href="~/vendor/css/pages/front-page-landing.dist.css" />
+}
+@section VendorScripts{
+<script src="~/vendor/libs/nouislider/nouislider.dist.js"></script>
+<script src="~/vendor/libs/swiper/swiper.dist.js"></script>
+}
+@section PageScripts {
+<script src="~/js/front-page-landing.dist.js"></script>
+}
+
+@* ************** Content ************** *@
+<div data-bs-spy="scroll" class="scrollspy-example">
+
+  <!-- Hero: Start -->
+  <section id="hero-animation">
+    <div id="landingHero" class="section-py landing-hero position-relative">
+      <div class="container">
+        <div class="hero-text-box text-center">
+          <h1 class="text-primary hero-title display-4 fw-bold">Người Thông Minh <br> Chọn Nhà !Ngu</h1>
+          <h2 class="hero-sub-title h6 mb-4 pb-1">
+            Muốn biết ngôi nhà của bạn thông minh tới đâu?<br class="d-none d-lg-block" />
+            Hãy đến với chúng tôi!
+          </h2>
+          <div class="landing-hero-btn d-inline-block position-relative">
+            <span class="hero-btn-item position-absolute d-none d-md-flex text-heading">Tham gia ngay
+              <img src="~/img/front-pages/icons/Join-community-arrow.png" alt="Join community arrow" class="scaleX-n1-rtl" /></span>
+            <a href="#landingPricing" class="btn btn-primary">Get early access</a>
+          </div>
+        </div>
+        <div id="heroDashboardAnimation" class="hero-animation-img">
+          <a href=".">
+            <div id="heroAnimationImg" class="position-relative hero-dashboard-img">
+              <img src="~/img/front-pages/landing-page/home.png" alt="hero dashboard" class="animation-img" data-app-light-img="front-pages/landing-page/home.png" data-app-dark-img="front-pages/landing-page/home.png" />
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="landing-hero-blank"></div>
+  </section>
+  <!-- Hero: End -->
+
+  <!-- Useful features: Start -->
+  <section id="landingFeatures" class="section-py landing-features">
+    <div class="container">
+      <div class="text-center mb-3 pb-1">
+        <span class="badge bg-label-primary">Tính năng hữu ích</span>
+      </div>
+      <h3 class="text-center mb-1">
+        <span class="section-title">Nhà !Ngu Có Gì Nổi Bật?</span>
+      </h3>
+      <div class="features-icon-wrapper row gx-0 gy-4 g-sm-5">
+        <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+          <div class="text-center mb-3">
+            <img src="~/img/front-pages/icons/laptop.png" alt="laptop charging" />
+          </div>
+          <h5 class="mb-3">Giao Diện Trực Quan</h5>
+          <p class="features-icon-description">
+            Trang quản lý được thiết kế để phù hợp với mọi lứa tuổi, kể cả người low tech.
+          </p>
+        </div>
+        <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+          <div class="text-center mb-3">
+            <img src="~/img/front-pages/icons/rocket.png" alt="transition up" />
+          </div>
+          <h5 class="mb-3">Tốc Độ Phản Hồi</h5>
+          <p class="features-icon-description">
+            Tốc độ phản hồi thuộc top server trái đất với 0.02 giây cho mỗi thao tác.
+          </p>
+        </div>
+        <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+          <div class="text-center mb-3">
+            <img src="~/img/front-pages/icons/paper.png" alt="edit" />
+          </div>
+          <h5 class="mb-3">Lập Kịch Bản Tự Động</h5>
+          <p class="features-icon-description">
+            Tính năng lập kịch bản cho phép người dùng tạo ra những thao tác tắt bật thiết bị tiện lợi nhất cho sinh hoạt hàng ngày.
+          </p>
+        </div>
+        <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+          <div class="text-center mb-3">
+            <img src="~/img/front-pages/icons/check.png" alt="3d select solid" />
+          </div>
+          <h5 class="mb-3">An Toàn Tuyệt Đối</h5>
+          <p class="features-icon-description">
+            Được phát triển 100% bởi người Việt và mọi dữ liệu đều nằm ở Việt Nam giảm thiểu nguy cơ rò rỉ dữ liệu người dùng ở mức tối đa.
+          </p>
+        </div>
+        <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+          <div class="text-center mb-3">
+            <img src="~/img/front-pages/icons/user.png" alt="lifebelt" />
+          </div>
+          <h5 class="mb-3">Hỗ Trợ Tận Răng</h5>
+          <p class="features-icon-description">Nếu bạn bị nhốt ở ngoài thì cứ gọi cho chúng tôi, chúng tôi có chuyên viên Kỳ Anh Thở Khó.</p>
+        </div>
+        <div class="col-lg-4 col-sm-6 text-center features-icon-box">
+          <div class="text-center mb-3">
+            <img src="~/img/front-pages/icons/keyboard.png" alt="google docs" />
+          </div>
+          <h5 class="mb-3">Tích Hợp Tuyệt Vời</h5>
+          <p class="features-icon-description">Hỗ trợ các thiết bị của hầu hết các thương hiệu, có cả những thương hiệu bạn chưa bao giờ nghe tới.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Useful features: End -->
+
+  <!-- Real customers reviews: Start -->
+  <section id="landingReviews" class="section-py bg-body landing-reviews pb-0">
+    <!-- What people say slider: Start -->
+    <div class="container">
+      <div class="row align-items-center gx-0 gy-4 g-lg-5">
+        <div class="col-md-6 col-lg-5 col-xl-3">
+          <div class="mb-3 pb-1">
+            <span class="badge bg-label-primary">Phản hồi tích cực</span>
+          </div>
+          <h3 class="mb-1"><span class="section-title">Khách hàng nói gì về Nhà !Ngu</span></h3>
+          <p class="mb-3 mb-md-5">
+            Lưu ý là chỉ có phản hồi tích cực,<br class="d-none d-xl-block" />
+            nếu tiêu cực sẽ bị xóa.
+          </p>
+          <div class="landing-reviews-btns d-flex align-items-center gap-3">
+            <button id="reviews-previous-btn" class="btn btn-label-primary reviews-btn" type="button">
+              <i class="bx bx-chevron-left bx-sm"></i>
+            </button>
+            <button id="reviews-next-btn" class="btn btn-label-primary reviews-btn" type="button">
+              <i class="bx bx-chevron-right bx-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-7 col-xl-9">
+          <div class="swiper-reviews-carousel overflow-hidden mb-5 pb-md-2 pb-md-3">
+            <div class="swiper" id="swiper-reviews">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                  <div class="card h-100">
+                    <div class="card-body text-body d-flex flex-column justify-content-between h-100">
+                      <div class="mb-3">
+                        <h6 class="mb-0">Youtuber Vũ Hay Ho</h6>
+                      </div>
+                      <p>
+                        “Tính năng tự điều chỉnh nhiệt độ điều hòa bằng AI thực sự khiến tôi bất ngờ.”
+                      </p>
+                      <div class="text-warning mb-3">
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar me-2 avatar-sm">
+                          <img src="~/img/avatars/vuhayho.png" alt="Avatar" class="rounded-circle" />
+                        </div>
+                        <div>
+                          <h6 class="mb-0">Phan Anh Vũ</h6>
+                          <p class="small text-muted mb-0">CEO of Nhà Khôn</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="card h-100">
+                    <div class="card-body text-body d-flex flex-column justify-content-between h-100">
+                      <div class="mb-3">
+                        <h6 class="mb-0">Streamer Dũng CT</h6>
+                      </div>
+                      <p>
+                        “Là người thường xuyên ngồi điều hòa, tôi cảm thấy sức khỏe đường hô hấp được cải thiện.”
+                      </p>
+                      <div class="text-warning mb-3">
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar me-2 avatar-sm">
+                          <img src="~/img/avatars/ttg.png" alt="Avatar" class="rounded-circle" />
+                        </div>
+                        <div>
+                          <h6 class="mb-0">Nguyễn Anh Dũng</h6>
+                          <p class="small text-muted mb-0">Founder of Trực Tiếp Game</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="card h-100">
+                    <div class="card-body text-body d-flex flex-column justify-content-between h-100">
+                      <div class="mb-3">
+                        <h6 class="mb-0">Netgen</h6>
+                      </div>
+                      <p>
+                        "Tôi đánh giá cao công nghệ Việt trên sản phẩm Nhà !Ngu."
+                      </p>
+                      <div class="text-warning mb-3">
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar me-2 avatar-sm">
+                          <img src="~/img/avatars/nextgen.png" alt="Avatar" class="rounded-circle" />
+                        </div>
+                        <div>
+                          <h6 class="mb-0">Nextgen</h6>
+                          <p class="small text-muted mb-0">Những người không nổi tiếng</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="card h-100">
+                    <div class="card-body text-body d-flex flex-column justify-content-between h-100">
+                      <div class="mb-3">
+                        <h6 class="mb-0">Youtuber Đạt OC</h6>
+                      </div>
+                      <p>
+                        "Nhà tôi có tới 5 cái điều khiển trên mặt bàn, có Nhà !Ngu tôi vứt hết đống remote vào tủ."
+                      </p>
+                      <div class="text-warning mb-3">
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bxs-star bx-sm"></i>
+                        <i class="bx bx-star bx-sm"></i>
+                      </div>
+                      <div class="d-flex align-items-center">
+                        <div class="avatar me-2 avatar-sm">
+                          <img src="~/img/avatars/datoc.png" alt="Avatar" class="rounded-circle" />
+                        </div>
+                        <div>
+                          <h6 class="mb-0">Vũ Quang Đạt</h6>
+                          <p class="small text-muted mb-0">Co-Founder of TTG Shop</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- What people say slider: End -->
+  </section>
+  <!-- Real customers reviews: End -->
+
+  <!-- Pricing plans: Start -->
+  <section id="landingPricing" class="section-py landing-pricing">
+    <div class="container">
+      <div class="text-center mb-3 pb-1">
+        <span class="badge bg-label-primary">Giá bán</span>
+      </div>
+      <h3 class="text-center mb-1"><span class="section-title">Giá Của Các Gói Được Thiết Kế Riêng Cho Bạn</span></h3>
+      <p class="text-center mb-4 pb-3">
+        Tất cả các gói đều bao gồm toàn bộ tính năng cơ bản và nâng cao.<br />Chọn gói phù hợp nhất với nhu cầu của bạn.
+      </p>
+      <div class="text-center mb-5">
+        <div class="position-relative d-inline-block pt-3 pt-md-0">
+          <label class="switch switch-primary me-0">
+            <span class="switch-label">Theo Tháng</span>
+            <input type="checkbox" class="switch-input price-duration-toggler" checked />
+            <span class="switch-toggle-slider">
+              <span class="switch-on"></span>
+              <span class="switch-off"></span>
+            </span>
+            <span class="switch-label">Theo Năm</span>
+          </label>
+          <div class="pricing-plans-item position-absolute d-flex">
+            <img src="~/img/front-pages/icons/pricing-plans-arrow.png" alt="pricing plans arrow" class="scaleX-n1-rtl" />
+            <span class="fw-medium mt-2 ms-1"> Giảm 25%</span>
+          </div>
+        </div>
+      </div>
+      <div class="row gy-4 pt-lg-3">
+        <!-- Basic Plan: Start -->
+        <div class="col-xl-4 col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <div class="text-center">
+                <img src="~/img/front-pages/icons/paper-airplane.png" alt="paper airplane icon" class="mb-4 pb-2 scaleX-n1-rtl" />
+                <h4 class="mb-1">Cơ Bản</h4>
+                <div class="d-flex align-items-center justify-content-center">
+                  <span class="price-monthly h1 text-primary fw-bold mb-0">150k</span>
+                  <span class="price-yearly h1 text-primary fw-bold mb-0 d-none">112k</span>
+                  <sub class="h6 text-muted mb-0 ms-1">/tháng</sub>
+                </div>
+                <div class="position-relative pt-2">
+                  <div class="price-yearly text-muted price-yearly-toggle d-none">1.344k / năm</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled">
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Lặp kịch bản
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Kết nối thiết bị điện tử
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Thông báo sự cố
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Báo cáo thống kê
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Tưới cây tự động
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Tự động điều chỉnh nhiệt độ
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Trợ giúp trong vòng 24 giờ
+                  </h5>
+                </li>
+              </ul>
+              <div class="d-grid mt-4 pt-3">
+                <a href="PaymentPage" class="btn btn-label-primary">Bắt Đầu</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Basic Plan: End -->
+
+        <!-- Favourite Plan: Start -->
+        <div class="col-xl-4 col-lg-6">
+          <div class="card border border-primary shadow-lg">
+            <div class="card-header">
+              <div class="text-center">
+                <img src="~/img/front-pages/icons/plane.png" alt="plane icon" class="mb-4 pb-2 scaleX-n1-rtl" />
+                <h4 class="mb-1">Đại Gia Đình</h4>
+                <div class="d-flex align-items-center justify-content-center">
+                  <span class="price-monthly h1 text-primary fw-bold mb-0">500k</span>
+                  <span class="price-yearly h1 text-primary fw-bold mb-0 d-none">375k</span>
+                  <sub class="h6 text-muted mb-0 ms-1">/tháng</sub>
+                </div>
+                <div class="position-relative pt-2">
+                  <div class="price-yearly text-muted price-yearly-toggle d-none">4.500k / năm</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled">
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Mọi thứ của cơ bản
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                   Tối đa 100 thiết bị điện tử
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Tính năng liên hệ khẩn cấp
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Tự động cho thú cưng ăn
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Tích hợp kết nối Google Assistant
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Kiểm soát nhiệt độ
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Trợ giúp trong vòng 1 giờ
+                  </h5>
+                </li>
+              </ul>
+              <div class="d-grid mt-4 pt-3">
+                <a href="PaymentPage" class="btn btn-primary">Bắt Đầu</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Favourite Plan: End -->
+
+        <!-- Standard Plan: Start -->
+        <div class="col-xl-4 col-lg-6">
+          <div class="card">
+            <div class="card-header">
+              <div class="text-center">
+                <img src="~/img/front-pages/icons/shuttle-rocket.png" alt="shuttle rocket icon" class="mb-4 pb-2 scaleX-n1-rtl" />
+                <h4 class="mb-1">Đại Gia</h4>
+                <div class="d-flex align-items-center justify-content-center">
+                  <span class="price-monthly h1 text-primary fw-bold mb-0">999k</span>
+                  <span class="price-yearly h1 text-primary fw-bold mb-0 d-none">750k</span>
+                  <sub class="h6 text-muted mb-0 ms-1">/tháng</sub>
+                </div>
+                <div class="position-relative pt-2">
+                  <div class="price-yearly text-muted price-yearly-toggle d-none">9.000k / năm</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <ul class="list-unstyled">
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Mọi thứ của Đại Gia Đình
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Tốn tiền
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Được đội ngũ nhân viên tôn trọng
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Tối đa 100 bất động sản
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Dịch vụ khách hàng tự lựa chọn
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Tích hợp kết nối hệ sinh thái Google
+                  </h5>
+                </li>
+                <li>
+                  <h5>
+                    <span class="badge badge-center rounded-pill bg-label-primary p-0 me-2"><i class="bx bx-check bx-xs"></i></span>
+                    Có mặt ngay lặp tức
+                  </h5>
+                </li>
+              </ul>
+              <div class="d-grid mt-4 pt-3">
+                <a href="PaymentPage" class="btn btn-label-primary">Bắt Đầu</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Standard Plan: End -->
+      </div>
+    </div>
+  </section>
+  <!-- Pricing plans: End -->
+
+  <!-- Fun facts: Start -->
+  <section id="landingFunFacts" class="section-py landing-fun-facts">
+    <div class="container">
+      <div class="row gy-3">
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border border-label-primary shadow-none">
+            <div class="card-body text-center">
+              <img src="~/img/front-pages/icons/laptop.png" alt="laptop" class="mb-2" />
+              <h5 class="h2 mb-1">7.1k+</h5>
+              <p class="fw-medium mb-0">
+                Thiết Bị<br />
+                Đang Được Sử Dụng
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border border-label-success shadow-none">
+            <div class="card-body text-center">
+              <img src="~/img/front-pages/icons/user-success.png" alt="laptop" class="mb-2" />
+              <h5 class="h2 mb-1">50k+</h5>
+              <p class="fw-medium mb-0">
+                Người Dùng<br />
+                Trên Toàn Thế Giới
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border border-label-info shadow-none">
+            <div class="card-body text-center">
+              <img src="~/img/front-pages/icons/diamond-info.png" alt="laptop" class="mb-2" />
+              <h5 class="h2 mb-1">4.8/5</h5>
+              <p class="fw-medium mb-0">
+                Đánh Giá<br />
+                Gần Như Tối Đa
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+          <div class="card border border-label-warning shadow-none">
+            <div class="card-body text-center">
+              <img src="~/img/front-pages/icons/check-warning.png" alt="laptop" class="mb-2" />
+              <h5 class="h2 mb-1">100%</h5>
+              <p class="fw-medium mb-0">
+                Bảo Mật<br />
+                Thông Tin Khách Hàng
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Fun facts: End -->
+
+  <!-- FAQ: Start -->
+  <section id="landingFAQ" class="section-py bg-body landing-faq">
+    <div class="container">
+      <div class="text-center mb-3 pb-1">
+        <span class="badge bg-label-primary">FAQ</span>
+      </div>
+      <h3 class="text-center mb-1">Frequently asked <span class="section-title">questions</span></h3>
+      <p class="text-center mb-5 pb-3">Đừng ngần ngại mà hãy liên hệ ngay với chúng tôi nếu có vướng mắc trong quá trình sử dụng.</p>
+      <div class="row gy-5">
+        <div class="col-lg-5">
+          <div class="text-center">
+            <img src="~/img/front-pages/landing-page/sitting-girl-with-laptop.png" alt="faq boy with logos" class="faq-image" />
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="accordion accordion-header-primary" id="accordionExample">
+            <div class="card accordion-item active">
+              <h2 class="accordion-header" id="headingOne">
+                <button type="button" class="accordion-button" data-bs-toggle="collapse" data-bs-target="#accordionOne" aria-expanded="true" aria-controls="accordionOne">
+                  Liệu tôi có thể đóng góp ý tưởng để nâng cấp ứng dụng?
+                </button>
+              </h2>
+
+              <div id="accordionOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  Bạn cảm thấy cần có tính năng gì mới? Hãy nói cho chúng tôi biết.
+                </div>
+              </div>
+            </div>
+            <div class="card accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accordionTwo" aria-expanded="false" aria-controls="accordionTwo">
+                  Nếu sập server thì sao?
+                </button>
+              </h2>
+              <div id="accordionTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  Lúc đó có trời mới biết!
+                </div>
+              </div>
+            </div>
+            <div class="card accordion-item">
+              <h2 class="accordion-header" id="headingThree">
+                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accordionThree" aria-expanded="false" aria-controls="accordionThree">
+                  Tính năng kiểm soát nhiệt độ để làm gì?
+                </button>
+              </h2>
+              <div id="accordionThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  Nhờ tích hợp thêm cảm biến nhiệt độ mà Nhà !Ngu biết được nhiệt độ thực tế trong phòng đang là bao nhiêu,
+                  từ đó đưa ra những lệnh điều chỉnh điều hòa một cách tự động.
+                  Lợi ích của việc tự kiểm soát nhiệt như là: Không còn nỗi khổ thức giấc lúc nửa đêm để chỉnh lại điều hòa,
+                  sức khỏe được cải thiện do phòng luôn trong mức nhiệt độ phù hợp nhất với cơ thể người và Tiết kiệm điện năng hơn so với để cố định 1 mức nhiệt.
+                </div>
+              </div>
+            </div>
+            <div class="card accordion-item">
+              <h2 class="accordion-header" id="headingFour">
+                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accordionFour" aria-expanded="false" aria-controls="accordionFour">
+                  Có bị nhốt ở ngoài không?
+                </button>
+              </h2>
+              <div id="accordionFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  Nếu bạn bị nhốt ở ngoài thì cứ gọi cho chúng tôi, chúng tôi có chuyên viên Kỳ Anh Thở Khó.
+                </div>
+              </div>
+            </div>
+            <div class="card accordion-item">
+              <h2 class="accordion-header" id="headingFive">
+                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accordionFive" aria-expanded="false" aria-controls="accordionFive">
+                  Tín có đẹp trai không?
+                </button>
+              </h2>
+              <div id="accordionFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  Có!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- FAQ: End -->
+
+  <!-- CTA: Start -->
+  <section id="landingCTA" class="section-py landing-cta p-lg-0 pb-0">
+    <div class="container">
+      <div class="row align-items-center gy-5 gy-lg-0">
+        <div class="col-lg-6 text-center text-lg-start">
+          <h6 class="h2 text-primary fw-bold mb-1">Liệu bạn có muốn thử?</h6>
+          <p class="fw-medium mb-4">Chúng tôi sẵn sàng miễn phí 14 ngày thử nghiệm cho bạn</p>
+          <a href="PaymentPage" class="btn btn-primary">Bắt Đầu Ngay</a>
+        </div>
+        <div class="col-lg-6 pt-lg-5 text-center text-lg-end">
+          <img src="~/img/front-pages/landing-page/home.png" alt="cta dashboard" class="img-fluid" />
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- CTA: End -->
+
+</div>
