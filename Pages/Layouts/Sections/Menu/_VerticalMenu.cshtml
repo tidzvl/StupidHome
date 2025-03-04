@@ -27,19 +27,70 @@
   </div>
 
   <div class="menu-inner-shadow"></div>
+  <div class="menu-block my-2 d-flex align-items-center">
+    <div class="avatar avatar-lg me-2">
+      <img alt="Avatar" class="rounded-circle shadow" src="/img/avatars/house.png">
+    </div>
+    <a class="menu-text mt-3 mb-1 h5 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">Name Of Home</a>
+    <ul class="dropdown-menu">
+      <li> <a class="dropdown-item" href="javascript:void(0);">Action</a> </li>
+      <li> <a class="dropdown-item" href="javascript:void(0);">Another action</a> </li>
+      <li> <a class="dropdown-item" href="javascript:void(0);">Something else here</a> </li>
+      <li>
+        <hr class="dropdown-divider">
+      </li>
+      <li> <a class="dropdown-item" href="javascript:void(0);">Separated link</a> </li>
+    </ul>
+    <div class="small">
+      <a class="menu-link" href="javascript:void(0)">That be address</a>
+    </div>
+  </div>
+  <div class="menu-divider mt-0"></div>
+  <div class="menu-divider mt-0"></div>
+  <div class="menu-divider mt-0"></div>
 
   @* ! Starter Kit menu-items *@
   <ul class="menu-inner py-1">
-    <li class='menu-item@(currentPage == "/Index" ? " active" : "")'>
-      <a asp-page="/Index" class="menu-link">
+    <li class='menu-item@(currentPage == "/Home/Index" ? " active" : "")'>
+      <a asp-page="/Home" class="menu-link">
         <i class="menu-icon tf-icons bx bx-home-circle"></i>
-        <div data-i18n="Home">Home</div>
+        <div>Tổng quan</div>
       </a>
     </li>
-    <li class='menu-item@(currentPage == "/Page2" ? " active" : "")'>
-      <a asp-page="/Page2" class="menu-link">
-        <i class="menu-icon tf-icons bx bx-detail"></i>
-        <div data-i18n="Page2">Page2</div>
+    <li class='menu-item@(currentPage == "/Home/Devices" ? " active" : "")'>
+      <a asp-page="/Home/Devices" class="menu-link">
+        <i class='menu-icon tf-icons bx bxs-devices'></i>
+        <div>Thiết bị</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Home/Analytics" ? " active" : "")'>
+      <a asp-page="/Home/Analytics" class="menu-link">
+        <i class="menu-icon tf-icons bx bxs-analyse"></i>
+        <div>Thống kê</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Home/Calendar" ? " active" : "")'>
+      <a asp-page="/Home/Calendar" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-calendar"></i>
+        <div>Lịch trình</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Home/Rules" ? " active" : "")'>
+      <a asp-page="/Home/Rules" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-add-to-queue"></i>
+        <div>Kịch bản</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Home/History" ? " active" : "")'>
+      <a asp-page="/Home/History" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-history"></i>
+        <div>Lịch sử</div>
+      </a>
+    </li>
+    <li class='menu-item@(currentPage == "/Home/Settings" ? " active" : "")'>
+      <a asp-page="/Home/Settings" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-cog"></i>
+        <div>Cài đặt</div>
       </a>
     </li>
   </ul>
