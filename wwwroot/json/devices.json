@@ -1,0 +1,88 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "category": "-tv",
+      "brand": "LG",
+      "name": "TV Phòng Khách",
+      "location": "Phòng Khách",
+      "on": true,
+      "add_date": "2025-01-01",
+      "last_update": "2025-01-01",
+      "energy_consumed": "1000",
+      "pinned": true
+    },
+    {
+      "id": 2,
+      "category": "-book-content",
+      "brand": "Samsung",
+      "name": "Tủ Lạnh Nhà Bếp",
+      "location": "Nhà Bếp",
+      "on": true,
+      "add_date": "2025-02-01",
+      "last_update": "2025-02-01",
+      "energy_consumed": "1500",
+      "pinned": false
+    },
+    {
+      "id": 3,
+      "category": "-wind",
+      "brand": "Daikin",
+      "name": "Điều Hòa Phòng Ngủ",
+      "location": "Phòng Ngủ",
+      "on": false,
+      "add_date": "2025-03-01",
+      "last_update": "2025-03-04",
+      "energy_consumed": "2000",
+      "pinned": true
+    },
+    {
+      "id": 4,
+      "category": "-door-open",
+      "brand": "Panasonic",
+      "name": "Cửa Chính",
+      "location": "Phòng Khách",
+      "on": true,
+      "add_date": "2025-04-01",
+      "last_update": "2025-02-01",
+      "energy_consumed": "1800",
+      "pinned": true
+    },
+    {
+      "id": 5,
+      "category": "s-hot",
+      "brand": "Bosch",
+      "name": "Lò Nướng",
+      "location": "Nhà Bếp",
+      "on": false,
+      "add_date": "2025-05-01",
+      "last_update": "2025-02-01",
+      "energy_consumed": "1200",
+      "pinned": false
+    },
+    {
+      "id": 6,
+      "category": "s-hot",
+      "brand": "Sharp",
+      "name": "Lò Vi Sóng",
+      "location": "Nhà Bếp",
+      "on": true,
+      "add_date": "2025-03-01",
+      "last_update": "2025-03-01",
+      "energy_consumed": "800",
+      "pinned": false
+    },
+    {
+      "id": 7,
+      "category": "-speaker",
+      "brand": "Dyson",
+      "name": "Loa Phòng Khách",
+      "location": "Phòng Khách",
+      "on": false,
+      "add_date": "2025-02-01",
+      "last_update": "2025-02-01",
+      "energy_consumed": "500",
+      "pinned": true
+    }
+  ]
+}

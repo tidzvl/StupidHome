@@ -8,4 +8,8 @@ namespace StupidHome.Pages.Home
   {
     public void OnGet() { }
   }
+  public class DevicesModel : PageModel
+  {
+    public void OnGet() { }
+  }
 }

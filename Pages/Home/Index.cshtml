@@ -2,17 +2,278 @@
 @model StupidHome.Pages.Home.HomeModel
 @{
   Layout = "Layouts/_ContentNavbarLayout";
-  ViewData["Title"] = "Coming Soon - Pages";
+  ViewData["Title"] = "Tổng Quan - Home";
 }
 
 @section PageStyles {
 <link rel="stylesheet" href="~/vendor/css/pages/page-misc.dist.css">
 }
-@section VendorStyles{}
+@section VendorStyles{
+<link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.dist.css" />
+}
 
-@section VendorScripts {}
+@section VendorScripts {
+<script src="~/vendor/libs/apex-charts/apexcharts.dist.js"></script>
+<script src="~/vendor/libs/sortablejs/sortable.dist.js"></script>
+}
 
-@section PageScripts {}
+@section PageScripts {
+<script src="~/js/dashboards-analytics.dist.js"></script>
+}
 
 
 @* ************** Content ************** *@
+<h4 class="py-3 breadcrumb-wrapper mb-4"><small class="text-muted">Home /</small> Tổng Quan</h4>
+<div class="card bg-transparent border-0 my-4 shadow-none">
+  <div class="card-body row p-0 pb-3">
+    <div class="col-12 col-md-8 card-separator">
+      <h3>Chào mừng về nhà, Nguyễn Anh Dũng 👋🏻 </h3>
+      <div class="col-12 col-lg-7">
+        <p>Dưới đây là một số báo cáo về ngôi nhà thân yêu của bạn, chúc bạn một ngày tốt lành!</p>
+      </div>
+      <div class="d-flex justify-content-between flex-wrap gap-3 me-5">
+        <div class="d-flex align-items-center gap-3 me-4 me-sm-0">
+          <span class=" bg-label-primary p-2 rounded">
+            <i class='bx bx-laptop bx-sm'></i>
+          </span>
+          <div class="content-right">
+            <p class="mb-0">Thiết Bị Đang Bật</p>
+            <h4 class="text-primary mb-0">34</h4>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <span class="bg-label-info p-2 rounded">
+            <i class='bx bx-bulb bx-sm'></i>
+          </span>
+          <div class="content-right">
+            <p class="mb-0">Độ Sáng Trong Nhà</p>
+            <h4 class="text-info mb-0">82%</h4>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <span class="bg-label-warning p-2 rounded">
+            <i class='bx bx-droplet bx-sm'></i>
+          </span>
+          <div class="content-right">
+            <p class="mb-0">Độ Ẩm Không Khí</p>
+            <h4 class="text-warning mb-0">24%</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Website Analytics-->
+  <div class="col-lg-6 col-md-12 mb-4">
+    <div class="card">
+      <div class="row row-bordered m-0">
+        <!-- Order Summary -->
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Mức Tiêu Thụ Năng Lượng</h5>
+            <div class="dropdown">
+              <button class="btn p-0" type="button" id="orderSummaryOptions" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="bx bx-dots-vertical-rounded"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orderSummaryOptions">
+                <a class="dropdown-item" href="javascript:void(0);">Select All</a>
+                <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                <a class="dropdown-item" href="javascript:void(0);">Share</a>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-0">
+          <div class="d-flex justify-content-around align-items-center flex-wrap mb-4">
+          <div class="sessions-analytics text-center me-2">
+            <i class="bx bx-pie-chart-alt me-1"></i>
+            <span>Tiêu Thụ (kW)</span>
+            <div class="d-flex align-items-center mt-2">
+              <h3 class="mb-0">&nbsp;&nbsp;&nbsp;4700</h3>
+            </div>
+          </div>
+          <div class="bounce-rate-analytics text-center">
+            <i class="bx bx-trending-up me-1"></i>
+            <span>So Với Tháng Trước</span>
+            <div class="d-flex align-items-center mt-2">
+              <h3 class="mb-0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;72.6%</h3>
+            </div>
+          </div>
+        </div>
+            <div id="orderSummaryChart"></div>
+          </div>
+      </div>
+      <span class="mb-3"></span>
+    </div>
+  </div>
+  <!-- Referral, conversion, impression & income charts -->
+  <div class="col-lg-6 col-md-12">
+    <div class="row">
+      <div class="col-sm-6 col-12 mb-4">
+        <div class="card">
+          <div class="card-body text-center">
+            <div id="impressionDonutChart"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Referral Chart-->
+      <div class="col-sm-6 col-12 mb-4">
+        <div class="card">
+          <div class="card-body text-center">
+            <div id="growthRadialChart"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-12 mb-4">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <div class="avatar mx-auto mb-4">
+              <span class="avatar-initial rounded-circle bg-label-success"><i class="bx bx-log-in-circle fs-4"></i></span>
+            </div>
+            <span class="d-block text-nowrap">Trong Nhà</span>
+            <h2 class="mb-0">26</h2>
+            <span class="h6 text-muted align-top"> °C</span>
+            <br>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-12 mb-4">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <div class="avatar mx-auto mb-4">
+              <span class="avatar-initial rounded-circle bg-label-danger"><i class="bx bx-log-out-circle fs-4"></i></span>
+            </div>
+            <span class="d-block text-nowrap">Bên Ngoài</span>
+            <h2 class="mb-0">30</h2>
+            <span class="h6 text-muted align-top"> °C</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row" id="sortable-cards">
+</div>
+<div class="row">
+  <!-- Finance Summary -->
+  <div class="col-md-7 col-lg-7 mb-4 mb-md-0">
+    <div class="card h-100">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center me-3">
+          <img src="~/img/avatars/house.png" alt="Avatar" class="rounded-circle me-3" width="54">
+          <div class="card-title mb-0">
+            <h5 class="mb-0">Nhà Của Dũng</h5>
+            <small class="text-muted">83A Cửu Long, Cư xá Bắc Hải, Quận 10, Hồ Chí Minh</small>
+          </div>
+        </div>
+        <div class="dropdown btn-pinned">
+          <button class="btn p-0" type="button" id="financoalReport" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="bx bx-dots-vertical-rounded"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="financoalReport">
+            <a class="dropdown-item" href="javascript:void(0);">Select All</a>
+            <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+            <a class="dropdown-item" href="javascript:void(0);">Share</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="d-flex flex-wrap gap-4 mb-5 mt-4">
+          <div class="d-flex flex-column me-2">
+            <h6>Bắt Đầu</h6>
+            <span class="badge bg-label-success">02 / 04 / 22</span>
+          </div>
+          <div class="d-flex flex-column me-2">
+            <h6>Hết Hạn</h6>
+            <span class="badge bg-label-danger">06 / 04 / 26</span>
+          </div>
+          <div class="d-flex flex-column me-2">
+            <h6>Thành Viên</h6>
+            <ul class="list-unstyled me-2 d-flex align-items-center avatar-group mb-0">
+              <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" title="Nguyễn Anh Dũng" class="avatar avatar-xs pull-up">
+                <img class="rounded-circle" src="~/img/avatars/ttg.png" alt="Avatar">
+              </li>
+              <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" title="Vũ Quang Đạt" class="avatar avatar-xs pull-up">
+                <img class="rounded-circle" src="~/img/avatars/datoc.png" alt="Avatar">
+              </li>
+              <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" title="Next Gen" class="avatar avatar-xs pull-up">
+                <img class="rounded-circle" src="~/img/avatars/nextgen.png" alt="Avatar">
+              </li>
+              <li data-bs-toggle="tooltip" data-popup="tooltip-custom" data-bs-placement="top" title="Phan Anh Vũ" class="avatar avatar-xs pull-up">
+                <img class="rounded-circle" src="~/img/avatars/vuhayho.png" alt="Avatar">
+              </li>
+            </ul>
+          </div>
+          <div class="d-flex flex-column me-2">
+            <h6>Chủ Nhà</h6>
+            <span>Nguyễn Anh Dũng</span>
+          </div>
+        </div>
+        <div class="d-flex flex-column flex-grow-1">
+          <span class="text-nowrap d-block mb-1">Vui vậy thôi chứ bố dặn con này,</span>
+        </div>
+        <span>Ra khỏi phòng nhớ tắt điều hòa con nhé! Tốn điện quá thì bố đập con đấy.</span>
+      </div class="card-footer border-top">
+    </div>
+  </div>
+  <!-- Finance Summary -->
+
+  <!-- Activity Timeline -->
+  <div class="col-md-5 col-lg-5 mb-0">
+    <div class="card">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="card-title m-0 me-2">Hoạt Động Gần Đây</h5>
+        <div class="dropdown">
+          <button class="btn p-0" type="button" id="timelineWapper" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="bx bx-dots-vertical-rounded"></i>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="timelineWapper">
+            <a class="dropdown-item" href="javascript:void(0);">Select All</a>
+            <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+            <a class="dropdown-item" href="javascript:void(0);">Share</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <!-- Activity Timeline -->
+        <ul class="timeline">
+          <li class="timeline-item timeline-item-transparent ps-4">
+            <span class="timeline-point timeline-point-primary"></span>
+            <div class="timeline-event pb-2">
+              <div class="timeline-header mb-1">
+                <h6 class="mb-0">Điều Hòa Phòng Ngủ</h6>
+                <small class="text-muted">12 min ago</small>
+              </div>
+              <p class="mb-2">Được <strong>tắt</strong> bởi <strong>Nguyễn Anh Dũng</strong></p>
+            </div>
+          </li>
+          <li class="timeline-item timeline-item-transparent ps-4">
+            <span class="timeline-point timeline-point-warning"></span>
+            <div class="timeline-event pb-2">
+              <div class="timeline-header mb-1">
+                <h6 class="mb-0">Thêm Thiết Bị</h6>
+                <small class="text-muted">45 min ago</small>
+              </div>
+              <p class="mb-2"><strong>Điều Hòa Phòng Ngủ</strong> được thêm bởi <strong>Nguyễn Anh Dũng</strong></p>
+            </div>
+          </li>
+          <li class="timeline-item timeline-item-transparent ps-4">
+            <span class="timeline-point timeline-point-info"></span>
+            <div class="timeline-event pb-0">
+              <div class="timeline-header mb-1">
+                <h6 class="mb-0">Thêm Thành Viên</h6>
+                <small class="text-muted">2 Day Ago</small>
+              </div>
+              <p class="mb-2"><strong>Vũ Quang Đạt</strong> được thêm vào nhà</p>
+            </div>
+          </li>
+          <li class="timeline-end-indicator">
+            <i class="bx bx-check-circle"></i>
+          </li>
+        </ul>
+        <!-- /Activity Timeline -->
+      </div>
+    </div>
+  </div>
+  <!--/ Activity Timeline -->
+</div>
