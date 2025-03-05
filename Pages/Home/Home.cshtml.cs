@@ -12,4 +12,20 @@ namespace StupidHome.Pages.Home
   {
     public void OnGet() { }
   }
+  public class CalendarModel : PageModel
+  {
+    public void OnGet() { }
+  }
+  public class RulesModel : PageModel
+  {
+    public void OnGet() { }
+  }
+  public class AnalyticsModel : PageModel
+  {
+    public void OnGet() { }
+  }
+  public class HistoryModel : PageModel
+  {
+    public void OnGet() { }
+  }
 }

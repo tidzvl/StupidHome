@@ -15,29 +15,7 @@ let events = [
   {
     id: 1,
     url: '',
-    title: 'Design Review',
-    start: date,
-    end: nextDay,
-    allDay: false,
-    extendedProps: {
-      calendar: 'Business'
-    }
-  },
-  {
-    id: 2,
-    url: '',
-    title: 'Meeting With Client',
-    start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
-    end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
-    allDay: true,
-    extendedProps: {
-      calendar: 'Business'
-    }
-  },
-  {
-    id: 3,
-    url: '',
-    title: 'Family Trip',
+    title: 'Đi Du lịch',
     allDay: true,
     start: new Date(date.getFullYear(), date.getMonth() + 1, -9),
     end: new Date(date.getFullYear(), date.getMonth() + 1, -7),
@@ -46,9 +24,9 @@ let events = [
     }
   },
   {
-    id: 4,
+    id: 2,
     url: '',
-    title: "Doctor's Appointment",
+    title: 'Đi khám trĩ',
     start: new Date(date.getFullYear(), date.getMonth() + 1, -11),
     end: new Date(date.getFullYear(), date.getMonth() + 1, -10),
     extendedProps: {
@@ -56,9 +34,9 @@ let events = [
     }
   },
   {
-    id: 5,
+    id: 3,
     url: '',
-    title: 'Dart Game?',
+    title: 'Chơi điện tử',
     start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
     end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
     allDay: true,
@@ -67,9 +45,9 @@ let events = [
     }
   },
   {
-    id: 6,
+    id: 4,
     url: '',
-    title: 'Meditation',
+    title: 'Ngủ',
     start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
     end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
     allDay: true,
@@ -78,9 +56,9 @@ let events = [
     }
   },
   {
-    id: 7,
+    id: 5,
     url: '',
-    title: 'Dinner',
+    title: 'Ăn tối',
     start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
     end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
     extendedProps: {
@@ -88,31 +66,9 @@ let events = [
     }
   },
   {
-    id: 8,
+    id: 6,
     url: '',
-    title: 'Product Review',
-    start: new Date(date.getFullYear(), date.getMonth() + 1, -13),
-    end: new Date(date.getFullYear(), date.getMonth() + 1, -12),
-    allDay: true,
-    extendedProps: {
-      calendar: 'Business'
-    }
-  },
-  {
-    id: 9,
-    url: '',
-    title: 'Monthly Meeting',
-    start: nextMonth,
-    end: nextMonth,
-    allDay: true,
-    extendedProps: {
-      calendar: 'Business'
-    }
-  },
-  {
-    id: 10,
-    url: '',
-    title: 'Monthly Checkup',
+    title: 'Làm bài tập',
     start: prevMonth,
     end: prevMonth,
     allDay: true,

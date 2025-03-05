@@ -1,126 +1,223 @@
 [
   {
-    "id": "board-in-progress",
-    "title": "In Progress",
+    "id": "board-phong-khach",
+    "title": "Phòng Khách",
     "item": [
       {
+        "id": "in-progress-0",
+        "category": "-wind",
+        "category-name": "Điều Hòa",
+        "title": "Máy Lạnh Phòng Khách",
+        "add-date": "5 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": true,
+        "image": "maylanh1.jpg",
+        "energy-consumed": "1000",
+        "on": true,
+        "temp": 26,
+        "mood": 1,
+        "light": null,
+        "voilume": null,
+        "speed": null
+      },
+      {
         "id": "in-progress-1",
-        "title": "Research FAQ page UX",
-        "comments": "12",
-        "badge-text": "UX",
-        "badge": "success",
-        "due-date": "5 April",
-        "attachments": "4",
-        "assigned": [
-          "12.png",
-          "5.png"
-        ],
-        "members": [
-          "Bruce",
-          "Clark"
-        ]
+        "category": "-tv",
+        "category-name": "TV",
+        "title": "TV Phòng Khách",
+        "add-date": "5 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": true,
+        "image": "",
+        "energy-consumed": "1000",
+        "on": true,
+        "temp": null,
+        "mood": null,
+        "light": null,
+        "voilume": null,
+        "speed": null
       },
       {
         "id": "in-progress-2",
-        "title": "Review Javascript code",
-        "comments": "8",
-        "badge-text": "Code Review",
-        "badge": "danger",
-        "attachments": "2",
-        "due-date": "10 April",
-        "assigned": [
-          "3.png",
-          "8.png"
-        ],
-        "members": [
-          "Helena",
-          "Iris"
-        ]
+        "category": "-book-content",
+        "category-name": "Tủ Lạnh",
+        "title": "Tủ Lạnh Phòng Khách",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": false,
+        "image": "",
+        "energy-consumed": "1500",
+        "on": true,
+        "temp": null,
+        "mood": null,
+        "light": null,
+        "voilume": null,
+        "speed": null
+      },
+      {
+        "id": "in-progress-22",
+        "category": "-bulb",
+        "category-name": "Thiết Bị Chiếu Sáng",
+        "title": "Đèn Chính",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": true,
+        "image": "",
+        "energy-consumed": "1500",
+        "on": true,
+        "temp": null,
+        "mood": null,
+        "light": 100,
+        "voilume": null,
+        "speed": null
+      },
+      {
+        "id": "in-progress-4",
+        "category": "-door-open",
+        "category-name": "Cửa Tự Động",
+        "title": "Cửa Chính",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": true,
+        "image": "",
+        "energy-consumed": "1500",
+        "on": true,
+        "temp": null,
+        "mood": null,
+        "light": null,
+        "voilume": null,
+        "speed": null
       }
     ]
   },
   {
-    "id": "board-in-review",
-    "title": "In Review",
+    "id": "board-nha-bep",
+    "title": "Nhà Bếp",
     "item": [
       {
-        "id": "in-review-1",
-        "title": "Review completed Apps",
-        "comments": "17",
-        "badge-text": "Info",
-        "badge": "info",
-        "due-date": "8 April",
-        "attachments": "8",
-        "assigned": [
-          "11.png",
-          "6.png"
-        ],
-        "members": [
-          "Laurel",
-          "Harley"
-        ]
+        "id": "in-progress-3",
+        "category": "-book-content",
+        "category-name": "Tủ Lạnh",
+        "title": "Tủ Lạnh Nhà Bếp",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": false,
+        "image": "",
+        "energy-consumed": "1500",
+        "on": true,
+        "temp": null,
+        "mood": null,
+        "light": null,
+        "voilume": null,
+        "speed": null
       },
       {
-        "id": "in-review-2",
-        "title": "Find new images for pages",
-        "comments": "18",
-        "badge-text": "Images",
-        "image": "11.jpg",
-        "badge": "warning",
-        "due-date": "2 April",
-        "attachments": "10",
-        "assigned": [
-          "9.png",
-          "2.png",
-          "3.png",
-          "12.png"
-        ],
-        "members": [
-          "Jordan",
-          "Dianna",
-          "Vinnie",
-          "Lasa"
-        ]
+        "id": "in-progress-5",
+        "category": "s-hot",
+        "category-name": "Bếp",
+        "title": "Lò Nướng",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": false,
+        "image": "",
+        "energy-consumed": "1500",
+        "on": false,
+        "temp": null,
+        "mood": null,
+        "light": null,
+        "voilume": null,
+        "speed": null
+      },
+      {
+        "id": "in-progress-6",
+        "category": "s-hot",
+        "category-name": "Bếp",
+        "title": "Lò Vi Sóng",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": false,
+        "image": "",
+        "energy-consumed": "1500",
+        "on": false,
+        "temp": null,
+        "mood": null,
+        "light": null,
+        "voilume": null,
+        "speed": null
       }
     ]
   },
   {
-    "id": "board-done",
-    "title": "Done",
+    "id": "board-phong-ngu",
+    "title": "Phòng Ngủ",
     "item": [
       {
-        "id": "done-1",
-        "title": "Forms & Tables section",
-        "comments": "4",
-        "badge-text": "App",
-        "badge": "secondary",
-        "due-date": "7 April",
-        "attachments": "1",
-        "assigned": [
-          "2.png",
-          "9.png",
-          "10.png"
-        ],
-        "members": [
-          "Kara",
-          "Nyssa",
-          "Darcey"
-        ]
+        "id": "in-progress-10",
+        "category": "-tv",
+        "category-name": "TV",
+        "title": "PC",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": true,
+        "image": "pc1.jpg",
+        "energy-consumed": "1500",
+        "on": true,
+        "temp": null,
+        "mood": null,
+        "light": null,
+        "voilume": null,
+        "speed": null
       },
       {
-        "id": "done-2",
-        "title": "Completed Charts & Maps",
-        "comments": "21",
-        "badge-text": "Charts & Maps",
-        "badge": "primary",
-        "due-date": "7 April",
-        "attachments": "6",
-        "assigned": [
-          "1.png"
-        ],
-        "members": [
-          "Sarah"
-        ]
+        "id": "in-progress-7",
+        "category": "-speaker",
+        "category-name": "Thiết Bị Âm Thanh",
+        "title": "Loa Marshall",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": false,
+        "image": "",
+        "energy-consumed": "1500",
+        "on": true,
+        "temp": null,
+        "mood": null,
+        "light": null,
+        "voilume": 76,
+        "speed": null
+      },
+      {
+        "id": "in-progress-8",
+        "category": "-wind",
+        "category-name": "Điều Hòa",
+        "title": "Máy Lạnh Phòng Ngủ",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": false,
+        "image": "",
+        "energy-consumed": "1500",
+        "on": true,
+        "temp": 26,
+        "mood": null,
+        "light": null,
+        "voilume": null,
+        "speed": null
+      },
+      {
+        "id": "in-progress-9",
+        "category": "-tv",
+        "category-name": "TV",
+        "title": "TV Trong Phòng",
+        "add-date": "15 Tháng 4, 2022",
+        "last-update": "2025-01-01",
+        "pinned": false,
+        "image": "tv1.jpg",
+        "energy-consumed": "1500",
+        "on": true,
+        "temp": null,
+        "mood": null,
+        "light": null,
+        "voilume": null,
+        "speed": null
       }
     ]
   }

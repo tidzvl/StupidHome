@@ -1,0 +1,18 @@
+@page
+@model StupidHome.Pages.Home.RulesModel
+@{
+  Layout = "Layouts/_ContentNavbarLayout";
+  ViewData["Title"] = "Kịch Bản - Home";
+}
+
+@section VendorScripts {
+  <script src="~/vendor/libs/sortablejs/sortable.dist.js"></script>
+}
+
+@section PageScripts {
+  <script src="~/js/rules.js"></script>
+}
+
+
+@* ************** Content ************** *@
+<h4 class="py-3 breadcrumb-wrapper mb-4"><small class="text-muted">Home /</small> Kịch Bản</h4>

@@ -20,6 +20,99 @@
     shadeColor = '';
   }
 
+  //
+  const lineChartEl = document.querySelector('#lineChart'),
+    lineChartConfig = {
+      chart: {
+        height: 400,
+        type: 'line',
+        parentHeightOffset: 0,
+        zoom: {
+          enabled: false
+        },
+        toolbar: {
+          show: false
+        }
+      },
+      series: [
+        {
+          data: [280, 200, 220, 180, 270, 250, 70, 90, 200, 150, 160, 100, 150, 100, 50]
+        }
+      ],
+      markers: {
+        strokeWidth: 7,
+        strokeOpacity: 1,
+        strokeColors: [config.colors.white],
+        colors: [config.colors.warning]
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'straight'
+      },
+      colors: [config.colors.warning],
+      grid: {
+        borderColor: borderColor,
+        xaxis: {
+          lines: {
+            show: true
+          }
+        },
+        padding: {
+          top: -20
+        }
+      },
+      tooltip: {
+        custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+          return '<div class="px-3 py-2">' + '<span>' + series[seriesIndex][dataPointIndex] + 'kW</span>' + '</div>';
+        }
+      },
+      xaxis: {
+        categories: [
+          '7/3',
+          '8/3',
+          '9/3',
+          '10/3',
+          '11/3',
+          '12/3',
+          '13/3',
+          '14/3',
+          '15/3',
+          '16/3',
+          '17/3',
+          '18/3',
+          '19/3',
+          '20/3',
+          '21/3'
+        ],
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        labels: {
+          style: {
+            colors: labelColor,
+            fontSize: '13px'
+          }
+        }
+      },
+      yaxis: {
+        labels: {
+          style: {
+            colors: labelColor,
+            fontSize: '13px'
+          }
+        }
+      }
+    };
+  if (typeof lineChartEl !== undefined && lineChartEl !== null) {
+    const lineChart = new ApexCharts(lineChartEl, lineChartConfig);
+    lineChart.render();
+  }
+
   // Donut Chart Colors
   const chartColors = {
     donut: {

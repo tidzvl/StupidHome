@@ -3,6 +3,7 @@
  */
 
 'use strict';
+window.Helpers.initCustomOptionCheck();
 
 (async function () {
   let boards;
@@ -67,7 +68,7 @@
       modules: {
         toolbar: '.comment-toolbar'
       },
-      placeholder: 'Write a Comment... ',
+      placeholder: 'Nhập chú thích ... ',
       theme: 'snow'
     });
   }
@@ -99,14 +100,23 @@
     );
   }
   // Render header
-  function renderHeader(color, text) {
+  function renderHeader(category, categoryName) {
+    var color = {
+      '-tv': 'success',
+      '-book-content': 'primary',
+      '-wind': 'info',
+      '-door-open': 'danger',
+      's-hot': 'warning',
+      '-speaker': 'dark',
+      '-bulb': 'warning'
+    };
     return (
       "<div class='d-flex justify-content-between flex-wrap align-items-center mb-2 pb-1'>" +
       "<div class='item-badges'> " +
       "<div class='badge rounded-pill bg-label-" +
-      color +
+      color[category] +
       "'> " +
-      text +
+      categoryName +
       '</div>' +
       '</div>' +
       renderDropdown() +
@@ -114,58 +124,33 @@
     );
   }
 
-  // Render avatar
-  function renderAvatar(images, pullUp, size, margin, members) {
-    var $transition = pullUp ? ' pull-up' : '',
-      $size = size ? 'avatar-' + size + '' : '',
-      member = members == undefined ? ' ' : members.split(',');
-
-    return images == undefined
-      ? ' '
-      : images
-          .split(',')
-          .map(function (img, index, arr) {
-            var $margin = margin && index !== arr.length - 1 ? ' me-' + margin + '' : '';
-
-            return (
-              "<div class='avatar " +
-              $size +
-              $margin +
-              "'" +
-              "data-bs-toggle='tooltip' data-bs-placement='top'" +
-              "title='" +
-              member[index] +
-              "'" +
-              '>' +
-              "<img src='" +
-              assetsPath +
-              'img/avatars/' +
-              img +
-              "' alt='Avatar' class='rounded-circle " +
-              $transition +
-              "'>" +
-              '</div>'
-            );
-          })
-          .join(' ');
-  }
-
   // Render footer
-  function renderFooter(attachments, comments, assigned, members) {
+  function renderFooter(on, temp, light) {
+    let value = on ? 'checked' : '';
+    if (temp > 0) {
+      var html = `
+      <span class="switch-label"><i class='bx bxs-thermometer'></i>${temp}</span>
+      `;
+    } else if (light > 0) {
+      var html = `
+        <span class="switch-label"><i class='bx bx-bulb'></i>${light}</span>
+      `;
+    }
     return (
       "<div class='d-flex justify-content-between align-items-center flex-wrap mt-2 pt-1'>" +
-      "<div class='d-flex'> <span class='d-flex align-items-center me-2'><i class='bx bx-paperclip me-1'></i>" +
-      "<span class='attachments'>" +
-      attachments +
-      '</span>' +
-      "</span> <span class='d-flex align-items-center ms-1'><i class='bx bx-chat me-1'></i>" +
-      '<span> ' +
-      comments +
-      ' </span>' +
-      '</span></div>' +
-      "<div class='avatar-group d-flex align-items-center assigned-avatar'>" +
-      renderAvatar(assigned, true, 'xs', null, members) +
-      '</div>' +
+      "<div class='d-flex'>" +
+      `<label class="switch switch-sm">
+        <input type="checkbox" class="switch-input " ${value}/>
+        <span class="switch-toggle-slider">
+          <span class="switch-on">
+            <i class="bx bx-check"></i>
+          </span>
+          <span class="switch-off">
+            <i class="bx bx-x"></i>
+          </span>
+        </span>
+      </label>` +
+      `</div> ${html ? html : ''}` +
       '</div>'
     );
   }
@@ -178,10 +163,10 @@
     boards: boards,
     dragBoards: true,
     addItemButton: true,
-    buttonContent: '+ Add Item',
+    buttonContent: '+ Thêm Phòng',
     itemAddOptions: {
       enabled: true, // add a button to board for easy item creation
-      content: '+ Add New Item', // text or html content of the board button
+      content: '+ Thêm Thiết Bị', // text or html content of the board button
       class: 'kanban-title-button btn btn-default', // default class of the button
       footer: false // position the button on footer
     },
@@ -190,36 +175,158 @@
       let title = element.getAttribute('data-eid')
           ? element.querySelector('.kanban-text').textContent
           : element.textContent,
-        date = element.getAttribute('data-due-date'),
+        date = element.getAttribute('data-add-date'),
         dateObj = new Date(),
         year = dateObj.getFullYear(),
         dateToUse = date
           ? date + ', ' + year
-          : dateObj.getDate() + ' ' + dateObj.toLocaleString('en', { month: 'long' }) + ', ' + year,
-        label = element.getAttribute('data-badge-text'),
-        avatars = element.getAttribute('data-assigned');
+          : dateObj.getDate() + ' ' + dateObj.toLocaleString('vie', { month: 'long' }) + ', ' + year,
+        label = element.getAttribute('data-category-name'),
+        labelValue = element.getAttribute('data-category');
 
       // Show kanban offcanvas
       kanbanOffcanvas.show();
 
       // To get data on sidebar
       kanbanSidebar.querySelector('#title').value = title;
-      kanbanSidebar.querySelector('#due-date').nextSibling.value = dateToUse;
-
+      kanbanSidebar.querySelector('#due-date').nextSibling.value = date;
       // ! Using jQuery method to get sidebar due to select2 dependency
-      $('.kanban-update-item-sidebar').find(select2).val(label).trigger('change');
+      $('.kanban-update-item-sidebar').find(select2).val(labelValue).trigger('change');
 
-      // Remove & Update assigned
-      kanbanSidebar.querySelector('.assigned').innerHTML = '';
-      kanbanSidebar
-        .querySelector('.assigned')
-        .insertAdjacentHTML(
-          'afterbegin',
-          renderAvatar(avatars, false, 'xs', '1', el.getAttribute('data-members')) +
-            "<div class='avatar avatar-xs ms-1'>" +
-            "<span class='avatar-initial rounded-circle bg-label-secondary'><i class='bx bx-plus'></i></span>" +
-            '</div>'
-        );
+      // render per category
+      let on = element.getAttribute('data-on') ? 'checked' : '',
+        temp = element.getAttribute('data-temp'),
+        mood = element.getAttribute('data-mood'),
+        light = element.getAttribute('data-light'),
+        voilume = element.getAttribute('data-voilume'),
+        speed = element.getAttribute('data-speed');
+      $('.optional').empty();
+      $('.optional').append(`
+          <div class="mb-2">
+                <label class="switch">
+                  <input type="checkbox" class="switch-input" ${on}/>
+                  <span class="switch-toggle-slider">
+                    <span class="switch-on">
+                      <i class="bx bx-check"></i>
+                    </span>
+                    <span class="switch-off">
+                      <i class="bx bx-x"></i>
+                    </span>
+                  </span>
+                  <span class="switch-label">Bật / Tắt</span>
+                </label>
+              </div>
+        `);
+      if (temp > 15) {
+        $('.optional').append(`
+          <div class="mb-2">
+            <label class="form-label">Chọn Nhiệt Độ</label>
+            <div id="slider-pips" class="my-3"></div>
+          </div>
+        `);
+        // Render AC
+        noUiSlider.create(document.getElementById('slider-pips'), {
+          start: [temp],
+          behaviour: 'tap-drag',
+          step: 1,
+          tooltips: true,
+          range: {
+            min: 16,
+            max: 30
+          }
+        });
+      }
+      if (mood > 0) {
+        let mood0, mood1, mood2;
+        if (mood == 1) {
+          mood0 = 'checked';
+        } else if (mood == 2) {
+          mood1 = 'checked';
+        } else if (mood == 3) {
+          mood2 = 'checked';
+        }
+        $('.optional').append(`
+            <label class="form-label">Chọn Chế Độ</label>
+            <div class="d-flex flex-row mb-2">
+              <div class="col-md-4 mb-md-0 mb-2">
+                  <div class="form-check custom-option custom-option-icon">
+                      <label class="form-check-label custom-option-content" for="customRadioIcon1">
+                          <span class="custom-option-body">
+                              <i class="bx bx-cloud-snow"></i>
+                              <span class="custom-option-title">Cool</span>
+                          </span>
+                          <input name="customRadioIcon" class="form-check-input" type="radio" value="" id="customRadioIcon1" ${mood0} />
+                      </label>
+                  </div>
+              </div>
+              <div class="col-md-4 mb-md-0 mb-2">
+                  <div class="form-check custom-option custom-option-icon">
+                      <label class="form-check-label custom-option-content" for="customRadioIcon2">
+                          <span class="custom-option-body">
+                              <i class="bx bx-wind"></i>
+                              <span class="custom-option-title">Wind</span>
+                          </span>
+                          <input name="customRadioIcon" class="form-check-input" type="radio" value="" id="customRadioIcon2" ${mood1}/>
+                      </label>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="form-check custom-option custom-option-icon">
+                      <label class="form-check-label custom-option-content" for="customRadioIcon3">
+                          <span class="custom-option-body">
+                              <i class="bx bx-analyse"></i>
+                              <span class="custom-option-title">Auto</span>
+                          </span>
+                          <input name="customRadioIcon" class="form-check-input" type="radio" value="" id="customRadioIcon3" ${mood2}/>
+                      </label>
+                  </div>
+              </div>
+            </div>
+          `);
+      }
+      var result, value;
+      if (light > 0) {
+        result = 'Độ Sáng';
+        value = light;
+      }
+      if (voilume > 0) {
+        result = 'Âm Lượng';
+        value = voilume;
+      }
+      if (speed > 0) {
+        result = 'Tốc Độ';
+        value = speed;
+      }
+      //render
+      if (!result) {
+      } else {
+        $('.optional').append(`
+          <div class="mb-2">
+                <label class="form-label">${result}</label>
+                <div id="slider-light" class="my-3"></div>
+              </div>
+        `);
+        noUiSlider.create(document.getElementById('slider-light'), {
+          start: [value],
+          connect: [true, false],
+          range: {
+            min: 0,
+            max: 100
+          }
+        });
+      }
+      var check = el.getAttribute('data-pinned');
+      if (check === 'true') {
+        check = 'checked';
+      } else if (check === 'false') {
+        check = '';
+      }
+      $('.optional').append(`
+        <div class="mb-3">
+          <input class="form-check-input" type="checkbox" value="" id="pin" ${check} />
+          <label class="form-check-label" for="pin"><i class='bx bxs-pin'></i>Ghim lên trang chủ</label>
+        </div>
+      `);
     },
 
     buttonClick: function (el, boardId) {
@@ -241,7 +348,7 @@
           document.querySelectorAll('.kanban-board[data-id=' + boardId + '] .kanban-item')
         );
         kanban.addElement(boardId, {
-          title: "<span class='kanban-text'>" + e.target[0].value + '</span>',
+          title: "<h5 class='kanban-text'>" + e.target[0].value + '</h5>',
           id: boardId + '-' + currentBoard.length + 1
         });
 
@@ -295,31 +402,35 @@
   // Render custom items
   if (kanbanItem) {
     kanbanItem.forEach(function (el) {
-      const element = "<span class='kanban-text'>" + el.textContent + '</span>';
+      const element = "<h5 class='kanban-text text-center'>" + el.textContent + '</h5>';
       let img = '';
-      if (el.getAttribute('data-image') !== null) {
-        img = "<img class='img-fluid rounded mb-2' src='" + assetsPath + 'img/elements/' + el.getAttribute('data-image') + "'>";
+      if (el.getAttribute('data-image') != '') {
+        img =
+          "<img class='img-fluid rounded mb-2' src='" +
+          assetsPath +
+          'img/elements/' +
+          el.getAttribute('data-image') +
+          "'>";
+      } else {
+        img = `
+          <i class="bx bx${el.getAttribute('data-category')} text-secondary display-6 text-center"></i>
+        `;
       }
       el.textContent = '';
-      if (el.getAttribute('data-badge') !== undefined && el.getAttribute('data-badge-text') !== undefined) {
+      if (el.getAttribute('data-badge') !== undefined && el.getAttribute('data-category-name') !== undefined) {
         el.insertAdjacentHTML(
           'afterbegin',
-          renderHeader(el.getAttribute('data-badge'), el.getAttribute('data-badge-text')) + img + element
+          renderHeader(el.getAttribute('data-category'), el.getAttribute('data-category-name')) + img + element
         );
       }
       if (
         el.getAttribute('data-comments') !== undefined ||
-        el.getAttribute('data-due-date') !== undefined ||
+        el.getAttribute('data-add-date') !== undefined ||
         el.getAttribute('data-assigned') !== undefined
       ) {
         el.insertAdjacentHTML(
           'beforeend',
-          renderFooter(
-            el.getAttribute('data-attachments'),
-            el.getAttribute('data-comments'),
-            el.getAttribute('data-assigned'),
-            el.getAttribute('data-members')
-          )
+          renderFooter(el.getAttribute('data-on'), el.getAttribute('data-temp'), el.getAttribute('data-light'))
         );
       }
     });
