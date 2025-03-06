@@ -511,7 +511,7 @@
         config.colors_label.warning,
         config.colors_label.warning,
         config.colors_label.warning,
-        config.colors.warning,
+        config.colors_label.warning,
         config.colors_label.warning,
         config.colors_label.warning
       ],
@@ -587,7 +587,7 @@
         config.colors_label.success,
         config.colors_label.success,
         config.colors_label.success,
-        config.colors.success,
+        config.colors_label.success,
         config.colors_label.success,
         config.colors_label.success
       ],
@@ -631,7 +631,7 @@
     registrationChartConfig = {
       series: [
         {
-          data: [57, 25, 94, 32, 98, 81, 125]
+          data: [17, 15, 24, 22, 18, 22, 22]
         }
       ],
       chart: {
@@ -697,7 +697,7 @@
     expensesChartConfig = {
       series: [
         {
-          data: [115, 70, 105, 34, 122, 21, 62]
+          data: [100, 70, 90, 34, 80, 21, 62]
         }
       ],
       chart: {
@@ -948,7 +948,7 @@
         config.colors_label.primary,
         config.colors_label.primary,
         config.colors_label.primary,
-        config.colors.primary,
+        config.colors_label.primary,
         config.colors_label.primary,
         config.colors_label.primary
       ],

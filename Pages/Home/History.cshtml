@@ -1,0 +1,59 @@
+@page
+@model StupidHome.Pages.Home.HistoryModel
+@{
+  Layout = "Layouts/_ContentNavbarLayout";
+  ViewData["Title"] = "Lịch Sử - Home";
+}
+
+@section VendorStyles {
+<link rel="stylesheet" href="~/vendor/libs/datatables-bs5/datatables.bootstrap5.dist.css">
+<link rel="stylesheet" href="~/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.dist.css">
+<link rel="stylesheet" href="~/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.dist.css">
+<link rel="stylesheet" href="~/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.dist.css">
+<link rel="stylesheet" href="~/vendor/libs/flatpickr/flatpickr.dist.css" />
+<!-- Row Group CSS -->
+<link rel="stylesheet" href="~/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.dist.css">
+<!-- Form Validation -->
+<link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/umd/styles/index.min.css" />
+}
+
+@section VendorScripts {
+<script src="~/vendor/libs/datatables-bs5/datatables-bootstrap5.dist.js"></script>
+<!-- Flat Picker -->
+<script src="~/vendor/libs/moment/moment.dist.js"></script>
+<script src="~/vendor/libs/flatpickr/flatpickr.dist.js"></script>
+<!-- Form Validation -->
+<script src="~/vendor/libs/&#64;form-validation/umd/bundle/popular.min.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/umd/plugin-bootstrap5/index.min.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/umd/plugin-auto-focus/index.min.js"></script>
+}
+
+@section PageScripts {
+<script src="~/js/tables-datatables-basic.js"></script>
+}
+
+<h4 class="py-3 breadcrumb-wrapper mb-4"><small class="text-muted">Home /</small> Lịch Sử</h4>
+
+<!-- Complex Headers -->
+<div class="card">
+  <h5 class="card-header">Lịch Sử Hoạt Động</h5>
+  <div class="card-datatable text-nowrap">
+    <table class="dt-complex-header table table-bordered">
+      <thead>
+        <tr>
+          <th rowspan="2" class="text-center">Tên</th>
+          <th colspan="2">Chi Tiết</th>
+          <th colspan="3">Hoạt Động</th>
+        </tr>
+        <tr>
+          <th>Vị Trí</th>
+          <th>Loại</th>
+          <th>Thành Viên</th>
+          <th>Thời Gian</th>
+          <th class="border-1">Sự Kiện</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+</div>
+<!--/ Complex Headers -->

@@ -28,4 +28,8 @@ namespace StupidHome.Pages.Home
   {
     public void OnGet() { }
   }
+  public class PricingModel : PageModel
+  {
+    public void OnGet() { }
+  }
 }

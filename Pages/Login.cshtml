@@ -1,8 +1,8 @@
-﻿@page
-@model StupidHome.Pages.RegisterModel
+@page
+@model StupidHome.Pages.LoginModel
 @{
   Layout = "Layouts/_BlankLayout";
-  ViewData["Title"] = "Đăng Ký";
+  ViewData["Title"] = "Đăng Nhập";
 }
 
 @section VendorStyles {
@@ -20,14 +20,15 @@
 }
 
 @section PageScripts {
-<script src="~/js/pages-auth.dist.js"></script>
+<script src="~/js/pages-auth.js"></script>
 }
 @* ************** Content ************** *@
 
 <div class="container-xxl">
   <div class="authentication-wrapper authentication-basic container-p-y">
     <div class="authentication-inner py-4">
-      <!-- Register Card -->
+
+      <!-- Register -->
       <div class="card">
         <div class="card-body">
           <!-- Logo -->
@@ -38,44 +39,43 @@
             </a>
           </div>
           <!-- /Logo -->
-          <h4 class="mb-2">Nhà mới bắt đầu tại đây 🚀</h4>
-          <p class="mb-4">Làm cho ngôi nhà của bạn !ngu hơn!</p>
+          <h4 class="mb-2">Welcome to @TempData.Peek("appName")! 👋</h4>
+          <p class="mb-4">Hãy đăng nhập để tiếp tục</p>
 
-          <form id="formAuthentication" class="mb-3" action="~/Dashboards/Analytics" method="GET">
+          <form id="formAuthentication" class="mb-3" action="~/Home/Pricing" method="GET">
             <div class="mb-3">
-              <label for="username" class="form-label">Tên tài khoản</label>
-              <input type="text" class="form-control" id="username" name="username" placeholder="Vui lòng chọn tên tài khoản" autofocus>
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="text" class="form-control" id="email" name="email" placeholder="Vui lòng nhập email">
+              <label for="email" class="form-label">Email hoặc Tên đăng nhập</label>
+              <input type="text" class="form-control" id="email" name="email-username" placeholder="Vui lòng nhập Email hoặc Tên đăng nhập" autofocus>
             </div>
             <div class="mb-3 form-password-toggle">
-              <label class="form-label" for="password">Mật Khẩu</label>
+              <div class="d-flex justify-content-between">
+                <label class="form-label" for="password">Mật Khẩu</label>
+                <a href="/ComingSoon">
+                  <small>Quên mật khẩu?</small>
+                </a>
+              </div>
               <div class="input-group input-group-merge">
                 <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
               </div>
             </div>
-
             <div class="mb-3">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="terms-conditions" name="terms">
-                <label class="form-check-label" for="terms-conditions">
-                  Tôi đồng ý với
-                  <a href="/ComingSoon">tất cả những điều khoản</a>
+                <input class="form-check-input" type="checkbox" id="remember-me">
+                <label class="form-check-label" for="remember-me">
+                  Ghi nhớ
                 </label>
               </div>
             </div>
-            <button class="btn btn-primary d-grid w-100" href="/Home/Index">
-              Đăng ký
-            </button>
+            <div class="mb-3">
+              <button class="btn btn-primary d-grid w-100" type="submit">Đăng nhập</button>
+            </div>
           </form>
 
           <p class="text-center">
-            <span>Nếu bạn đã có tài khoản?</span>
-            <a href="/Login">
-              <span>Đăng nhập tại đây</span>
+            <span>Bạn chưa có tài khoản?</span>
+            <a href="/Register">
+              <span>Hãy đăng ký</span>
             </a>
           </p>
 
@@ -98,7 +98,7 @@
           </div>
         </div>
       </div>
-      <!-- Register Card -->
+      <!-- /Register -->
     </div>
   </div>
 </div>

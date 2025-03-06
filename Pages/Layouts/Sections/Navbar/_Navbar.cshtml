@@ -67,6 +67,119 @@
      <!-- / Style Switcher-->
 
       <ul class="navbar-nav flex-row align-items-center ms-auto">
+        <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
+          <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+            <i class="bx bx-bell bx-sm"></i>
+            <span class="badge bg-danger rounded-pill badge-notifications">3</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end py-0">
+            <li class="dropdown-menu-header border-bottom">
+              <div class="dropdown-header d-flex align-items-center py-3">
+                <h5 class="text-body mb-0 me-auto">Thông báo</h5>
+                <a href="javascript:void(0)" class="dropdown-notifications-all text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Đánh dấu tất cả là đã đọc"><i class="bx fs-4 bx-envelope-open"></i></a>
+              </div>
+            </li>
+            <li class="dropdown-notifications-list scrollable-container">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="avatar">
+                        <img src="~/img/avatars/house.png" alt class="w-px-40 h-auto rounded-circle">
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Đã có báo cáo tuần này 🎉</h6>
+                      <p class="mb-0">Hãy vào mục thống kê để xem báo cáo nhé!</p>
+                      <small class="text-muted">1h trước</small>
+                    </div>
+                    <div class="flex-shrink-0 dropdown-notifications-actions">
+                      <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
+                      <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="bx bx-x"></span></a>
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="avatar">
+                        <img src="~/img/avatars/house.png" alt class="w-px-40 h-auto rounded-circle">
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Cảnh báo</h6>
+                      <p class="mb-0">Có kẻ trộm ở <strong>Phòng khách</strong></p>
+                      <small class="text-muted">12h trước</small>
+                    </div>
+                    <div class="flex-shrink-0 dropdown-notifications-actions">
+                      <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
+                      <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="bx bx-x"></span></a>
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="avatar">
+                        <img src="~/img/avatars/vuhayho.png" alt class="w-px-40 h-auto rounded-circle">
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Thêm thiết bị</h6>
+                      <p class="mb-0"><strong>PC</strong> vừa được thêm</p>
+                      <small class="text-muted">1h ago</small>
+                    </div>
+                    <div class="flex-shrink-0 dropdown-notifications-actions">
+                      <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
+                      <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="bx bx-x"></span></a>
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="avatar">
+                        <img src="~/img/avatars/house.png" alt class="w-px-40 h-auto rounded-circle">
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Hệ thống tự động</h6>
+                      <p class="mb-0">Tôi đã tưới cây giúp bạn</p>
+                      <small class="text-muted">1 day ago</small>
+                    </div>
+                    <div class="flex-shrink-0 dropdown-notifications-actions">
+                      <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
+                      <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="bx bx-x"></span></a>
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item list-group-item-action dropdown-notifications-item marked-as-read">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                      <div class="avatar">
+                        <img src="~/img/avatars/datoc.png" alt class="w-px-40 h-auto rounded-circle">
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">Thêm sự kiện</h6>
+                      <p class="mb-0">Một sự kiện mới vừa được thêm</p>
+                      <small class="text-muted">2 days ago</small>
+                    </div>
+                    <div class="flex-shrink-0 dropdown-notifications-actions">
+                      <a href="javascript:void(0)" class="dropdown-notifications-read"><span class="badge badge-dot"></span></a>
+                      <a href="javascript:void(0)" class="dropdown-notifications-archive"><span class="bx bx-x"></span></a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </li>
+            <li class="dropdown-menu-footer border-top">
+              <a href="/Home/History" class="dropdown-item d-flex justify-content-center p-3">
+                Xem tất cả thông báo
+              </a>
+            </li>
+          </ul>
+        </li>
         <!-- User -->
         <li class="nav-item navbar-dropdown dropdown-user dropdown">
           <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
@@ -109,7 +222,7 @@
               <div class="dropdown-divider"></div>
             </li>
             <li>
-              <a class="dropdown-item" asp-page="javascript:void(0)">
+              <a class="dropdown-item" asp-page="../Index">
                 <i class="bx bx-power-off me-2"></i>
                 <span class="align-middle">Log Out</span>
               </a>
@@ -117,6 +230,7 @@
           </ul>
         </li>
         <!--/ User -->
+
 
       </ul>
     </div>

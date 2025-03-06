@@ -7,4 +7,16 @@ namespace StupidHome.Pages
   {
     public void OnGet() { }
   }
+  public class RegisterModel : PageModel
+  {
+    public void OnGet() { }
+  }
+  public class LoginModel : PageModel
+  {
+    public void OnGet() { }
+  }
+  public class ComingSoonModel : PageModel
+  {
+    public void OnGet() { }
+  }
 }

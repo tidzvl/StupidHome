@@ -1,0 +1,240 @@
+@page
+@model StupidHome.Pages.Home.PricingModel
+@{
+  Layout = "Layouts/_BlankLayout";
+  ViewData["Title"] = "Thanh Toán";
+}
+
+@section PageStyles{
+<link rel="stylesheet" href="~/vendor/css/pages/page-pricing.dist.css" />
+}
+
+@section PageScripts {
+<script src="~/js/pages-pricing.js"></script>
+}
+
+@* ************** Content ************** *@
+
+<div class="card">
+  <!-- Pricing Plans -->
+  <div class="pb-sm-5 pb-2 rounded-top">
+    <div class="container py-5">
+      <h2 class="text-center mb-3 mt-0 mt-md-4">Ôi không😲!!! Bạn đang vô gia cư</h2>
+      <p class="text-center"> Hãy đóng tiền cho chúng tôi để được thấy ngôi nhà của bạn thông minh hơn bạn. </p>
+      <div class="d-flex align-items-center justify-content-center flex-wrap gap-2 py-5">
+        <label class="switch switch-primary ms-sm-5 ps-sm-5 me-0">
+          <span class="switch-label">Theo tháng</span>
+          <input type="checkbox" class="switch-input price-duration-toggler" checked />
+          <span class="switch-toggle-slider">
+            <span class="switch-on"></span>
+            <span class="switch-off"></span>
+          </span>
+          <span class="switch-label">Theo năm</span>
+        </label>
+        <div class="mt-n5 ms-n5 ml-2 mb-2 d-none d-sm-block">
+          <i class="bx bx-subdirectory-right bx-sm rotate-90 text-muted scaleX-n1-rtl"></i>
+          <span class="badge badge-sm bg-label-primary rounded-pill">Tiết kiệm 25%</span>
+        </div>
+      </div>
+
+      <div class="row mx-4 gy-3">
+        <!-- Starter -->
+        <div class="col-lg mb-md-0 mb-4">
+          <div class="card border shadow-none">
+            <div class="card-body">
+              <h5 class="text-start text-uppercase">Cơ Bản</h5>
+              <div class="text-center position-relative mb-4 pb-1">
+                <div class="mb-2 d-flex">
+                  <h1 class="price-toggle text-primary price-yearly mb-0">112k</h1>
+                  <h1 class="price-toggle text-primary price-monthly mb-0 d-none">150k</h1>
+                  <sub class="h5 text-muted pricing-duration mt-auto mb-2">/tháng</sub>
+                </div>
+                <small class="position-absolute start-0 m-auto price-yearly price-yearly-toggle text-muted">1.344k / năm</small>
+              </div>
+              <p>Phù hợp với những thanh niên FA</p>
+              <hr>
+              <ul class="list-unstyled pt-2 pb-1">
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Lặp kịch bản
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Kết nối thiết bị điện tử
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Thông báo sự cố
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check fs-5 lh-1"></i>
+                  </span>
+                  Báo cáo thống kê
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check fs-5 lh-1"></i>
+                  </span>
+                  Tưới cây tự động
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check fs-5 lh-1"></i>
+                  </span>
+                  Tự động điều chỉnh nhiệt độ
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check fs-5 lh-1"></i>
+                  </span>
+                  Trợ giúp trong vòng 24 giờ
+                </li>
+              </ul>
+              <a href="/Home" class="btn btn-label-primary d-grid w-100">Bắt Đầu</a>
+            </div>
+          </div>
+        </div>
+        <!--/ Starter -->
+        <!-- Pro -->
+        <div class="col-lg mb-md-0 mb-4">
+          <div class="card border border-2 border-primary">
+            <div class="card-body">
+              <div class="d-flex justify-content-between flex-wrap mb-3">
+                <h5 class="text-start text-uppercase mb-0">Đại Gia Đình</h5>
+                <span class="badge bg-primary rounded-pill">Hot</span>
+              </div>
+              <div class="text-center position-relative mb-4 pb-1">
+                <div class="mb-2 d-flex">
+                  <h1 class="price-toggle text-primary price-yearly mb-0">375k</h1>
+                  <h1 class="price-toggle text-primary price-monthly mb-0 d-none">500k</h1>
+                  <sub class="h5 text-muted pricing-duration mt-auto mb-2">/tháng</sub>
+                </div>
+                <small class="position-absolute start-0 m-auto price-yearly price-yearly-toggle text-muted">4.500k / năm</small>
+              </div>
+              <p>Dành cho gia đình có 1-2 căn nhà</p>
+              <hr>
+              <ul class="list-unstyled pt-2 pb-1">
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Mọi thứ của cơ bản
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Tối đa 100 thiết bị điện tử
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Tính năng liên hệ khẩn cấp
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Tự động cho thú cưng ăn
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check fs-5 lh-1"></i>
+                  </span>
+                  Tích hợp kết nối Google Assistant
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check fs-5 lh-1"></i>
+                  </span>
+                  Kiểm soát nhiệt độ
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check fs-5 lh-1"></i>
+                  </span>
+                  Trợ giúp trong vòng 1 giờ
+                </li>
+              </ul>
+              <a href="/Home" class="btn btn-primary d-grid w-100">Bắt Đầu</a>
+            </div>
+          </div>
+        </div>
+        <!--/ Pro -->
+        <!-- Enterprise -->
+        <div class="col-lg">
+          <div class="card border shadow-none">
+            <div class="card-body">
+              <h5 class="text-start text-uppercase">Đại Gia</h5>
+              <div class="text-center position-relative mb-4 pb-1">
+                <div class="mb-2 d-flex">
+                  <h1 class="price-toggle text-primary price-yearly mb-0">750k</h1>
+                  <h1 class="price-toggle text-primary price-monthly mb-0 d-none">999k</h1>
+                  <sub class="h5 text-muted pricing-duration mt-auto mb-2">/tháng</sub>
+                </div>
+                <small class="position-absolute start-0 m-auto price-yearly price-yearly-toggle text-muted">9.000k / năm</small>
+              </div>
+              <p>Dành cho giới thượng lưu</p>
+              <hr>
+              <ul class="list-unstyled pt-2 pb-1">
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Mọi thứ của Đại Gia Đình
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Tốn tiền
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Được đội ngũ nhân viên tôn trọng
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Tối đa 100 bất động sản
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Dịch vụ khách hàng tự lựa chọn
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Tích hợp kết nối hệ sinh thái Google
+                </li>
+                <li class="mb-2">
+                  <span class="badge badge-center w-px-20 h-px-20 rounded-pill bg-label-primary me-2">
+                    <i class="bx bx-check bx-xs"></i>
+                  </span>
+                  Có mặt ngay lặp tức
+                </li>
+              </ul>
+              <a href="/Home" class="btn btn-label-primary d-grid w-100">Bắt Đầu</a>
+            </div>
+          </div>
+        </div>
+        <!--/ Enterprise -->
+      </div>
+    </div>
+  </div>
+  <!--/ Pricing Plans -->
+</div>
