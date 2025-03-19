@@ -1,0 +1,58 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "Máy Lạnh Phòng Khách",
+      "title-position": "Phòng Khách",
+      "category-name": "Điều Hòa",
+      "people": "Nguyễn Anh Dũng",
+      "last-update": "2025-01-01",
+      "status": 2
+    },
+    {
+      "id": 2,
+      "title": "Máy Lạnh Phòng Khách",
+      "title-position": "Phòng Khách",
+      "category-name": "Điều Hòa",
+      "people": "Nguyễn Anh Dũng",
+      "last-update": "2025-01-01",
+      "status": 3
+    },
+    {
+      "id": 3,
+      "title": "Đèn Chính",
+      "title-position": "Phòng Khách",
+      "category-name": "Thiết Bị Chiếu Sáng",
+      "people": "Phan Anh Vũ",
+      "last-update": "2025-01-01",
+      "status": 1
+    },
+    {
+      "id": 4,
+      "title": "Cảnh Báo Trẻ Em",
+      "title-position": "Phòng Khách",
+      "category-name": "Hồng Ngoại",
+      "people": "",
+      "last-update": "2025-01-01",
+      "status": 4
+    },
+    {
+      "id": 5,
+      "title": "Tủ Lạnh Nhà Bếp",
+      "title-position": "Nhà Bếp",
+      "category-name": "Tủ Lạnh",
+      "people": "Nguyễn Anh Dũng",
+      "last-update": "2025-01-01",
+      "status": 3
+    },
+    {
+      "id": 6,
+      "title": "Loa Marshall",
+      "title-position": "Phòng Ngủ",
+      "category-name": "Thiết Bị Âm Thanh",
+      "people": "Phan Anh Vũ",
+      "last-update": "2025-01-01",
+      "status": 1
+    }
+  ]
+}

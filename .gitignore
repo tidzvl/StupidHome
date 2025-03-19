@@ -110,6 +110,23 @@ wwwroot/vendor/**/*.dist.css
 wwwroot/vendor/**/*.dist.js
 wwwroot/vendor/css
 wwwroot/js/*.js
+!wwwroot/js/front-page-landing.js
+!wwwroot/js/pages-auth.js
+!wwwroot/js/cards-statistics.js
+!wwwroot/js/app-calendar-events.js
+!wwwroot/js/app-calendar.js
+!wwwroot/js/app-kanban.js
+!wwwroot/js/tables-datatables-basic.js
+!wwwroot/js/dashboards-analytics.js
+!wwwroot/js/pages-pricing.js
+!wwwroot/js/rules.js
+!wwwroot/js/main.js
+
+wwwroot/json/*.json
+!wwwroot/json/devices.json
+!wwwroot/json/kanban.json
+!wwwroot/json/table-datatable.json
+
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
