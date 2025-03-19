@@ -1,1 +1,3 @@
 # Stupid-Home
+
+- Mini build: `dotnet publish -c Release -r linux-x64 --self-contained false`

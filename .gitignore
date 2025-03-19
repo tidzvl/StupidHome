@@ -109,7 +109,7 @@ wwwroot/vendor/**/*.dist.css
 !wwwroot/vendor/fonts/*.dist.css
 wwwroot/vendor/**/*.dist.js
 wwwroot/vendor/css
-
+wwwroot/js/*.js
 
 # Visual Studio 2017 auto generated files
 Generated\ Files/
