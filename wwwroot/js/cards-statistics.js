@@ -5,7 +5,52 @@
 'use strict';
 (function () {
   let cardColor, borderColor, shadeColor, labelColor, headingColor;
+  var temp_in = document.querySelector('.temp-in'),
+    temp_out = document.querySelector('.temp-out'),
+    humidity = document.querySelector('.humidity');
+  async function fd() {
+    const b = ['humidity', 'temp'];
+    const c = document.getElementById('domain').value;
 
+    const requests = b.map(async type => {
+      const response = await fetch(`${c}/sensor/${type}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error for ${type}: ${response.status}`);
+      }
+      return response.json();
+    });
+
+    try {
+      const results = await Promise.all(requests);
+      localStorage.setItem('s_d', JSON.stringify(results));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  async function render() {
+    $('.content-wrapper').block({
+      message:
+        '<div class="d-flex justify-content-center"><p class="me-2 mb-0">Please wait...</p> <div class="sk-wave sk-primary m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
+      css: {
+        backgroundColor: 'transparent',
+        border: '0'
+      },
+      overlayCSS: {
+        backgroundColor: '#fff',
+        opacity: 0.8
+      }
+    });
+    await fd();
+    $('.content-wrapper').unblock();
+    const l = localStorage.getItem('s_d');
+    const lr = JSON.parse(l);
+    humidity.textContent = lr[0][0].value + '%';
+    temp_in.textContent = lr[1][0].value;
+    temp_out.textContent = lr[1][0].value;
+  }
+
+  render();
   if (isDarkStyle) {
     cardColor = config.colors_dark.cardColor;
     labelColor = config.colors_dark.textMuted;
@@ -988,83 +1033,6 @@
     const revenueBarChart = new ApexCharts(revenueBarChartEl, revenueBarChartConfig);
     revenueBarChart.render();
   }
-
-  // Profit Bar Chart
-  // --------------------------------------------------------------------
-  const profitBarChartEl = document.querySelector('#profitChartNumber'),
-    profitBarChartConfig = {
-      series: [
-        {
-          data: [58, 28, 50, 80]
-        },
-        {
-          data: [50, 22, 65, 72]
-        }
-      ],
-      chart: {
-        type: 'bar',
-        height: 90,
-        toolbar: {
-          tools: {
-            download: false
-          }
-        }
-      },
-      plotOptions: {
-        bar: {
-          columnWidth: '65%',
-          startingShape: 'rounded',
-          endingShape: 'rounded',
-          borderRadius: 3,
-          dataLabels: {
-            show: false
-          }
-        }
-      },
-      grid: {
-        show: false,
-        padding: {
-          top: -30,
-          bottom: -12,
-          left: -10,
-          right: 0
-        }
-      },
-      colors: [config.colors.success, config.colors_label.success],
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        show: true,
-        width: 5,
-        colors: cardColor
-      },
-      legend: {
-        show: false
-      },
-      xaxis: {
-        categories: ['Jan', 'Apr', 'Jul', 'Oct'],
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        labels: {
-          style: {
-            colors: labelColor,
-            fontSize: '13px'
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          show: false
-        }
-      }
-    };
-  const profitBarChart = new ApexCharts(profitBarChartEl, profitBarChartConfig);
-  profitBarChart.render();
 
   // Session Area Chart
   // --------------------------------------------------------------------

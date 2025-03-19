@@ -10,11 +10,13 @@
 }
 @section VendorStyles{
 <link rel="stylesheet" href="~/vendor/libs/apex-charts/apex-charts.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/spinkit/spinkit.dist.css" />
 }
 
 @section VendorScripts {
 <script src="~/vendor/libs/apex-charts/apexcharts.dist.js"></script>
 <script src="~/vendor/libs/sortablejs/sortable.dist.js"></script>
+<script src="~/vendor/libs/block-ui/block-ui.dist.js"></script>
 }
 
 @section PageScripts {
@@ -31,7 +33,7 @@
       <div class="col-12 col-lg-7">
         <p>Dưới đây là một số báo cáo về ngôi nhà thân yêu của bạn, chúc bạn một ngày tốt lành!</p>
       </div>
-      <div class="d-flex justify-content-between flex-wrap gap-3 me-5">
+      <div class="d-flex justify-content-between flex-wrap gap-3 me-5 info-1">
         <div class="d-flex align-items-center gap-3 me-4 me-sm-0">
           <span class=" bg-label-primary p-2 rounded">
             <i class='bx bx-laptop bx-sm'></i>
@@ -47,7 +49,7 @@
           </span>
           <div class="content-right">
             <p class="mb-0">Độ Sáng Trong Nhà</p>
-            <h4 class="text-info mb-0">82%</h4>
+            <h4 class="text-info mb-0 light">-%</h4>
           </div>
         </div>
         <div class="d-flex align-items-center gap-3">
@@ -56,7 +58,7 @@
           </span>
           <div class="content-right">
             <p class="mb-0">Độ Ẩm Không Khí</p>
-            <h4 class="text-warning mb-0">24%</h4>
+            <h4 class="text-warning mb-0 humidity">-%</h4>
           </div>
         </div>
       </div>
@@ -131,7 +133,7 @@
               <span class="avatar-initial rounded-circle bg-label-success"><i class="bx bx-log-in-circle fs-4"></i></span>
             </div>
             <span class="d-block text-nowrap">Trong Nhà</span>
-            <h2 class="mb-0">26</h2>
+            <h2 class="mb-0 temp-in">-</h2>
             <span class="h6 text-muted align-top"> °C</span>
             <br>
           </div>
@@ -144,7 +146,7 @@
               <span class="avatar-initial rounded-circle bg-label-danger"><i class="bx bx-log-out-circle fs-4"></i></span>
             </div>
             <span class="d-block text-nowrap">Bên Ngoài</span>
-            <h2 class="mb-0">30</h2>
+            <h2 class="mb-0 temp-out">-</h2>
             <span class="h6 text-muted align-top"> °C</span>
           </div>
         </div>

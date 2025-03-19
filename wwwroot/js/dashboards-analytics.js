@@ -4,12 +4,60 @@
 /* Contact: nguyentinvs123@gmail.com
  * Created on Wed Mar 05 2025
  * Description:
- * Useage: Analytics Dashboard
+ * Useage: Analytics Dashboard. s_d is simple data
  */
 
 'use strict';
 (function () {
   let cardColor, headingColor, labelColor, legendColor, borderColor, shadeColor;
+  var light = document.querySelector('.light'),
+    temp_in = document.querySelector('.temp-in'),
+    temp_out = document.querySelector('.temp-out'),
+    humidity = document.querySelector('.humidity');
+  async function fd() {
+    const b = ['humidity', 'light', 'temp'];
+    const c = document.getElementById('domain').value;
+
+    const requests = b.map(async type => {
+      const response = await fetch(`${c}/sensor/${type}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error for ${type}: ${response.status}`);
+      }
+      return response.json();
+    });
+
+    try {
+      const results = await Promise.all(requests);
+      localStorage.setItem('s_d', JSON.stringify(results));
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  async function render() {
+    $('.content-wrapper').block({
+      message:
+        '<div class="d-flex justify-content-center"><p class="me-2 mb-0">Please wait...</p> <div class="sk-wave sk-primary m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
+      css: {
+        backgroundColor: 'transparent',
+        border: '0'
+      },
+      overlayCSS: {
+        backgroundColor: '#fff',
+        opacity: 0.8
+      }
+    });
+    await fd();
+    $('.content-wrapper').unblock();
+    const l = localStorage.getItem('s_d');
+    const lr = JSON.parse(l);
+    humidity.textContent = lr[0][0].value + '%';
+    light.textContent = lr[1][0].value + '%';
+    temp_in.textContent = lr[2][0].value;
+    temp_out.textContent = lr[2][0].value;
+  }
+
+  render();
 
   if (isDarkStyle) {
     cardColor = config.colors_dark.cardColor;
