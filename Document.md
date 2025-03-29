@@ -44,6 +44,8 @@
     room_id: string
   }
   ```
+#k cần body chỗ này nhé -> param đi 
+sensorData/<int:roomid>
 
   Response: List of value.
 
