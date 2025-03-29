@@ -36,16 +36,19 @@
 ### Get Simple Data
 
 - **GET**  
-  Description: Get humidity, light, soilhumidity, pir, temp value of room ID. Use for "Home" page.  
-  Body:
+   Description: Get humidity, light, soilhumidity, pir, temp value of room ID. Use for "Home" page.  
+   Body:
 
   ```
   {
     room_id: string
   }
   ```
-#k cần body chỗ này nhé -> param đi 
-sensorData/<int:roomid>
+
+  #k cần body chỗ này nhé -> param đi
+  sensorData/<int:roomid>
+  <br>
+  #Ôkê em. Nếu dùng param thì các lệnh get by id còn lại nên dùng param luôn!
 
   Response: List of value.
 
