@@ -159,29 +159,37 @@
   Body:
   ```
   {
-    device_id: string,
-    status: [0,1], //post cái nào thì đổi db lại thành cái đó
+    device_id: int,
+    on_off = true, //post cái nào thì đổi db lại thành cái đó
     value: int, //null is default
     pinned: [false, true],
-    note: string or img href, //null is default
     user_id: string
   }
   ```
+  mới update lại
   Response: 200.
 
 ### Create Device
 
-- **POST**  
-  Description: Create new device.  
+- **POST**
+- Description: Create new device. 
+- http://127.0.0.1:8000/api/v1/createDevice
   Body:
   ```
+  
   {
-    room_id: string,
-    device_title: string,
-    pinned: false,
-    date_create: new Date(),
-    user_id: string
-  }
+  "name": "string",
+  "type": "string",
+  "brand": "string",
+  "value": "string",
+  "room_id": "string",
+  "on_off": false,
+  "pinned": false,
+  "date_create": "new Date()",
+  "user_id": "string"
+}
+// mới update lại á
+ 
   ```
   Response: 200
 
