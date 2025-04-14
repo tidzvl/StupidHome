@@ -64,6 +64,16 @@
   ```
   Response: return list of avg value of day from start to end.
 
+
+  example input:
+  http://127.0.0.1:8000/api/v1/sensorDataTime/1
+{
+  "room_id": "1",
+  "start_time": "2025-02-14T00:00:00",
+  "end_time": "2025-04-14T23:59:59"
+}
+
+
 ## Devices Endpoints
 
 ### Get Number of Devices
@@ -73,10 +83,12 @@
   Body:
   ```
   {
-    house_id: string
+    house_id: string => INT
   }
   ```
   Response: Number of devices.
+http://127.0.0.1:8000/api/v1/getNumberOfDevices/1
+
 
 ### Get All Devices
 
@@ -85,7 +97,7 @@
   Body:
   ```
   {
-    house_id: string
+    house_id: string => INT
   }
   ```
   Response: All devices. Recommend structure is
@@ -99,19 +111,114 @@
   }
   ```
 
+  http://127.0.0.1:8000/api/v1/getAllDevices/1
+  example output:
+  [
+    {
+        "room_id": 1,
+        "room_title": "Living Room",
+        "devices": [
+            {
+                "device_id": 2,
+                "name": "Fan 2",
+                "type": "fan",
+                "brand": "Panasonic",
+                "value": "OFF",
+                "on_off": false,
+                "pinned": false,
+                "date_created": "2025-03-31T00:10:31.962"
+            },
+            {
+                "device_id": 1,
+                "name": "Fan 1",
+                "type": "fan",
+                "brand": "Panasonic",
+                "value": "01072",
+                "on_off": true,
+                "pinned": false,
+                "date_created": "2025-03-31T00:10:31.962"
+            }
+        ]
+    },
+    {
+        "room_id": 2,
+        "room_title": "Bedroom",
+        "devices": [
+            {
+                "device_id": 7,
+                "name": "Smart Light",
+                "type": "light",
+                "brand": "Philips",
+                "value": "75%",
+                "on_off": true,
+                "pinned": false,
+                "date_created": "2025-03-31T00:10:44.341"
+            },
+            {
+                "device_id": 3,
+                "name": "Fan 1",
+                "type": "fan",
+                "brand": "Dyson",
+                "value": "OFF",
+                "on_off": false,
+                "pinned": false,
+                "date_created": "2025-03-31T00:10:31.962"
+            },
+            {
+                "device_id": 4,
+                "name": "Fan 2",
+                "type": "fan",
+                "brand": "Dyson",
+                "value": "OFF",
+                "on_off": false,
+                "pinned": false,
+                "date_created": "2025-03-31T00:10:31.962"
+            }
+        ]
+    },
+    {
+        "room_id": 3,
+        "room_title": "Kitchen",
+        "devices": [
+            {
+                "device_id": 5,
+                "name": "Fan 1",
+                "type": "fan",
+                "brand": "Samsung",
+                "value": "OFF",
+                "on_off": false,
+                "pinned": false,
+                "date_created": "2025-03-31T00:10:31.962"
+            },
+            {
+                "device_id": 6,
+                "name": "Fan 2",
+                "type": "fan",
+                "brand": "Samsung",
+                "value": "OFF",
+                "on_off": false,
+                "pinned": false,
+                "date_created": "2025-03-31T00:10:31.962"
+            }
+        ]
+    }
+]
+
 ### Get Number of Devices by Room
 
 - **GET**  
-  Description: Get number of devices have been added by room. Use for "Analytics" page. Choose by room.  
+  Description: Get number of devices have been added by room. Use for "Analytics" page. Choose by room.  :)) mặc định là của house_id 1 nhá 
   Body:
   ```
   {
-    room_id: string
+    room_id: string -> INT
   }
   ```
   Response: Number of devices.
 
-### Get Device Usage Time and Wat by List_ID
+  http://127.0.0.1:8000/api/v1/getNumberDevicesInRoom/2
+
+### Get Device Usage Time and Wat by List_ID :) hm đang bug... chờ tí nhá
 
 - **GET**  
   Description: Calcutation Wat on day by list devices id. Use for "Mức Tiêu Thụ Năng Lượng" chart.  
@@ -168,6 +275,15 @@
   ```
   mới update lại
   Response: 200.
+  example input:
+  {
+  "device_id": 6,
+  "on_off": true,
+  "value": "30",
+  "pinned": false,
+  "user_id": 5
+}
+
 
 ### Create Device
 
