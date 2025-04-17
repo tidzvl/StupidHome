@@ -18,8 +18,19 @@
 }
 @section PageScripts {
 <script src="~/js/front-page-landing.dist.js"></script>
-}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.12/signalr.min.js"></script>
+<script>
+  const connection = new signalR.HubConnectionBuilder()
+      .withUrl("/Hubs")
+      .build();
 
+  connection.on("ReceiveData", (data) => {
+      console.log(data);
+  });
+
+  connection.start().catch(err => console.error(err));
+</script>
+}
 @* ************** Content ************** *@
 <div data-bs-spy="scroll" class="scrollspy-example">
 

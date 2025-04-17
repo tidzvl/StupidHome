@@ -4,6 +4,10 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<ApiService>();
+builder.Services.AddHostedService<RealtimeDataService>();
 
 var app = builder.Build();
 
@@ -23,5 +27,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+app.MapHub<StupidHomeHub>("/Hubs");
 
 app.Run();
