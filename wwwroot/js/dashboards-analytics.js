@@ -54,6 +54,10 @@ fc();
 connection.on('ReceiveData', data => {
   $('.content-wrapper').unblock();
   data = JSON.parse(data);
+  const deviceData = data.find(item => item.device_count !== undefined);
+  const deviceCount = deviceData ? deviceData.device_count : null;
+  growthRadialChart.updateSeries([deviceCount]);
+
   temp_in.textContent = data.find(sensor => sensor.name === 'Temperature Sensor').average_value;
   light.textContent = data.find(sensor => sensor.name === 'Light Sensor').average_value + '%';
   humidity.textContent = data.find(sensor => sensor.name === 'Humidity Sensor').average_value + '%';
@@ -336,7 +340,7 @@ connection.start().catch(err => console.error(err));
       stroke: {
         dashArray: 3
       },
-      series: [1],
+      series: [0],
       labels: ['Thiết Bị']
     };
 
@@ -344,7 +348,6 @@ connection.start().catch(err => console.error(err));
     growthRadialChart = new ApexCharts(growthRadialChartEl, growthRadialChartConfig);
     growthRadialChart.render();
   }
-  growthRadialChart.updateSeries([70]);
 })();
 
 //jQuery
