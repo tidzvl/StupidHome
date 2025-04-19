@@ -8,56 +8,61 @@
  */
 
 'use strict';
+$('.content-wrapper').block({
+  message:
+    '<div class="d-flex justify-content-center"><p class="me-2 mb-0">Please wait...</p> <div class="sk-wave sk-primary m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
+  css: {
+    backgroundColor: 'transparent',
+    border: '0'
+  },
+  overlayCSS: {
+    backgroundColor: '#fff',
+    opacity: 0.8
+  }
+});
+const connection = new signalR.HubConnectionBuilder().withUrl('/Hubs').build();
+var light = document.querySelector('.light'),
+  temp_in = document.querySelector('.temp-in'),
+  temp_out = document.querySelector('.temp-out'),
+  humidity = document.querySelector('.humidity');
+let growthRadialChart;
+
+async function fc() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`)
+          .then(response => response.json())
+          .then(data => {
+            const temperature = data.current_weather.temperature;
+            temp_out.textContent = temperature;
+          })
+          .catch(error => console.error('Lỗi:', error));
+      },
+      error => {
+        console.error('Không thể lấy vị trí:', error);
+      }
+    );
+  } else {
+    console.error('Check trình duyệt pls');
+  }
+}
+fc();
+
+connection.on('ReceiveData', data => {
+  $('.content-wrapper').unblock();
+  data = JSON.parse(data);
+  temp_in.textContent = data.find(sensor => sensor.name === 'Temperature Sensor').average_value;
+  light.textContent = data.find(sensor => sensor.name === 'Light Sensor').average_value + '%';
+  humidity.textContent = data.find(sensor => sensor.name === 'Humidity Sensor').average_value + '%';
+});
+
+connection.start().catch(err => console.error(err));
+
 (function () {
   let cardColor, headingColor, labelColor, legendColor, borderColor, shadeColor;
-  var light = document.querySelector('.light'),
-    temp_in = document.querySelector('.temp-in'),
-    temp_out = document.querySelector('.temp-out'),
-    humidity = document.querySelector('.humidity');
-  async function fd() {
-    const b = ['humidity', 'light', 'temp'];
-    const c = document.getElementById('domain').value;
-
-    const requests = b.map(async type => {
-      const response = await fetch(`${c}/sensor/${type}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error for ${type}: ${response.status}`);
-      }
-      return response.json();
-    });
-
-    try {
-      const results = await Promise.all(requests);
-      localStorage.setItem('s_d', JSON.stringify(results));
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }
-
-  async function render() {
-    $('.content-wrapper').block({
-      message:
-        '<div class="d-flex justify-content-center"><p class="me-2 mb-0">Please wait...</p> <div class="sk-wave sk-primary m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
-      css: {
-        backgroundColor: 'transparent',
-        border: '0'
-      },
-      overlayCSS: {
-        backgroundColor: '#fff',
-        opacity: 0.8
-      }
-    });
-    await fd();
-    $('.content-wrapper').unblock();
-    const l = localStorage.getItem('s_d');
-    const lr = JSON.parse(l);
-    humidity.textContent = lr[0][0].value + '%';
-    light.textContent = lr[1][0].value + '%';
-    temp_in.textContent = lr[2][0].value;
-    temp_out.textContent = lr[2][0].value;
-  }
-
-  render();
 
   if (isDarkStyle) {
     cardColor = config.colors_dark.cardColor;
@@ -303,7 +308,7 @@
               fontWeight: 500,
               fontSize: '16px',
               formatter: function (val) {
-                return `${70}/100`;
+                return `${val}/100`;
               }
             },
             name: {
@@ -331,14 +336,15 @@
       stroke: {
         dashArray: 3
       },
-      series: [70],
+      series: [1],
       labels: ['Thiết Bị']
     };
 
   if (typeof growthRadialChartEl !== undefined && growthRadialChartEl !== null) {
-    const growthRadialChart = new ApexCharts(growthRadialChartEl, growthRadialChartConfig);
+    growthRadialChart = new ApexCharts(growthRadialChartEl, growthRadialChartConfig);
     growthRadialChart.render();
   }
+  growthRadialChart.updateSeries([70]);
 })();
 
 //jQuery
@@ -348,10 +354,10 @@ $(function () {
   function calculateLastUsage(lastUpdate) {
     const diffDays = Math.ceil((new Date() - new Date(lastUpdate)) / (1000 * 60 * 60 * 24));
     return diffDays === 0
-      ? 'Last used: Hôm nay'
+      ? 'Lần cuối: Hôm nay'
       : diffDays === 1
-      ? 'Last used: 1 ngày trước'
-      : `Last used: ${diffDays} ngày trước`;
+      ? 'Lần cuối: 1 ngày trước'
+      : `Lần cuối: ${diffDays} ngày trước`;
   }
   async function render_pin_devices() {
     try {
