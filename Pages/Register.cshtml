@@ -7,6 +7,9 @@
 
 @section VendorStyles {
 <link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/umd/styles/index.min.css" />
+<link rel="stylesheet" href="~/vendor/libs/spinkit/spinkit.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.dist.css" />
 }
 
 @section PageStyles {
@@ -17,10 +20,12 @@
 <script src="~/vendor/libs/&#64;form-validation/umd/bundle/popular.min.js"></script>
 <script src="~/vendor/libs/&#64;form-validation/umd/plugin-bootstrap5/index.min.js"></script>
 <script src="~/vendor/libs/&#64;form-validation/umd/plugin-auto-focus/index.min.js"></script>
+<script src="~/vendor/libs/block-ui/block-ui.dist.js"></script>
+<script src="~/vendor/libs/sweetalert2/sweetalert2.dist.js"></script>
 }
 
 @section PageScripts {
-<script src="~/js/pages-auth.dist.js"></script>
+<script src="~/js/pages-auth.js"></script>
 }
 @* ************** Content ************** *@
 
@@ -41,7 +46,7 @@
           <h4 class="mb-2">Nhà mới bắt đầu tại đây 🚀</h4>
           <p class="mb-4">Làm cho ngôi nhà của bạn khôn hơn!</p>
 
-          <form id="formAuthentication" class="mb-3" action="~/Login" method="GET">
+          <form id="formAuthentication" class="mb-3">
             <div class="mb-3">
               <label for="username" class="form-label">Tên tài khoản</label>
               <input type="text" class="form-control" id="username" name="username" placeholder="Vui lòng chọn tên tài khoản" autofocus>
@@ -67,7 +72,7 @@
                 </label>
               </div>
             </div>
-            <button class="btn btn-primary d-grid w-100" href="/Home/Index">
+            <button class="btn btn-primary d-grid w-100" type="submit">
               Đăng ký
             </button>
           </form>

@@ -9,6 +9,10 @@
 
 @RenderBody()
 
+<!-- Footer -->
+@await Html.PartialAsync("Layouts/Sections/Footer/_Footer")
+<!-- / Footer -->
+
 @section VendorScripts { @RenderSection("VendorScripts", required: false) }
 
 @section PageScripts { @RenderSection("PageScripts", required: false) }
