@@ -16,7 +16,10 @@ public class RealtimeDataService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await _apiService.FetchAndSendDataAsync();
+            if (StupidHomeHub.ActiveConnections > 0)
+            {
+                await _apiService.FetchAndSendDataAsync();
+            }
 
             await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
         }
