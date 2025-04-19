@@ -116,71 +116,139 @@ document.addEventListener('DOMContentLoaded', function (e) {
             opacity: 0.8
           }
         });
-        fetch(API + '/users/register/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password,
-            username: data.username,
-            ssn: String(Date.now())
+
+        if (data['email-username']) {
+          fetch(API + '/users/login/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              password: data.password,
+              username: data['email-username']
+            })
           })
-        })
-          .then(response => {
-            if (!response.ok) {
+            .then(response => {
+              if (!response.ok) {
+                $('.card-body').unblock();
+                Swal.fire({
+                  title: 'Ôi không!',
+                  text: 'Tên tài khoản hoặc mật khẩu không đúng!',
+                  icon: 'error',
+                  customClass: {
+                    confirmButton: 'btn btn-primary'
+                  },
+                  buttonsStyling: false
+                });
+              }
+              return response.json();
+            })
+            .then(result => {
+              $('.card-body').unblock();
+              if (result['message'] == 'Invalid credentials') {
+                Swal.fire({
+                  title: 'Ôi không!',
+                  text: Object.values(result.errors).find(arr => arr.length > 0)?.[0] || 'Không có lỗi',
+                  icon: 'error',
+                  customClass: {
+                    confirmButton: 'btn btn-primary'
+                  },
+                  buttonsStyling: false
+                });
+              } else {
+                Swal.fire({
+                  title: 'Thành công!',
+                  text: 'Xin mời vào nhà!',
+                  icon: 'success',
+                  customClass: {
+                    confirmButton: 'btn btn-primary'
+                  },
+                  buttonsStyling: false
+                }).then(() => {
+                  localStorage.setItem('token', Object.values(result));
+                  window.location.href = '/home';
+                });
+              }
+            })
+            .catch(error => {
               $('.card-body').unblock();
               Swal.fire({
                 title: 'Ôi không!',
-                text: 'Check backend pls',
+                text: Object.values(error.errors).length > 0 ? Object.values(error.errors)[0][0] : null,
                 icon: 'error',
                 customClass: {
                   confirmButton: 'btn btn-primary'
                 },
                 buttonsStyling: false
               });
-            }
-            return response.json();
+            });
+        } else {
+          fetch(API + '/users/register/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email: data.email,
+              password: data.password,
+              username: data.username,
+              ssn: String(Date.now())
+            })
           })
-          .then(result => {
-            $('.card-body').unblock();
-            if (result['errors']) {
+            .then(response => {
+              if (!response.ok) {
+                $('.card-body').unblock();
+                Swal.fire({
+                  title: 'Ôi không!',
+                  text: 'Check backend pls',
+                  icon: 'error',
+                  customClass: {
+                    confirmButton: 'btn btn-primary'
+                  },
+                  buttonsStyling: false
+                });
+              }
+              return response.json();
+            })
+            .then(result => {
+              $('.card-body').unblock();
+              if (result['errors']) {
+                Swal.fire({
+                  title: 'Ôi không!',
+                  text: Object.values(result.errors).find(arr => arr.length > 0)?.[0] || 'Không có lỗi',
+                  icon: 'error',
+                  customClass: {
+                    confirmButton: 'btn btn-primary'
+                  },
+                  buttonsStyling: false
+                });
+              } else {
+                Swal.fire({
+                  title: 'Chúc mừng!',
+                  text: 'Tài khoản của bạn đã được tạo!',
+                  icon: 'success',
+                  customClass: {
+                    confirmButton: 'btn btn-primary'
+                  },
+                  buttonsStyling: false
+                }).then(() => {
+                  window.location.href = '/login';
+                });
+              }
+            })
+            .catch(error => {
+              $('.card-body').unblock();
               Swal.fire({
                 title: 'Ôi không!',
-                text: Object.values(result.errors).find(arr => arr.length > 0)?.[0] || 'Không có lỗi',
+                text: Object.values(error.errors).length > 0 ? Object.values(error.errors)[0][0] : null,
                 icon: 'error',
                 customClass: {
                   confirmButton: 'btn btn-primary'
                 },
                 buttonsStyling: false
               });
-            } else {
-              Swal.fire({
-                title: 'Chúc mừng!',
-                text: 'Tài khoản của bạn đã được tạo!',
-                icon: 'success',
-                customClass: {
-                  confirmButton: 'btn btn-primary'
-                },
-                buttonsStyling: false
-              }).then(() => {
-                window.location.href = '/login';
-              });
-            }
-          })
-          .catch(error => {
-            $('.card-body').unblock();
-            Swal.fire({
-              title: 'Ôi không!',
-              text: Object.values(response.errors).length > 0 ? Object.values(response.errors)[0][0] : null,
-              icon: 'error',
-              customClass: {
-                confirmButton: 'btn btn-primary'
-              },
-              buttonsStyling: false
             });
-          });
+        }
       });
     }
 

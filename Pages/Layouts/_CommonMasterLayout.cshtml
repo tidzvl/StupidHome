@@ -17,6 +17,22 @@
   data-template='@(isFront ? "front-page" : (Convert.ToBoolean(TempData.Peek("menuHorizontal")?.ToString()) ? "horizontal-menu-template" : "vertical-menu-template"))'>
 
 <head>
+  <script>
+    (function() {
+        const token = localStorage.getItem('token');
+        const currentPath = window.location.pathname;
+
+        if (!token) {
+            if (currentPath !== '/login' && currentPath !== '/register' && currentPath !== '/') {
+                window.location.href = '/login';
+            }
+        } else {
+            if (currentPath === '/login' || currentPath === '/register') {
+                window.location.href = '/home';
+            }
+        }
+    })();
+  </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
