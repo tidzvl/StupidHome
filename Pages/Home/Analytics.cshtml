@@ -255,7 +255,7 @@
             <div class="card-header d-flex align-items-start justify-content-between">
               <div class="m-0 me-2">
                 <h5 class="card-title mb-0">Nhiệt Độ Trung Bình</h5>
-                <small class="text-muted">Nhiệt độ phòng trong tuần qua</small>
+                <small class="text-muted">Nhiệt độ nhà trong tuần qua</small>
               </div>
               <div class="d-flex flex-row gap-2">
                 <h5 class="mb-0">20°C</h5>
@@ -272,7 +272,7 @@
             <div class="card-header d-flex align-items-start justify-content-between">
               <div class="m-0 me-2">
                 <h5 class="card-title mb-0">Độ Ẩm Trung Bình</h5>
-                <small class="text-muted">Độ ẩm phòng trong tuần qua</small>
+                <small class="text-muted">Độ ẩm nhà trong tuần qua</small>
               </div>
               <div class="d-flex flex-row gap-2">
                 <h5 class="mb-0">65%</h5>
@@ -513,6 +513,18 @@
               </div>
             </div>
           </div>
+          <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+            <div class="card">
+              <div class="card-body text-center">
+                <div class="avatar avatar-md mx-auto mb-3">
+                  <span class="avatar-initial rounded-circle bg-label-success"><i class='bx bxs-devices fs-3'></i></span>
+                </div>
+                <span class="d-block mb-1 text-nowrap">Thiết bị</span>
+                <h2 class="mb-0">2</h2>
+                <span class="d-block mb-1 text-nowrap"><strong>Đang bật</strong></span>
+              </div>
+            </div>
+          </div>
           <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
             <div class="card">
               <div class="card-body pb-0">
@@ -597,6 +609,62 @@
               </div>
               <div class="card-body">
                 <canvas id="lineChartJS" class="chartjs" data-height="500"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-info" role="alert">
+        <h3 class="mb-4">Chi tiết</h3>
+        <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+            <div class="card">
+              <div class="card-header d-flex align-items-start justify-content-between">
+                <div class="m-0 me-2">
+                  <h5 class="card-title mb-0">Nhiệt Độ Trung Bình</h5>
+                  <small class="text-muted">Nhiệt độ nhà trong tuần qua</small>
+                </div>
+                <div class="d-flex flex-row gap-2">
+                  <h5 class="mb-0">20°C</h5>
+                  <span class="badge bg-label-success">+2%</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="registrationsChart"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+            <div class="card">
+              <div class="card-header d-flex align-items-start justify-content-between">
+                <div class="m-0 me-2">
+                  <h5 class="card-title mb-0">Độ Ẩm Trung Bình</h5>
+                  <small class="text-muted">Độ ẩm nhà trong tuần qua</small>
+                </div>
+                <div class="d-flex flex-row gap-2">
+                  <h5 class="mb-0">65%</h5>
+                  <span class="badge bg-label-danger">-18%</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="expensesChart"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6 mb-0">
+            <div class="card">
+              <div class="card-header d-flex align-items-start justify-content-between">
+                <div class="m-0 me-2">
+                  <h5 class="card-title mb-0">Hoạt Động Trong Nhà</h5>
+                  <small class="text-muted">Tương tác của người dùng</small>
+                </div>
+                <div class="d-flex flex-row gap-2">
+                  <h5 class="mb-0">615</h5>
+                  <span class="badge bg-label-success">+67%</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="usersChart"></div>
               </div>
             </div>
           </div>
