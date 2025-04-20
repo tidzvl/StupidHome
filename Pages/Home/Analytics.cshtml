@@ -13,10 +13,11 @@
 @section VendorScripts {
 <script src="~/vendor/libs/apex-charts/apexcharts.dist.js"></script>
 <script src="~/vendor/libs/block-ui/block-ui.dist.js"></script>
+<script src="~/vendor/libs/chartjs/chartjs.dist.js"></script>
 }
 
 @section PageScripts {
-<script src="~/js/cards-statistics.dist.js"></script>
+<script src="~/js/cards-statistics.js"></script>
 }
 
 
@@ -28,7 +29,7 @@
       <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-home" aria-controls="navs-top-home" aria-selected="true">Báo Cáo Tổng Quan</button>
     </li>
     <li class="nav-item">
-      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-room" aria-controls="navs-top-room" aria-selected="false">Chi Tiết Từng Phòng</button>
+      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-living-room" aria-controls="navs-top-living-room" aria-selected="false">Living Room</button>
     </li>
   </ul>
   <div class="tab-content">
@@ -96,7 +97,8 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+      </div>
+        <!--/ <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
           <div class="card">
             <div class="card-body">
               <div class="d-flex justify-content-between">
@@ -168,98 +170,8 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <!--/ Cards with few info -->
-      <div class="row">
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
-          <div class="card h-100">
-            <div class="card-header">
-              <h5 class="card-title mb-0">Ánh Sáng Tự Nhiên</h5>
-            </div>
-            <div class="card-body d-flex align-items-end justify-content-between">
-              <div class="d-flex justify-content-between align-items-center gap-3 w-100">
-                <div class="d-flex align-content-center">
-                  <div class="chart-report" data-color="danger" data-series="12"></div>
-                  <div class="chart-info ms-2">
-                    <h5 class="mb-0">12%</h5>
-                    <small class="text-muted">Last week</small>
-                  </div>
-                </div>
-                <div class="d-flex align-content-center">
-                  <div class="chart-report" data-color="info" data-series="64"></div>
-                  <div class="chart-info ms-2">
-                    <h5 class="mb-0">64%</h5>
-                    <small class="text-muted">Now</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
-          <div class="card">
-            <div class="card-header pb-2">
-              <h5 class="card-title mb-0">Cho Thú Cưng Ăn</h5>
-            </div>
-            <div class="card-body pb-2">
-              <div class="d-flex justify-content-between align-items-center gap-3">
-                <div>
-                  <div class="d-flex align-content-center">
-                    <h5 class="mb-1">58</h5>
-                    <i class="bx bx-chevron-up text-success"></i>
-                  </div>
-                  <small class="text-success">12.8%</small>
-                </div>
-                <div id="registrationsBarChart"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
-          <div class="card h-100">
-            <div class="card-header">
-              <h5 class="card-title mb-0">Độ Ẩm Tự Nhiên</h5>
-            </div>
-            <div class="card-body d-flex align-items-end justify-content-between">
-              <div class="d-flex align-items-end justify-content-between align-items-center gap-3 w-100">
-                <div class="d-flex align-content-center">
-                  <div class="chart-report" data-color="primary" data-series="65"></div>
-                  <div class="chart-info ms-2">
-                    <h5 class="mb-0">65%</h5>
-                    <small class="text-muted">Last week</small>
-                  </div>
-                </div>
-                <div class="d-flex align-content-center">
-                  <div class="chart-report" data-color="success" data-series="85"></div>
-                  <div class="chart-info ms-2">
-                    <h5 class="mb-0">85%</h5>
-                    <small class="text-muted">Now</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
-          <div class="card">
-            <div class="card-header pb-2">
-              <h5 class="card-title mb-0">Tưới Cây</h5>
-            </div>
-            <div class="card-body pb-2">
-              <div class="d-flex justify-content-between align-items-center gap-3">
-                <div>
-                  <div class="d-flex align-content-center">
-                    <h5 class="mb-1">77</h5>
-                    <i class="bx bx-chevron-up text-success"></i>
-                  </div>
-                  <small class="text-success">12.2%</small>
-                </div>
-                <div id="visitsBarChart"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <!-- Cards with badge -->
       <div class="row">
         <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
@@ -326,9 +238,9 @@
           <div class="card">
             <div class="card-body text-center">
               <div class="avatar avatar-md mx-auto mb-3">
-                <span class="avatar-initial rounded-circle bg-label-danger"><i class='bx bxs-battery-full fs-3'></i></span>
+                <span class="avatar-initial rounded-circle bg-label-danger"><i class='bx bx-bulb bx-sm fs-3'></i></span>
               </div>
-              <span class="d-block mb-1 text-nowrap">Pin Cửa Chính</span>
+              <span class="d-block mb-1 text-nowrap">Độ sáng</span>
               <h2 class="mb-0">40</h2>
               <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
             </div>
@@ -394,26 +306,57 @@
 
       <!-- Cards with unicons & charts -->
       <div class="row">
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
-          <div class="card">
-            <div class="card-body pb-2">
-              <span class="d-block fw-medium mb-2">Ra Vào</span>
-              <h3 class="card-title mb-3">425</h3>
-              <div id="revenueChart"></div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Ánh Sáng Tự Nhiên</h5>
+            </div>
+            <div class="card-body d-flex align-items-end justify-content-between">
+              <div class="d-flex justify-content-between align-items-center gap-3 w-100">
+                <div class="d-flex align-content-center">
+                  <div class="chart-report" data-color="danger" data-series="12"></div>
+                  <div class="chart-info ms-2">
+                    <h5 class="mb-0">12%</h5>
+                    <small class="text-muted">Last week</small>
+                  </div>
+                </div>
+                <div class="d-flex align-content-center">
+                  <div class="chart-report" data-color="info" data-series="64"></div>
+                  <div class="chart-info ms-2">
+                    <h5 class="mb-0">64%</h5>
+                    <small class="text-muted">Now</small>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
-          <div class="card">
-            <div class="card-body pb-0">
-              <span class="d-block fw-medium mb-2">Chuyển Động</span>
-              <h3 class="card-title">2768</h3>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
+          <div class="card h-100">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Độ Ẩm Tự Nhiên</h5>
             </div>
-            <div id="orderChart" class="mb-3"></div>
+            <div class="card-body d-flex align-items-end justify-content-between">
+              <div class="d-flex align-items-end justify-content-between align-items-center gap-3 w-100">
+                <div class="d-flex align-content-center">
+                  <div class="chart-report" data-color="primary" data-series="65"></div>
+                  <div class="chart-info ms-2">
+                    <h5 class="mb-0">65%</h5>
+                    <small class="text-muted">Last week</small>
+                  </div>
+                </div>
+                <div class="d-flex align-content-center">
+                  <div class="chart-report" data-color="success" data-series="85"></div>
+                  <div class="chart-info ms-2">
+                    <h5 class="mb-0">85%</h5>
+                    <small class="text-muted">Now</small>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <div class="col-lg-8 mb-4">
+        <div class="col-lg-6 mb-4">
           <div class="card">
             <div class="card-body row g-4">
               <div class="col-md-6 pe-md-4 card-separator">
@@ -518,58 +461,144 @@
         </div>
       </div>
     </div>
-    <div class="tab-pane fade show" id="navs-top-room" role="tabpanel">
-      <div class="nav-align-left">
-        <ul class="nav nav-tabs" role="tablist">
-          <li class="nav-item">
-            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-left-align-home">Home</button>
-          </li>
-          <li class="nav-item">
-            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-left-align-profile">Profile</button>
-          </li>
-          <li class="nav-item">
-            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-left-align-messages">Messages</button>
-          </li>
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane fade show active" id="navs-left-align-home">
-            <p>
-              Icing pastry pudding oat cake. Lemon drops cotton candy caramels cake caramels sesame snaps
-              powder.
-              Bear claw candy topping.
-            </p>
-            <p class="mb-0">
-              Tootsie roll fruitcake cookie. Dessert topping pie. Jujubes wafer carrot cake jelly. Bonbon
-              jelly-o
-              jelly-o ice cream jelly beans candy canes cake bonbon. Cookie jelly beans marshmallow jujubes
-              sweet.
-            </p>
+    <div class="tab-pane fade show" id="navs-top-living-room" role="tabpanel">
+      <div class="alert alert-primary" role="alert">
+        <h3 class="mb-4">Hiện tại </h3>
+        <div class="row">
+          <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+            <div class="card">
+              <div class="card-body text-center">
+                <div class="avatar avatar-md mx-auto mb-3">
+                  <span class="avatar-initial rounded-circle bg-label-primary"><i class='bx bx-happy-beaming fs-3'></i></span>
+                </div>
+                <span class="d-block mb-1 text-nowrap">Độ Thoải Mái</span>
+                <h2 class="mb-0">72</h2>
+                <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
+              </div>
+            </div>
           </div>
-          <div class="tab-pane fade" id="navs-left-align-profile">
-            <p>
-              Donut dragée jelly pie halvah. Danish gingerbread bonbon cookie wafer candy oat cake ice cream.
-              Gummies halvah tootsie roll muffin biscuit icing dessert gingerbread. Pastry ice cream
-              cheesecake
-              fruitcake.
-            </p>
-            <p class="mb-0">
-              Jelly-o jelly beans icing pastry cake cake lemon drops. Muffin muffin pie tiramisu halvah cotton
-              candy liquorice caramels.
-            </p>
+          <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+            <div class="card">
+              <div class="card-body text-center">
+                <div class="avatar avatar-md mx-auto mb-3">
+                  <span class="avatar-initial rounded-circle bg-label-info"><i class='bx bx bxl-c-plus-plus fs-3'></i></span>
+                </div>
+                <span class="d-block mb-1 text-nowrap">Nhiệt Độ</span>
+                <h2 class="mb-0 temp-in">-</h2>
+                <span class="d-block mb-1 text-nowrap"><strong>°C</strong></span>
+              </div>
+            </div>
           </div>
-          <div class="tab-pane fade" id="navs-left-align-messages">
-            <p>
-              Oat cake chupa chups dragée donut toffee. Sweet cotton candy jelly beans macaroon gummies
-              cupcake
-              gummi bears cake chocolate.
-            </p>
-            <p class="mb-0">
-              Cake chocolate bar cotton candy apple pie tootsie roll ice cream apple pie brownie cake. Sweet
-              roll
-              icing sesame snaps caramels danish toffee. Brownie biscuit dessert dessert. Pudding jelly
-              jelly-o
-              tart brownie jelly.
-            </p>
+          <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+            <div class="card">
+              <div class="card-body text-center">
+                <div class="avatar avatar-md mx-auto mb-3">
+                  <span class="avatar-initial rounded-circle bg-label-danger"><i class='bx bx-water fs-3'></i></span>
+                </div>
+                <span class="d-block mb-1 text-nowrap">Độ Ẩm Không Khí</span>
+                <h2 class="mb-0 humidity">-</h2>
+                <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+            <div class="card">
+              <div class="card-body text-center">
+                <div class="avatar avatar-md mx-auto mb-3">
+                  <span class="avatar-initial rounded-circle bg-label-danger"><i class='bx bx-bulb bx-sm fs-3'></i></span>
+                </div>
+                <span class="d-block mb-1 text-nowrap">Độ sáng</span>
+                <h2 class="mb-0">40</h2>
+                <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 mb-4">
+            <div class="card">
+              <div class="card-body pb-0">
+                <span class="d-block fw-medium mb-2">Chuyển Động</span>
+                <h3 class="card-title">2768</h3>
+              </div>
+              <div id="orderChart" class="mb-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-success" role="alert">
+        <h3 class="mb-4">Tóm tắt</h3>
+        <div class="row ">
+          <div class="col-xl-12 col-12 mb-4">
+            <div class="card mb-4">
+              <div class="row row-bordered m-0">
+                <div class="col-md-4 col-12 px-0">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Tuần Này</h5>
+                  </div>
+                  <div class="card-body">
+                    <p class="mb-4">Hãy xem thử báo cáo về mức độ tiêu thụ năng lượng của bạn xem phung phí thế nào nhé!</p>
+                    <ul class="list-unstyled m-0 pt-0">
+                      <li class="mb-4">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="avatar avatar-sm flex-shrink-0 me-2">
+                            <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-trending-up"></i></span>
+                          </div>
+                          <div>
+                            <p class="mb-0 lh-1 text-muted text-nowrap">So Với Tuần Trước</p>
+                            <small class="fw-medium text-nowrap">84,789%</small>
+                          </div>
+                        </div>
+                        <div class="progress" style="height:6px;">
+                          <div class="progress-bar bg-primary" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="avatar avatar-sm flex-shrink-0 me-2">
+                            <span class="avatar-initial rounded bg-label-success"><i class="bx bx-dollar"></i></span>
+                          </div>
+                          <div>
+                            <p class="mb-0 lh-1 text-muted text-nowrap">Chi Phí Dự Đoán</p>
+                            <small class="fw-medium text-nowrap">227,398 VNĐ</small>
+                          </div>
+                        </div>
+                        <div class="progress" style="height:6px;">
+                          <div class="progress-bar bg-success" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-8 col-12 px-0">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Báo Cáo Tổng Quan So Với Tuần Trước</h5>
+                    <div class="dropdown">
+                      <button class="btn p-0" type="button" id="orderSummaryOptions" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bx bx-dots-vertical-rounded"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orderSummaryOptions">
+                        <a class="dropdown-item" href="javascript:void(0);">Theo ngày</a>
+                        <a class="dropdown-item" href="javascript:void(0);">Theo tuần</a>
+                        <a class="dropdown-item" href="javascript:void(0);">Theo tháng</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body p-0">
+                    <div id="lineChart"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header header-elements">
+                <div>
+                  <h5 class="card-title mb-0">Tóm tắt</h5>
+                  <small class="text-muted">Bao gồm tất cả những thứ người dùng cần</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <canvas id="lineChartJS" class="chartjs" data-height="500"></canvas>
+              </div>
+            </div>
           </div>
         </div>
       </div>

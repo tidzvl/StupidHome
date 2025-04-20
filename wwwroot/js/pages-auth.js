@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
                   },
                   buttonsStyling: false
                 }).then(() => {
-                  localStorage.setItem('token', Object.values(result));
+                  localStorage.setItem('token', result.refresh);
                   window.location.href = '/home';
                 });
               }

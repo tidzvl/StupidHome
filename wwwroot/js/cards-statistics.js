@@ -50,7 +50,7 @@
     temp_out.textContent = lr[1][0].value;
   }
 
-  render();
+  // render();
   if (isDarkStyle) {
     cardColor = config.colors_dark.cardColor;
     labelColor = config.colors_dark.textMuted;
@@ -63,6 +63,181 @@
     borderColor = config.colors.borderColor;
     headingColor = config.colors.headingColor;
     shadeColor = '';
+  }
+
+  // Color Variables
+  const yellowColor = '#ffe800';
+  const yellowGreen = '#b2ff59';
+  const kWLabel = '#836AF9';
+  let gridColor, tickColor;
+  if (isDarkStyle) {
+    borderColor = 'rgba(100, 100, 100, 1)';
+    gridColor = 'rgba(100, 100, 100, 1)';
+    tickColor = 'rgba(255, 255, 255, 0.75)';
+  } else {
+    borderColor = '#f0f0f0';
+    gridColor = '#f0f0f0';
+    tickColor = 'rgba(0, 0, 0, 0.75)';
+  }
+  const lineChartJS = document.getElementById('lineChartJS');
+  if (lineChartJS) {
+    const lineChartVar = new Chart(lineChartJS, {
+      type: 'line',
+      data: {
+        labels: [
+          'Sun',
+          'Mon',
+          'Tue',
+          'Wed',
+          'Thu',
+          'Fri',
+          'Sat',
+          'Sun',
+          'Mon',
+          'Tue',
+          'Wed',
+          'Thu',
+          'Fri',
+          'Sat',
+          'Sun'
+        ],
+        datasets: [
+          {
+            data: [30, 31, 33, 29, 19, 30, 35, 16, 6, 18, 20, 30, 29, 36, 37],
+            label: 'Nhiệt độ',
+            borderColor: config.colors.danger,
+            tension: 0.5,
+            pointStyle: 'circle',
+            backgroundColor: config.colors.danger,
+            fill: false,
+            pointRadius: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 5,
+            pointBorderColor: 'transparent',
+            pointHoverBorderColor: cardColor,
+            pointHoverBackgroundColor: config.colors.danger
+          },
+          {
+            data: [80, 100, 10, 13, 21, 19, 40, 60, 30, 30, 20, 70, 10, 20, 28],
+            label: 'Độ ẩm',
+            borderColor: config.colors.primary,
+            tension: 0.5,
+            pointStyle: 'circle',
+            backgroundColor: config.colors.primary,
+            fill: false,
+            pointRadius: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 5,
+            pointBorderColor: 'transparent',
+            pointHoverBorderColor: cardColor,
+            pointHoverBackgroundColor: config.colors.primary
+          },
+          {
+            data: [80, 99, 82, 90, 15, 15, 74, 75, 30, 55, 25, 90, 40, 30, 80],
+            label: 'Độ sáng',
+            borderColor: yellowColor,
+            tension: 0.5,
+            pointStyle: 'circle',
+            backgroundColor: yellowColor,
+            fill: false,
+            pointRadius: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 5,
+            pointBorderColor: 'transparent',
+            pointHoverBorderColor: cardColor,
+            pointHoverBackgroundColor: yellowColor
+          },
+          {
+            data: [5, 9, 4, 1, 5, 36, 4, 6, 7, 1, 3, 4, 52, 63, 1],
+            label: 'Chuyển động',
+            borderColor: yellowGreen,
+            tension: 0.5,
+            pointStyle: 'circle',
+            backgroundColor: yellowGreen,
+            fill: false,
+            pointRadius: 1,
+            pointHoverRadius: 5,
+            pointHoverBorderWidth: 5,
+            pointBorderColor: 'transparent',
+            pointHoverBorderColor: cardColor,
+            pointHoverBackgroundColor: yellowGreen
+          },
+          {
+            data: [
+              //that be data max(device in day in room)
+              { x: 3, y: 15, r: 10, name: 'Quạt' },
+              { x: 7, y: 35, r: 8, name: 'Máy bơm' },
+              { x: 10, y: 20, r: 12, name: 'Quạt' }
+            ],
+            type: 'bubble',
+            label: 'Tiêu thụ',
+            backgroundColor: kWLabel,
+            borderColor: kWLabel,
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            grid: {
+              color: borderColor,
+              drawBorder: false,
+              borderColor: borderColor
+            },
+            ticks: {
+              color: labelColor
+            }
+          },
+          y: {
+            scaleLabel: {
+              display: true
+            },
+            min: 0,
+            max: 100,
+            ticks: {
+              color: labelColor,
+              stepSize: 25
+            },
+            grid: {
+              color: borderColor,
+              drawBorder: false,
+              borderColor: borderColor
+            }
+          }
+        },
+        plugins: {
+          tooltip: {
+            rtl: isRtl,
+            backgroundColor: cardColor,
+            titleColor: headingColor,
+            bodyColor: headingColor,
+            borderWidth: 1,
+            borderColor: borderColor,
+            callbacks: {
+              label: function (context) {
+                const name = context.raw.name;
+                return name + ': ' + context.raw.y + 'kW' || '';
+              }
+            }
+          },
+          legend: {
+            position: 'top',
+            align: 'start',
+            rtl: isRtl,
+            labels: {
+              usePointStyle: true,
+              padding: 35,
+              boxWidth: 6,
+              boxHeight: 6,
+              color: labelColor
+            }
+          }
+        }
+      }
+    });
   }
 
   //
