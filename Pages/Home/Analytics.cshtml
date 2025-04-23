@@ -17,6 +17,9 @@
 }
 
 @section PageScripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.12/signalr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.7/base64.min.js"></script>
+<script src="~/js/background-service.js"></script>
 <script src="~/js/cards-statistics.js"></script>
 }
 
@@ -217,7 +220,7 @@
                 <span class="avatar-initial rounded-circle bg-label-primary"><i class='bx bx-happy-beaming fs-3'></i></span>
               </div>
               <span class="d-block mb-1 text-nowrap">Độ Thoải Mái</span>
-              <h2 class="mb-0">72</h2>
+              <h2 class="mb-0 feeling">-</h2>
               <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
             </div>
           </div>
@@ -229,7 +232,7 @@
                 <span class="avatar-initial rounded-circle bg-label-success"><i class='bx bxs-tree fs-3'></i></span>
               </div>
               <span class="d-block mb-1 text-nowrap">Độ Ẩm Vườn</span>
-              <h2 class="mb-0">65</h2>
+              <h2 class="mb-0 soil">-</h2>
               <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
             </div>
           </div>
@@ -241,7 +244,7 @@
                 <span class="avatar-initial rounded-circle bg-label-danger"><i class='bx bx-bulb bx-sm fs-3'></i></span>
               </div>
               <span class="d-block mb-1 text-nowrap">Độ sáng</span>
-              <h2 class="mb-0">40</h2>
+              <h2 class="mb-0 light">-</h2>
               <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
             </div>
           </div>

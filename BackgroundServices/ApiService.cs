@@ -17,48 +17,52 @@ public class ApiService
         _hubContext = hubContext;
     }
 
-    public async Task FetchAndSendDataAsync()
+    public async Task FetchAndSendDataAsync(string c_url)
     {
-        var sensorTasks = new List<Task<string>>();
-        for (int i = 1; i <= 3; i++)
-        {
-            sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/sensorData/{i}"));
+        if (c_url.ToLower() == "/home"){
+          var sensorTasks = new List<Task<string>>();
+          for (int i = 1; i <= 3; i++)
+          {
+              sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/sensorData/{i}"));
+          }
+
+          var deviceTask = _httpClient.GetStringAsync($"{_api}/getNumberOfDevices/1");
+
+          var allResponses = await Task.WhenAll(sensorTasks);
+          var deviceResponse = await deviceTask;
+
+          var mergedResponses = "[" + string.Join(",", allResponses) + "]";
+          var outerArray = JArray.Parse(mergedResponses);
+          var sensorData = outerArray.SelectMany(innerToken => innerToken)
+                                   .OfType<JObject>()
+                                   .ToList();
+          var sensorResult = sensorData
+              .GroupBy(x => x["name"]?.ToString() ?? "Unknown")
+              .Select(group =>
+              {
+                  var validValues = group
+                      .Where(x => x["value"] != null && int.TryParse(x["value"].ToString(), out _))
+                      .Select(x => int.Parse(x["value"].ToString()));
+
+                  double averageValue = validValues.Any() ? validValues.Average() : 0;
+                  return new JObject
+                  {
+                      ["name"] = group.Key,
+                      ["average_value"] = averageValue
+                  };
+              });
+
+          var finalJsonArray = new JArray(sensorResult);
+
+          var deviceJson = JObject.Parse(deviceResponse);
+          finalJsonArray.Add(deviceJson);
+
+          var finalJson = finalJsonArray.ToString(Formatting.Indented);
+
+          await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson);
+        }else if(c_url.ToLower() == "/home/analytics") {
+          await _hubContext.Clients.All.SendAsync("ReceiveData", "It is Analytics");
         }
-
-        var deviceTask = _httpClient.GetStringAsync($"{_api}/getNumberOfDevices/1");
-
-        var allResponses = await Task.WhenAll(sensorTasks);
-        var deviceResponse = await deviceTask;
-
-        var mergedResponses = "[" + string.Join(",", allResponses) + "]";
-        var outerArray = JArray.Parse(mergedResponses);
-        var sensorData = outerArray.SelectMany(innerToken => innerToken)
-                                 .OfType<JObject>()
-                                 .ToList();
-        var sensorResult = sensorData
-            .GroupBy(x => x["name"]?.ToString() ?? "Unknown")
-            .Select(group =>
-            {
-                var validValues = group
-                    .Where(x => x["value"] != null && int.TryParse(x["value"].ToString(), out _))
-                    .Select(x => int.Parse(x["value"].ToString()));
-
-                double averageValue = validValues.Any() ? validValues.Average() : 0;
-                return new JObject
-                {
-                    ["name"] = group.Key,
-                    ["average_value"] = averageValue
-                };
-            });
-
-        var finalJsonArray = new JArray(sensorResult);
-
-        var deviceJson = JObject.Parse(deviceResponse);
-        finalJsonArray.Add(deviceJson);
-
-        var finalJson = finalJsonArray.ToString(Formatting.Indented);
-
-        await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson);
     }
 
 }

@@ -20,54 +20,28 @@ $('.content-wrapper').block({
     opacity: 0.8
   }
 });
-const connection = new signalR.HubConnectionBuilder().withUrl('/Hubs').build();
-var light = document.querySelector('.light'),
-  temp_in = document.querySelector('.temp-in'),
-  temp_out = document.querySelector('.temp-out'),
-  humidity = document.querySelector('.humidity');
-let growthRadialChart;
-
-async function fc() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`)
-          .then(response => response.json())
-          .then(data => {
-            const temperature = data.current_weather.temperature;
-            temp_out.textContent = temperature;
-          })
-          .catch(error => console.error('Lỗi:', error));
-      },
-      error => {
-        console.error('Không thể lấy vị trí:', error);
-      }
-    );
-  } else {
-    console.error('Check trình duyệt pls');
-  }
-}
-fc();
-
-connection.on('ReceiveData', data => {
-  $('.content-wrapper').unblock();
-  data = JSON.parse(data);
-  const deviceData = data.find(item => item.device_count !== undefined);
-  const deviceCount = deviceData ? deviceData.device_count : null;
-  growthRadialChart.updateSeries([deviceCount]);
-
-  temp_in.textContent = data.find(sensor => sensor.name === 'Temperature Sensor').average_value;
-  light.textContent = data.find(sensor => sensor.name === 'Light Sensor').average_value + '%';
-  humidity.textContent = data.find(sensor => sensor.name === 'Humidity Sensor').average_value + '%';
-});
-
-connection.start().catch(err => console.error(err));
-
 (function () {
   let cardColor, headingColor, labelColor, legendColor, borderColor, shadeColor;
+  var light = document.querySelector('.light'),
+    temp_in = document.querySelector('.temp-in'),
+    temp_out = document.querySelector('.temp-out'),
+    humidity = document.querySelector('.humidity');
 
+  setInterval(() => {
+    var dd = localStorage.getItem('d');
+    temp_out.textContent = Base64.decode(localStorage.getItem('t_o'));
+    if (dd) {
+      if ($('.content-wrapper').data('blockUI.isBlocked')) $('.content-wrapper').unblock();
+      dd = JSON.parse(Base64.decode(dd));
+      const deviceData = dd.find(item => item.device_count !== undefined);
+      const deviceCount = deviceData ? deviceData.device_count : null;
+      growthRadialChart.updateSeries([deviceCount]);
+      temp_in.textContent = dd.find(sensor => sensor.name === 'Temperature Sensor').average_value;
+      light.textContent = dd.find(sensor => sensor.name === 'Light Sensor').average_value + '%';
+      humidity.textContent = dd.find(sensor => sensor.name === 'Humidity Sensor').average_value + '%';
+    }
+  }, 500);
+  let growthRadialChart;
   if (isDarkStyle) {
     cardColor = config.colors_dark.cardColor;
     headingColor = config.colors_dark.headingColor;
@@ -370,7 +344,6 @@ $(function () {
         method: 'GET'
       });
       let data = await response.data;
-      console.log(data);
       data.forEach(function (item, index) {
         if (item.pinned == false) return;
         let last_used = calculateLastUsage(item.last_update);

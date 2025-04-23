@@ -121,6 +121,7 @@ wwwroot/js/*.js
 !wwwroot/js/pages-pricing.js
 !wwwroot/js/rules.js
 !wwwroot/js/main.js
+!wwwroot/js/background-service.js
 
 wwwroot/json/*.json
 !wwwroot/json/devices.json

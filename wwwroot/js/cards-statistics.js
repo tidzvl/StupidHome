@@ -3,54 +3,36 @@
  */
 
 'use strict';
+$('.content-wrapper').block({
+  message:
+    '<div class="d-flex justify-content-center"><p class="me-2 mb-0">Please wait...</p> <div class="sk-wave sk-primary m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
+  css: {
+    backgroundColor: 'transparent',
+    border: '0'
+  },
+  overlayCSS: {
+    backgroundColor: '#fff',
+    opacity: 0.8
+  }
+});
+
 (function () {
   let cardColor, borderColor, shadeColor, labelColor, headingColor;
-  var temp_in = document.querySelector('.temp-in'),
+  var light = document.querySelector('.light'),
+    temp_in = document.querySelector('.temp-in'),
     temp_out = document.querySelector('.temp-out'),
     humidity = document.querySelector('.humidity');
-  async function fd() {
-    const b = ['humidity', 'temp'];
-    const c = document.getElementById('domain').value;
-
-    const requests = b.map(async type => {
-      const response = await fetch(`${c}/sensor/${type}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error for ${type}: ${response.status}`);
-      }
-      return response.json();
-    });
-
-    try {
-      const results = await Promise.all(requests);
-      localStorage.setItem('s_d', JSON.stringify(results));
-    } catch (error) {
-      console.error('Error fetching data:', error);
+  setInterval(() => {
+    var dd = localStorage.getItem('d');
+    temp_out.textContent = Base64.decode(localStorage.getItem('t_o'));
+    if (dd) {
+      if ($('.content-wrapper').data('blockUI.isBlocked')) $('.content-wrapper').unblock();
+      dd = JSON.parse(Base64.decode(dd));
+      temp_in.textContent = dd.find(sensor => sensor.name === 'Temperature Sensor').average_value;
+      light.textContent = dd.find(sensor => sensor.name === 'Light Sensor').average_value + '%';
+      humidity.textContent = dd.find(sensor => sensor.name === 'Humidity Sensor').average_value + '%';
     }
-  }
-
-  async function render() {
-    $('.content-wrapper').block({
-      message:
-        '<div class="d-flex justify-content-center"><p class="me-2 mb-0">Please wait...</p> <div class="sk-wave sk-primary m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
-      css: {
-        backgroundColor: 'transparent',
-        border: '0'
-      },
-      overlayCSS: {
-        backgroundColor: '#fff',
-        opacity: 0.8
-      }
-    });
-    await fd();
-    $('.content-wrapper').unblock();
-    const l = localStorage.getItem('s_d');
-    const lr = JSON.parse(l);
-    humidity.textContent = lr[0][0].value + '%';
-    temp_in.textContent = lr[1][0].value;
-    temp_out.textContent = lr[1][0].value;
-  }
-
-  // render();
+  }, 500);
   if (isDarkStyle) {
     cardColor = config.colors_dark.cardColor;
     labelColor = config.colors_dark.textMuted;
@@ -1349,7 +1331,7 @@
     visitorBarChartConfig = {
       chart: {
         height: 120,
-        width: 200,
+        width: 170,
         parentHeightOffset: 0,
         type: 'bar',
         toolbar: {
@@ -1493,7 +1475,7 @@
     activityAreaChartConfig = {
       chart: {
         height: 120,
-        width: 220,
+        width: 160,
         parentHeightOffset: 0,
         toolbar: {
           show: false
@@ -1509,7 +1491,7 @@
       },
       series: [
         {
-          data: [15, 20, 14, 22, 17, 40, 12, 35, 25]
+          data: [15, 20, 14, 22, 17, 40, 12]
         }
       ],
       colors: [config.colors.success],
@@ -1534,7 +1516,7 @@
         show: false
       },
       xaxis: {
-        categories: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9'],
+        categories: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
         axisBorder: {
           show: false
         },

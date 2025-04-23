@@ -18,7 +18,8 @@ public class RealtimeDataService : BackgroundService
         {
             if (StupidHomeHub.ActiveConnections > 0)
             {
-                await _apiService.FetchAndSendDataAsync();
+              var currentUrl = StupidHomeHub.CurrentUrl;
+              await _apiService.FetchAndSendDataAsync(currentUrl);
             }
 
             await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
