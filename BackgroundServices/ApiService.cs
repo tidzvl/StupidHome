@@ -23,7 +23,7 @@ public class ApiService
           var sensorTasks = new List<Task<string>>();
           for (int i = 1; i <= 3; i++)
           {
-              sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/sensorData/{i}"));
+              sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/getRoomSensorData/{i}"));
           }
 
           var deviceTask = _httpClient.GetStringAsync($"{_api}/getNumberOfDevices/1");
@@ -61,7 +61,13 @@ public class ApiService
 
           await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson);
         }else if(c_url.ToLower() == "/home/analytics") {
-          await _hubContext.Clients.All.SendAsync("ReceiveData", "It is Analytics");
+          var sensorTasks = new List<Task<string>>();
+          for (int i = 1; i <= 3; i++)
+          {
+              sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/getRoomSensorData/{i}"));
+          }
+          var allResponses = await Task.WhenAll(sensorTasks);
+          await _hubContext.Clients.All.SendAsync("ReceiveData", allResponses);
         }
     }
 

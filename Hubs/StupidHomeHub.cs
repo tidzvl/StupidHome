@@ -6,6 +6,7 @@ public class StupidHomeHub : Hub
 {
     public static int ActiveConnections = 0;
     public static string CurrentUrl { get; private set; }
+    public static string user {get; private set;}
 
     public override async Task OnConnectedAsync()
     {

@@ -19,9 +19,9 @@
 <head>
   <script>
     (function() {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('t');
         const currentPath = window.location.pathname;
-
+        var user = localStorage.getItem('user');
         if (!token) {
             if (currentPath !== '/login' && currentPath !== '/register' && currentPath !== '/') {
                 window.location.href = '/login';
