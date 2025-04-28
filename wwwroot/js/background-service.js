@@ -50,7 +50,7 @@ const API = document.querySelector('#domain').value;
     .catch(err => console.error(err));
 })();
 
-$(function () {
+$(async function () {
   // console.log('ok');
   //user service
   ['.user-name', '.user-address', '.user-home-name'].forEach(selector => {
@@ -81,28 +81,39 @@ $(function () {
           }
           return response.json();
         })
-        .then(data => localStorage.setItem('user', Base64.encode(JSON.stringify(data))))
+        .then(data => {
+          localStorage.setItem('user', Base64.encode(JSON.stringify(data)));
+          if ($('.user-name').length > 0) {
+            $('.user-name').each(function (item, index) {
+              $(index).text(data.first_name + ' ' + data.last_name);
+            });
+            $('.user-name').unblock();
+          }
+          $('.user-home-name').length > 0 ? $('.user-home-name').text(data.home_name) : '';
+          $('.user-home-name').unblock();
+          $('.user-address').length > 0 ? $('.user-address').text(data.address) : '';
+          $('.user-address').unblock();
+        })
         .catch(error => console.error('There was an error:', error));
     }
   }
   var user = localStorage.getItem('user');
   if (!user) {
-    ft();
-    user = JSON.parse(Base64.decode(localStorage.getItem('user'))); //localStorage.getItem('user');
+    await ft();
+    // user = JSON.parse(Base64.decode(localStorage.getItem('user'))); //localStorage.getItem('user');
   } else {
     user = JSON.parse(Base64.decode(localStorage.getItem('user'))); //localStorage.getItem('user');
+    if ($('.user-name').length > 0) {
+      $('.user-name').each(function (item, index) {
+        $(index).text(user.first_name + ' ' + user.last_name);
+      });
+      $('.user-name').unblock();
+    }
+    $('.user-home-name').length > 0 ? $('.user-home-name').text(user.home_name) : '';
+    $('.user-home-name').unblock();
+    $('.user-address').length > 0 ? $('.user-address').text(user.address) : '';
+    $('.user-address').unblock();
   }
-  if ($('.user-name').length > 0) {
-    $('.user-name').each(function (item, index) {
-      $(index).text(user.first_name + ' ' + user.last_name);
-      console.log($(index));
-    });
-    $('.user-name').unblock();
-  }
-  $('.user-home-name').length > 0 ? $('.user-home-name').text(user.home_name) : '';
-  $('.user-home-name').unblock();
-  $('.user-address').length > 0 ? $('.user-address').text(user.address) : '';
-  $('.user-address').unblock();
 
   //end user
 });

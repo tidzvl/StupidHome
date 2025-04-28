@@ -53,8 +53,9 @@
   Response: List of value.
 
 - **GET**  
-  Description: Get humidity, light, soilhumidity, pir, temp value of room ID on time. Use for "Analytics" page. Choose to change by day, week, month.  
-  Body:
+   Description: Get humidity, light, soilhumidity, pir, temp value of room ID on time. Use for "Analytics" page. Choose to change by day, week, month.  
+   Body:
+
   ```
   {
     room_id: string,
@@ -62,45 +63,46 @@
     end_time: Date()
   }
   ```
-  Response: return list of avg value of day from start to end.
 
+  Response: return list of avg value of day from start to end.
 
   example input:
   http://127.0.0.1:8000/api/v1/sensorDataTime/1
-{
+  {
   "room_id": "1",
   "start_time": "2025-02-14T00:00:00",
   "end_time": "2025-04-14T23:59:59"
-}
-
+  }
 
 ## Devices Endpoints
 
 ### Get Number of Devices
 
 - **GET**  
-  Description: Get number of devices have been added. Use for "Home" page.  
-  Body:
+   Description: Get number of devices have been added. Use for "Home" page.  
+   Body:
   ```
   {
     house_id: string => INT
   }
   ```
   Response: Number of devices.
-http://127.0.0.1:8000/api/v1/getNumberOfDevices/1
-
+  http://127.0.0.1:8000/api/v1/getNumberOfDevices/1
 
 ### Get All Devices
 
 - **GET**  
-  Description: Get all devices use for all.  
-  Body:
+   Description: Get all devices use for all.  
+   Body:
+
   ```
   {
     house_id: string => INT
   }
   ```
+
   Response: All devices. Recommend structure is
+
   ```
   {
     room_id: string,
@@ -114,106 +116,108 @@ http://127.0.0.1:8000/api/v1/getNumberOfDevices/1
   http://127.0.0.1:8000/api/v1/getAllDevices/1
   example output:
   [
-    {
-        "room_id": 1,
-        "room_title": "Living Room",
-        "devices": [
-            {
-                "device_id": 2,
-                "name": "Fan 2",
-                "type": "fan",
-                "brand": "Panasonic",
-                "value": "OFF",
-                "on_off": false,
-                "pinned": false,
-                "date_created": "2025-03-31T00:10:31.962"
-            },
-            {
-                "device_id": 1,
-                "name": "Fan 1",
-                "type": "fan",
-                "brand": "Panasonic",
-                "value": "01072",
-                "on_off": true,
-                "pinned": false,
-                "date_created": "2025-03-31T00:10:31.962"
-            }
-        ]
-    },
-    {
-        "room_id": 2,
-        "room_title": "Bedroom",
-        "devices": [
-            {
-                "device_id": 7,
-                "name": "Smart Light",
-                "type": "light",
-                "brand": "Philips",
-                "value": "75%",
-                "on_off": true,
-                "pinned": false,
-                "date_created": "2025-03-31T00:10:44.341"
-            },
-            {
-                "device_id": 3,
-                "name": "Fan 1",
-                "type": "fan",
-                "brand": "Dyson",
-                "value": "OFF",
-                "on_off": false,
-                "pinned": false,
-                "date_created": "2025-03-31T00:10:31.962"
-            },
-            {
-                "device_id": 4,
-                "name": "Fan 2",
-                "type": "fan",
-                "brand": "Dyson",
-                "value": "OFF",
-                "on_off": false,
-                "pinned": false,
-                "date_created": "2025-03-31T00:10:31.962"
-            }
-        ]
-    },
-    {
-        "room_id": 3,
-        "room_title": "Kitchen",
-        "devices": [
-            {
-                "device_id": 5,
-                "name": "Fan 1",
-                "type": "fan",
-                "brand": "Samsung",
-                "value": "OFF",
-                "on_off": false,
-                "pinned": false,
-                "date_created": "2025-03-31T00:10:31.962"
-            },
-            {
-                "device_id": 6,
-                "name": "Fan 2",
-                "type": "fan",
-                "brand": "Samsung",
-                "value": "OFF",
-                "on_off": false,
-                "pinned": false,
-                "date_created": "2025-03-31T00:10:31.962"
-            }
-        ]
-    }
-]
+  {
+  "room_id": 1,
+  "room_title": "Living Room",
+  "devices": [
+  {
+  "device_id": 2,
+  "name": "Fan 2",
+  "type": "fan",
+  "brand": "Panasonic",
+  "value": "OFF",
+  "on_off": false,
+  "pinned": false,
+  "date_created": "2025-03-31T00:10:31.962"
+  },
+  {
+  "device_id": 1,
+  "name": "Fan 1",
+  "type": "fan",
+  "brand": "Panasonic",
+  "value": "01072",
+  "on_off": true,
+  "pinned": false,
+  "date_created": "2025-03-31T00:10:31.962"
+  }
+  ]
+  },
+  {
+  "room_id": 2,
+  "room_title": "Bedroom",
+  "devices": [
+  {
+  "device_id": 7,
+  "name": "Smart Light",
+  "type": "light",
+  "brand": "Philips",
+  "value": "75%",
+  "on_off": true,
+  "pinned": false,
+  "date_created": "2025-03-31T00:10:44.341"
+  },
+  {
+  "device_id": 3,
+  "name": "Fan 1",
+  "type": "fan",
+  "brand": "Dyson",
+  "value": "OFF",
+  "on_off": false,
+  "pinned": false,
+  "date_created": "2025-03-31T00:10:31.962"
+  },
+  {
+  "device_id": 4,
+  "name": "Fan 2",
+  "type": "fan",
+  "brand": "Dyson",
+  "value": "OFF",
+  "on_off": false,
+  "pinned": false,
+  "date_created": "2025-03-31T00:10:31.962"
+  }
+  ]
+  },
+  {
+  "room_id": 3,
+  "room_title": "Kitchen",
+  "devices": [
+  {
+  "device_id": 5,
+  "name": "Fan 1",
+  "type": "fan",
+  "brand": "Samsung",
+  "value": "OFF",
+  "on_off": false,
+  "pinned": false,
+  "date_created": "2025-03-31T00:10:31.962"
+  },
+  {
+  "device_id": 6,
+  "name": "Fan 2",
+  "type": "fan",
+  "brand": "Samsung",
+  "value": "OFF",
+  "on_off": false,
+  "pinned": false,
+  "date_created": "2025-03-31T00:10:31.962"
+  }
+  ]
+  }
+  ]
 
 ### Get Number of Devices by Room
 
 - **GET**  
-  Description: Get number of devices have been added by room. Use for "Analytics" page. Choose by room.  :)) mặc định là của house_id 1 nhá 
+  Description: Get number of devices have been added by room. Use for "Analytics" page. Choose by room. :)) mặc định là của house_id 1 nhá
   Body:
+
   ```
   {
     room_id: string -> INT
   }
   ```
+
   Response: Number of devices.
 
   http://127.0.0.1:8000/api/v1/getNumberDevicesInRoom/2
@@ -262,8 +266,8 @@ http://127.0.0.1:8000/api/v1/getNumberOfDevices/1
 ### Devices Event
 
 - **POST**  
-  Description: Turn on/off/change value devices.  
-  Body:
+   Description: Turn on/off/change value devices.  
+   Body:
   ```
   {
     device_id: int,
@@ -282,17 +286,17 @@ http://127.0.0.1:8000/api/v1/getNumberOfDevices/1
   "value": "30",
   "pinned": false,
   "user_id": 5
-}
-
+  }
 
 ### Create Device
 
 - **POST**
-- Description: Create new device. 
+- Description: Create new device.
 - http://127.0.0.1:8000/api/v1/createDevice
   Body:
+
   ```
-  
+
   {
   "name": "string",
   "type": "string",
@@ -303,10 +307,11 @@ http://127.0.0.1:8000/api/v1/getNumberOfDevices/1
   "pinned": false,
   "date_create": "new Date()",
   "user_id": "string"
-}
-// mới update lại á
- 
+  }
+  // mới update lại á
+
   ```
+
   Response: 200
 
 ## Logs Endpoints
@@ -335,4 +340,35 @@ http://127.0.0.1:8000/api/v1/getNumberOfDevices/1
   ```
   Response: All logs of device id.
 
+## Flow end-user
+
+### New user
+
+- Register. Return user_id (not yet, need return in getprofile)
+- Create house. Need user_id (ok, getprofile)
+- Create room. Need house_id (ok, getprofile)
+- Add sensor (create sensor) (i think set default 3 sensor for new user). Need room_id (ok, getAllDevice with house_id)
+- Add device. Need user_id and room_id
+
+### Old user
+
+- Login
+- Create house (optional)
+- create room (optional)
+- switch many house
+- display many room
+
 ## Data Analysis
+
+### /Home
+
+- API: get sensor data by room (all room) -> calc ravg -> update realtime (done)
+
+* API: getNumberOfDevices/ to chart (done)
+* API: getAllDevices/ -> get count turn on device and pinned device (pending...)
+
+### /Home/Analytics
+
+- API: get sensor data (all room) -> calc ravg -> update realtime (done)
+- API: split by room (Waiting...)
+- API: Start time and stop time for chart (pending)
