@@ -1,5 +1,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Text;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -10,6 +11,9 @@ public class ApiService
     private readonly IHubContext<StupidHomeHub> _hubContext;
     private string _api = "http://127.0.0.1:8000/api/v1";
     // private string _previousData;
+    // private JObject _cachedUserJson;
+    // private string _cachedHouseId;
+    // private string _cachedAllDevice;
 
     public ApiService(HttpClient httpClient, IHubContext<StupidHomeHub> hubContext)
     {
@@ -17,45 +21,147 @@ public class ApiService
         _hubContext = hubContext;
     }
 
-    public async Task FetchAndSendDataAsync(string c_url)
+    public async Task FetchAndSendDataAsync(string c_url, string user)
     {
-        if (c_url.ToLower() == "/home"){
-          var sensorTasks = new List<Task<string>>();
-          for (int i = 1; i <= 3; i++)
-          {
-              sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/getRoomSensorData/{i}"));
-          }
+        if(user == null || c_url == null) return;
+        byte[] u_db = Convert.FromBase64String(user);
+        string u = Encoding.UTF8.GetString(u_db);
+        JObject userJson = JObject.Parse(u);
+        var house_id = userJson["admin_house"]?.ToString();
+        if (!string.IsNullOrEmpty(house_id))
+        {
+            var houseArray = JArray.Parse(house_id);
+            house_id = houseArray.FirstOrDefault()?.ToString();
+        }
+        var allDevice = await _httpClient.GetStringAsync($"{_api}/getAllDevices/{house_id}");
+        if (allDevice == "") return;
+        var allDeviceJson = JArray.Parse(allDevice);
+        if (allDeviceJson == null) return;
+        foreach (var room in allDeviceJson)
+        {
+            var sensorTasks = allDeviceJson.Select(async room =>
+            {
+                var roomId = room["room_id"]?.ToString();
+                if (!string.IsNullOrEmpty(roomId))
+                {
+                    try
+                    {
+                        var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{roomId}");
+                        if (!string.IsNullOrEmpty(roomSensorData))
+                        {
+                            var sensorDataJson = JArray.Parse(roomSensorData);
+                            room["sensors"] = sensorDataJson;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error fetching sensor data for room {roomId}: {ex.Message}");
+                    }
+                }
+            });
 
-          var deviceTask = _httpClient.GetStringAsync($"{_api}/getNumberOfDevices/1");
+            await Task.WhenAll(sensorTasks);
+        }
+        var finalJson2 = allDeviceJson.ToString(Formatting.Indented);
+
+        if (c_url.ToLower() == "/home"){
+          // var sensorTasks = new List<Task<string>>();
+          // for (int i = 1; i <= 3; i++)
+          // {
+          //     sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/getRoomSensorData/{i}"));
+          // }
+
+          // var deviceTask = _httpClient.GetStringAsync($"{_api}/getNumberOfDevices/{house_id}");
+
+          // var allResponses = await Task.WhenAll(sensorTasks);
+          // var deviceResponse = await deviceTask;
+
+          // var mergedResponses = "[" + string.Join(",", allResponses) + "]";
+          // var outerArray = JArray.Parse(mergedResponses);
+          // var sensorData = outerArray.SelectMany(innerToken => innerToken)
+          //                          .OfType<JObject>()
+          //                          .ToList();
+          // var sensorResult = sensorData
+          //     .GroupBy(x => x["type"]?.ToString() ?? "Unknown")
+          //     .Select(group =>
+          //     {
+          //         var validValues = group
+          //             .Where(x => x["value"] != null && int.TryParse(x["value"].ToString(), out _))
+          //             .Select(x => int.Parse(x["value"].ToString()));
+
+          //         double averageValue = validValues.Any() ? validValues.Average() : 0;
+          //         return new JObject
+          //         {
+          //             ["type"] = group.Key,
+          //             ["average_value"] = averageValue
+          //         };
+          //     });
+
+          // var finalJsonArray = new JArray(sensorResult);
+
+          // var deviceJson = JObject.Parse(deviceResponse);
+          // finalJsonArray.Add(deviceJson);
+
+          // var finalJson = finalJsonArray.ToString(Formatting.Indented);
+          var roomIds = allDeviceJson.Select(room => room["room_id"]?.ToString())
+                               .Where(roomId => !string.IsNullOrEmpty(roomId))
+                               .ToList();
+
+          var sensorTasks = roomIds.Select(async roomId =>
+          {
+              try
+              {
+                  var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{roomId}");
+                  return JArray.Parse(roomSensorData);
+              }
+              catch (Exception ex)
+              {
+                  Console.WriteLine($"Error fetching sensor data for room {roomId}: {ex.Message}");
+                  return new JArray();
+              }
+          });
 
           var allResponses = await Task.WhenAll(sensorTasks);
-          var deviceResponse = await deviceTask;
 
-          var mergedResponses = "[" + string.Join(",", allResponses) + "]";
-          var outerArray = JArray.Parse(mergedResponses);
-          var sensorData = outerArray.SelectMany(innerToken => innerToken)
-                                   .OfType<JObject>()
-                                   .ToList();
+          var mergedResponses = new JArray(allResponses.SelectMany(response => response));
+
+          var sensorData = mergedResponses.OfType<JObject>().ToList();
           var sensorResult = sensorData
-              .GroupBy(x => x["name"]?.ToString() ?? "Unknown")
+              .GroupBy(x => x["type"]?.ToString() ?? "Unknown")
               .Select(group =>
               {
                   var validValues = group
-                      .Where(x => x["value"] != null && int.TryParse(x["value"].ToString(), out _))
-                      .Select(x => int.Parse(x["value"].ToString()));
+                      .Where(x => x["value"] != null && double.TryParse(x["value"].ToString(), out _))
+                      .Select(x => double.Parse(x["value"].ToString()));
 
                   double averageValue = validValues.Any() ? validValues.Average() : 0;
+
                   return new JObject
                   {
-                      ["name"] = group.Key,
+                      ["type"] = group.Key,
                       ["average_value"] = averageValue
                   };
               });
 
-          var finalJsonArray = new JArray(sensorResult);
+          // var finalJsonArray = new JArray(sensorResult);
+          var totalDevices = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray()).Count();
+          var devicesOn = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray())
+                                      .Count(device => device["on_off"]?.ToObject<bool>() == true);
+          var pinnedDeviceIds = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray())
+                                            .Where(device => device["pinned"]?.ToObject<bool>() == true)
+                                            .Select(device => device["device_id"]?.ToString())
+                                            .Where(deviceId => !string.IsNullOrEmpty(deviceId))
+                                            .ToList();
 
-          var deviceJson = JObject.Parse(deviceResponse);
-          finalJsonArray.Add(deviceJson);
+          // Tạo JSON kết quả
+          var finalJsonArray = new JArray(sensorResult);
+          var summary = new JObject
+          {
+              ["total_devices"] = totalDevices,
+              ["devices_on"] = devicesOn,
+              ["pinned_device_ids"] = new JArray(pinnedDeviceIds)
+          };
+          finalJsonArray.Add(summary);
 
           var finalJson = finalJsonArray.ToString(Formatting.Indented);
 
@@ -67,7 +173,8 @@ public class ApiService
               sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/getRoomSensorData/{i}"));
           }
           var allResponses = await Task.WhenAll(sensorTasks);
-          await _hubContext.Clients.All.SendAsync("ReceiveData", allResponses);
+          string allDeviceJsonString = allDeviceJson.ToString(Formatting.Indented);
+          await _hubContext.Clients.All.SendAsync("ReceiveData", allResponses, finalJson2);
         }
     }
 

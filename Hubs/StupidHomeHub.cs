@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 public class StupidHomeHub : Hub
 {
     public static int ActiveConnections = 0;
-    public static string CurrentUrl { get; private set; }
-    public static string user {get; private set;}
+    public static string? CurrentUrl { get; private set; }
+    public static string? User {get; private set;}
 
     public override async Task OnConnectedAsync()
     {
@@ -20,16 +20,17 @@ public class StupidHomeHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
-    public async Task SetCurrentUrl(string url)
+    public async Task SetCurrentUrl(string url, string user)
     {
         CurrentUrl = url;
+        User = user;
         await Task.CompletedTask;
     }
 
 
-    public async Task SendUpdate(string data)
+    public async Task SendUpdate(string data, string data2)
     {
-        await Clients.All.SendAsync("ReceiveData", data);
+        await Clients.All.SendAsync("ReceiveData", data, data2);
     }
 
 }

@@ -8,6 +8,7 @@
  */
 
 'use strict';
+
 $('.content-wrapper').block({
   message:
     '<div class="d-flex justify-content-center"><p class="me-2 mb-0">Please wait...</p> <div class="sk-wave sk-primary m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
@@ -25,7 +26,8 @@ $('.content-wrapper').block({
   var light = document.querySelector('.light'),
     temp_in = document.querySelector('.temp-in'),
     temp_out = document.querySelector('.temp-out'),
-    humidity = document.querySelector('.humidity');
+    humidity = document.querySelector('.humidity'),
+    onDevice = document.querySelector('.device-on');
 
   setInterval(() => {
     var dd = localStorage.getItem('d');
@@ -33,12 +35,14 @@ $('.content-wrapper').block({
     if (dd) {
       if ($('.content-wrapper').data('blockUI.isBlocked')) $('.content-wrapper').unblock();
       dd = JSON.parse(Base64.decode(dd));
-      const deviceData = dd.find(item => item.device_count !== undefined);
-      const deviceCount = deviceData ? deviceData.device_count : null;
+      const deviceData = dd.find(item => item.total_devices !== undefined);
+      const deviceCount = deviceData ? deviceData.total_devices : null;
+      const deviceOn = dd.find(item => item.devices_on !== undefined);
       growthRadialChart.updateSeries([deviceCount]);
-      temp_in.textContent = dd.find(sensor => sensor.name === 'Temperature Sensor').average_value;
-      light.textContent = dd.find(sensor => sensor.name === 'Light Sensor').average_value + '%';
-      humidity.textContent = dd.find(sensor => sensor.name === 'Humidity Sensor').average_value + '%';
+      onDevice.textContent = deviceOn ? deviceData.devices_on : null;
+      temp_in.textContent = dd.find(sensor => sensor.type === 'temperature').average_value;
+      light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
+      humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
     }
   }, 500);
   let growthRadialChart;
