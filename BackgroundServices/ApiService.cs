@@ -65,44 +65,6 @@ public class ApiService
         var finalJson2 = allDeviceJson.ToString(Formatting.Indented);
 
         if (c_url.ToLower() == "/home"){
-          // var sensorTasks = new List<Task<string>>();
-          // for (int i = 1; i <= 3; i++)
-          // {
-          //     sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/getRoomSensorData/{i}"));
-          // }
-
-          // var deviceTask = _httpClient.GetStringAsync($"{_api}/getNumberOfDevices/{house_id}");
-
-          // var allResponses = await Task.WhenAll(sensorTasks);
-          // var deviceResponse = await deviceTask;
-
-          // var mergedResponses = "[" + string.Join(",", allResponses) + "]";
-          // var outerArray = JArray.Parse(mergedResponses);
-          // var sensorData = outerArray.SelectMany(innerToken => innerToken)
-          //                          .OfType<JObject>()
-          //                          .ToList();
-          // var sensorResult = sensorData
-          //     .GroupBy(x => x["type"]?.ToString() ?? "Unknown")
-          //     .Select(group =>
-          //     {
-          //         var validValues = group
-          //             .Where(x => x["value"] != null && int.TryParse(x["value"].ToString(), out _))
-          //             .Select(x => int.Parse(x["value"].ToString()));
-
-          //         double averageValue = validValues.Any() ? validValues.Average() : 0;
-          //         return new JObject
-          //         {
-          //             ["type"] = group.Key,
-          //             ["average_value"] = averageValue
-          //         };
-          //     });
-
-          // var finalJsonArray = new JArray(sensorResult);
-
-          // var deviceJson = JObject.Parse(deviceResponse);
-          // finalJsonArray.Add(deviceJson);
-
-          // var finalJson = finalJsonArray.ToString(Formatting.Indented);
           var roomIds = allDeviceJson.Select(room => room["room_id"]?.ToString())
                                .Where(roomId => !string.IsNullOrEmpty(roomId))
                                .ToList();
@@ -153,7 +115,6 @@ public class ApiService
                                             .Where(deviceId => !string.IsNullOrEmpty(deviceId))
                                             .ToList();
 
-          // Tạo JSON kết quả
           var finalJsonArray = new JArray(sensorResult);
           var summary = new JObject
           {
