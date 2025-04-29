@@ -21,31 +21,9 @@ $('.content-wrapper').block({
     opacity: 0.8
   }
 });
+let growthRadialChart;
 (function () {
   let cardColor, headingColor, labelColor, legendColor, borderColor, shadeColor;
-  var light = document.querySelector('.light'),
-    temp_in = document.querySelector('.temp-in'),
-    temp_out = document.querySelector('.temp-out'),
-    humidity = document.querySelector('.humidity'),
-    onDevice = document.querySelector('.device-on');
-
-  setInterval(() => {
-    var dd = localStorage.getItem('d');
-    temp_out.textContent = Base64.decode(localStorage.getItem('t_o'));
-    if (dd) {
-      if ($('.content-wrapper').data('blockUI.isBlocked')) $('.content-wrapper').unblock();
-      dd = JSON.parse(Base64.decode(dd));
-      const deviceData = dd.find(item => item.total_devices !== undefined);
-      const deviceCount = deviceData ? deviceData.total_devices : null;
-      const deviceOn = dd.find(item => item.devices_on !== undefined);
-      growthRadialChart.updateSeries([deviceCount]);
-      onDevice.textContent = deviceOn ? deviceData.devices_on : null;
-      temp_in.textContent = dd.find(sensor => sensor.type === 'temperature').average_value;
-      light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
-      humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
-    }
-  }, 500);
-  let growthRadialChart;
   if (isDarkStyle) {
     cardColor = config.colors_dark.cardColor;
     headingColor = config.colors_dark.headingColor;
@@ -332,6 +310,9 @@ $('.content-wrapper').block({
 
 $(function () {
   //get use date
+  var icon = {
+    fan: '-wind'
+  };
   function calculateLastUsage(lastUpdate) {
     const diffDays = Math.ceil((new Date() - new Date(lastUpdate)) / (1000 * 60 * 60 * 24));
     return diffDays === 0
@@ -340,20 +321,22 @@ $(function () {
       ? 'Lần cuối: 1 ngày trước'
       : `Lần cuối: ${diffDays} ngày trước`;
   }
-  async function render_pin_devices() {
+  function render_pin_devices() {
     try {
-      let response = await $.ajax({
-        url: '../json/devices.json', //wait to add api GET
-        dataType: 'json',
-        method: 'GET'
-      });
-      let data = await response.data;
-      data.forEach(function (item, index) {
-        if (item.pinned == false) return;
-        let last_used = calculateLastUsage(item.last_update);
-        let isChecked = item.on ? 'checked' : '';
-        let isOn = item.on ? 'success' : 'dark';
-        let html = `
+      const interval = setInterval(() => {
+        const da = localStorage.getItem('d');
+        if (da) {
+          clearInterval(interval);
+          console.log('Đã lấy dữ liệu từ localStorage');
+          let response = JSON.parse(Base64.decode(localStorage.getItem('d')));
+          // console.log(response[response.length - 1]['pinned_devices']);
+          let data = response[response.length - 1]['pinned_devices'];
+          data.forEach(function (item, index) {
+            if (item.pinned == false) return;
+            let last_used = calculateLastUsage(item.last_update);
+            let isChecked = item.on ? 'checked' : '';
+            let isOn = item.on ? 'success' : 'dark';
+            let html = `
             <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
               <div class="card drag-item cursor-move mb-lg-0 mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -375,12 +358,37 @@ $(function () {
               </div>
             </div>
           `;
-        $('#sortable-cards').append(html);
-      });
+            $('#sortable-cards').append(html);
+          });
+        }
+      }, 100);
     } catch (error) {
       console.error('Lỗi:', error);
     }
   }
+
+  var light = document.querySelector('.light'),
+    temp_in = document.querySelector('.temp-in'),
+    temp_out = document.querySelector('.temp-out'),
+    humidity = document.querySelector('.humidity'),
+    onDevice = document.querySelector('.device-on');
+
+  setInterval(() => {
+    var dd = localStorage.getItem('d');
+    temp_out.textContent = Base64.decode(localStorage.getItem('t_o'));
+    if (dd) {
+      if ($('.content-wrapper').data('blockUI.isBlocked')) $('.content-wrapper').unblock();
+      dd = JSON.parse(Base64.decode(dd));
+      const deviceData = dd.find(item => item.total_devices !== undefined);
+      const deviceCount = deviceData ? deviceData.total_devices : null;
+      const deviceOn = dd.find(item => item.devices_on !== undefined);
+      growthRadialChart.updateSeries([deviceCount]);
+      onDevice.textContent = deviceOn ? deviceData.devices_on : null;
+      temp_in.textContent = dd.find(sensor => sensor.type === 'temperature').average_value;
+      light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
+      humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
+    }
+  }, 500);
   render_pin_devices();
 
   const cardEl = document.getElementById('sortable-cards');

@@ -109,18 +109,23 @@ public class ApiService
           var totalDevices = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray()).Count();
           var devicesOn = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray())
                                       .Count(device => device["on_off"]?.ToObject<bool>() == true);
-          var pinnedDeviceIds = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray())
-                                            .Where(device => device["pinned"]?.ToObject<bool>() == true)
-                                            .Select(device => device["device_id"]?.ToString())
-                                            .Where(deviceId => !string.IsNullOrEmpty(deviceId))
-                                            .ToList();
+          var pinnedDevices = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray())
+                                          .Where(device => device["pinned"]?.ToObject<bool>() == true)
+                                          .Select(device => new JObject
+                                          {
+                                              ["device_id"] = device["device_id"],
+                                              ["name"] = device["name"],
+                                              ["type"] = device["type"],
+                                              ["on_off"] = device["on_off"]
+                                          })
+                                          .ToList();
 
           var finalJsonArray = new JArray(sensorResult);
           var summary = new JObject
           {
               ["total_devices"] = totalDevices,
               ["devices_on"] = devicesOn,
-              ["pinned_device_ids"] = new JArray(pinnedDeviceIds)
+              ["pinned_devices"] = new JArray(pinnedDevices)
           };
           finalJsonArray.Add(summary);
 
