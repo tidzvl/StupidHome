@@ -28,9 +28,9 @@ $('.content-wrapper').block({
     if (dd) {
       if ($('.content-wrapper').data('blockUI.isBlocked')) $('.content-wrapper').unblock();
       dd = JSON.parse(Base64.decode(dd));
-      temp_in.textContent = dd.find(sensor => sensor.name === 'Temperature Sensor').average_value;
-      light.textContent = dd.find(sensor => sensor.name === 'Light Sensor').average_value + '%';
-      humidity.textContent = dd.find(sensor => sensor.name === 'Humidity Sensor').average_value + '%';
+      temp_in.textContent = dd.find(sensor => sensor.type === 'temperature').average_value;
+      light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
+      humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
     }
   }, 500);
   if (isDarkStyle) {

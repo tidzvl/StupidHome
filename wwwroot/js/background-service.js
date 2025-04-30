@@ -101,6 +101,8 @@ const API = document.querySelector('#domain').value;
     console.log(data);
     if (data2) {
       data2 = JSON.parse(data2);
+      localStorage.setItem('d2', Base64.encode(data2));
+      console.log(data2);
     }
     localStorage.setItem('d', Base64.encode(data));
     console.log('asdsa');

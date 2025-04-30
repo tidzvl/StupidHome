@@ -350,7 +350,7 @@ $(function () {
                 </div>
                 <div class="card-body text-center">
                   <h2>
-                    <i class="bx bx${item.category} text-${isOn} display-6"></i>
+                    <i class="bx bx${icon[item.type]} text-${isOn} display-6"></i>
                   </h2>
                   <h5>${item.name}</h5>
                   <h6>${last_used}</h6>

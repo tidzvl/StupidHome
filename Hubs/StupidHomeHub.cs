@@ -30,7 +30,7 @@ public class StupidHomeHub : Hub
 
     public async Task SendUpdate(string data, string data2)
     {
-        await Clients.All.SendAsync("ReceiveData", data, data2);
+      await Clients.All.SendAsync("ReceiveData", data, data2);
     }
 
 }

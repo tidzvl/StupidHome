@@ -132,15 +132,161 @@ public class ApiService
           var finalJson = finalJsonArray.ToString(Formatting.Indented);
 
           await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson);
-        }else if(c_url.ToLower() == "/home/analytics") {
-          var sensorTasks = new List<Task<string>>();
-          for (int i = 1; i <= 3; i++)
-          {
-              sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/getRoomSensorData/{i}"));
-          }
-          var allResponses = await Task.WhenAll(sensorTasks);
-          string allDeviceJsonString = allDeviceJson.ToString(Formatting.Indented);
-          await _hubContext.Clients.All.SendAsync("ReceiveData", allResponses, finalJson2);
+        }
+        // else if(c_url.ToLower() == "/home/analytics") {
+        //   var sensorTasks = new List<Task<string>>();
+        //   for (int i = 1; i <= 3; i++)
+        //   {
+        //       sensorTasks.Add(_httpClient.GetStringAsync($"{_api}/getRoomSensorData/{i}"));
+        //   }
+        //   var allResponses = await Task.WhenAll(sensorTasks);
+        //   string allDeviceJsonString = allDeviceJson.ToString(Formatting.Indented);
+        //   await _hubContext.Clients.All.SendAsync("ReceiveData", allResponses, finalJson2);
+        // }
+        else if (c_url.ToLower() == "/home/analytics")
+        {
+            var roomIds = allDeviceJson.Select(room => room["room_id"]?.ToString())
+                                      .Where(roomId => !string.IsNullOrEmpty(roomId))
+                                      .ToList();
+
+            var startTime = DateTime.UtcNow.AddMonths(-1).ToString("yyyy-MM-ddTHH:mm:ss");
+            var endTime = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss");
+
+            var sensorTasks = roomIds.Select(async roomId =>
+            {
+                try
+                {
+                    var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{roomId}");
+                    JArray sensorDataJson;
+
+                    // Kiểm tra nếu dữ liệu trả về là một mảng JSON hợp lệ
+                    if (!string.IsNullOrEmpty(roomSensorData) && roomSensorData.TrimStart().StartsWith("["))
+                    {
+                        sensorDataJson = JArray.Parse(roomSensorData);
+                    }
+                    else
+                    {
+                        sensorDataJson = new JArray(); // Nếu không hợp lệ, gán giá trị mặc định
+                    }
+
+                    var timeDataRequest = new
+                    {
+                        room_id = roomId,
+                        start_time = startTime,
+                        end_time = endTime
+                    };
+
+                    var timeDataResponse = await _httpClient.PostAsync(
+                        $"{_api}/sensorDataTime/{roomId}",
+                        new StringContent(JsonConvert.SerializeObject(timeDataRequest), Encoding.UTF8, "application/json")
+                    );
+
+                    JArray timeDataJson;
+
+                    // Kiểm tra nếu dữ liệu trả về từ sensorDataTime là một mảng JSON hợp lệ
+                    var timeDataResponseContent = await timeDataResponse.Content.ReadAsStringAsync();
+                    if (!string.IsNullOrEmpty(timeDataResponseContent) && timeDataResponseContent.TrimStart().StartsWith("["))
+                    {
+                        timeDataJson = JArray.Parse(timeDataResponseContent);
+                    }
+                    else
+                    {
+                        timeDataJson = new JArray(); // Nếu không hợp lệ, gán giá trị mặc định
+                    }
+
+                    var mergedData = sensorDataJson.Concat(timeDataJson)
+                                                  .GroupBy(sensor => sensor["type"]?.ToString() ?? "Unknown")
+                                                  .Select(group =>
+                                                  {
+                                                      var validValues = group
+                                                          .Where(x => x["value"] != null && double.TryParse(x["value"].ToString(), out _))
+                                                          .Select(x => double.Parse(x["value"].ToString()));
+
+                                                      double averageValue = validValues.Any() ? validValues.Average() : 0;
+
+                                                      return new JObject
+                                                      {
+                                                          ["type"] = group.Key,
+                                                          ["average_value"] = averageValue
+                                                      };
+                                                  });
+
+                    return new JObject
+                    {
+                        ["room_id"] = roomId,
+                        ["merged_data"] = new JArray(mergedData)
+                    };
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error fetching data for room {roomId}: {ex.Message}");
+                    return new JObject
+                    {
+                        ["room_id"] = roomId,
+                        ["merged_data"] = new JArray()
+                    };
+                }
+            });
+
+            var allResponses = await Task.WhenAll(sensorTasks);
+
+            var mergedResponses = new JArray(allResponses);
+
+            // Tính toán giá trị trung bình của tất cả các sensor type từ mergedResponses
+            var allSensorData = mergedResponses
+                .SelectMany(room => room["merged_data"] ?? new JArray())
+                .OfType<JObject>()
+                .ToList();
+
+            var sensorResult = allSensorData
+                .GroupBy(sensor => sensor["type"]?.ToString() ?? "Unknown")
+                .Select(group =>
+                {
+                    var validValues = group
+                        .Where(sensor => sensor["average_value"] != null && double.TryParse(sensor["average_value"].ToString(), out _))
+                        .Select(sensor => double.Parse(sensor["average_value"].ToString()));
+
+                    double averageValue = validValues.Any() ? validValues.Average() : 0;
+
+                    return new JObject
+                    {
+                        ["type"] = group.Key,
+                        ["average_value"] = averageValue
+                    };
+                })
+                .ToList();
+
+            // Tính tổng số thiết bị, số thiết bị đang bật và các thiết bị được ghim
+            var totalDevices = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray()).Count();
+            var devicesOn = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray())
+                                        .Count(device => device["on_off"]?.ToObject<bool>() == true);
+            var pinnedDevices = allDeviceJson.SelectMany(room => room["devices"] ?? new JArray())
+                                            .Where(device => device["pinned"]?.ToObject<bool>() == true)
+                                            .Select(device => new JObject
+                                            {
+                                                ["device_id"] = device["device_id"],
+                                                ["name"] = device["name"],
+                                                ["type"] = device["type"],
+                                                ["on_off"] = device["on_off"]
+                                            })
+                                            .ToList();
+
+            // Tạo phần summary
+            var summary = new JObject
+            {
+                ["total_devices"] = totalDevices,
+                ["devices_on"] = devicesOn,
+                ["pinned_devices"] = new JArray(pinnedDevices)
+            };
+
+            // Tạo finalJson
+            var finalJsonArray = new JArray(sensorResult);
+            finalJsonArray.Add(summary);
+
+            var finalJson = finalJsonArray.ToString(Formatting.Indented);
+
+            // Gửi dữ liệu finalJson và mergedResponses
+            await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson, mergedResponses.ToString(Formatting.Indented));
         }
     }
 
