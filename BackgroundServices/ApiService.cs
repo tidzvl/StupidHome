@@ -105,32 +105,32 @@ public class ApiService
         if (allDevice == "") return;
         var allDeviceJson = JArray.Parse(allDevice);
         if (allDeviceJson == null) return;
-        foreach (var room in allDeviceJson)
-        {
-            var sensorTasks = allDeviceJson.Select(async room =>
-            {
-                var roomId = room["room_id"]?.ToString();
-                if (!string.IsNullOrEmpty(roomId))
-                {
-                    try
-                    {
-                        var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{roomId}");
-                        if (!string.IsNullOrEmpty(roomSensorData))
-                        {
-                            var sensorDataJson = JArray.Parse(roomSensorData);
-                            room["sensors"] = sensorDataJson;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error fetching sensor data for room {roomId}: {ex.Message}");
-                    }
-                }
-            });
+        // foreach (var room in allDeviceJson)
+        // {
+        //     var sensorTasks = allDeviceJson.Select(async room =>
+        //     {
+        //         var roomId = room["room_id"]?.ToString();
+        //         if (!string.IsNullOrEmpty(roomId))
+        //         {
+        //             try
+        //             {
+        //                 var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{roomId}");
+        //                 if (!string.IsNullOrEmpty(roomSensorData))
+        //                 {
+        //                     var sensorDataJson = JArray.Parse(roomSensorData);
+        //                     room["sensors"] = sensorDataJson;
+        //                 }
+        //             }
+        //             catch (Exception ex)
+        //             {
+        //                 Console.WriteLine($"Error fetching sensor data for room {roomId}: {ex.Message}");
+        //             }
+        //         }
+        //     });
 
-            await Task.WhenAll(sensorTasks);
-        }
-        var finalJson2 = allDeviceJson.ToString(Formatting.Indented);
+        //     await Task.WhenAll(sensorTasks);
+        // }
+        // var finalJson2 = allDeviceJson.ToString(Formatting.Indented);
 
         if (c_url.ToLower() == "/home"){
           var finalJson = await GenerateFinalJsonAsync(allDeviceJson);
@@ -151,17 +151,17 @@ public class ApiService
 
             var sensorTasks = roomData.Select(async room =>
             {
-                    var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{room.RoomId}");
-                    JArray sensorDataJson;
+                    // var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{room.RoomId}");
+                    // JArray sensorDataJson;
 
-                    if (!string.IsNullOrEmpty(roomSensorData) && roomSensorData.TrimStart().StartsWith("["))
-                    {
-                        sensorDataJson = JArray.Parse(roomSensorData);
-                    }
-                    else
-                    {
-                        sensorDataJson = new JArray();
-                    }
+                    // if (!string.IsNullOrEmpty(roomSensorData) && roomSensorData.TrimStart().StartsWith("["))
+                    // {
+                    //     sensorDataJson = JArray.Parse(roomSensorData);
+                    // }
+                    // else
+                    // {
+                    //     sensorDataJson = new JArray();
+                    // }
 
                     var timeDataRequest = new
                     {
