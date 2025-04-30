@@ -17,6 +17,7 @@ $('.content-wrapper').block({
 });
 let lineChart, registrationChart, expensesChart, usersChart;
 let isLoading = false;
+// let render = false;
 function GenTime() {
   var today = new Date();
 }
@@ -880,19 +881,225 @@ $(function () {
       temp_in.textContent = dd.find(sensor => sensor.type === 'temperature').average_value;
       light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
       humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
-      var rooms = dd2;
+      // var rooms = dd2;
+      console.log(dd2);
+      var room_data = dd[dd.length - 1]['rooms'];
+      // console.log(room_data);
       if (!isLoading) {
-        rooms.forEach(element => {
+        dd2.forEach(element => {
           // console.log(element.room_title);
           var room_title = element.room_title.replace(/\s+/g, '-');
+          var r_d = room_data.find(r => r.room_id === element.room_id)['now'];
           $('.nav.nav-tabs').append(`
             <li class="nav-item">
-              <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-${room_title}" aria-controls="navs-top-${room_title}" aria-selected="false">${element.room_title}</button>
+              <button type="button" room-id="${element.room_id}" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-${room_title}" aria-controls="navs-top-${room_title}" aria-selected="false">${element.room_title}</button>
             </li>
             `);
+          var html_postfix = `<div class="alert alert-info" role="alert">
+        <h3 class="mb-4">Chi tiết</h3>
+        <div class="row">`;
+          var html = `
+            <div class="tab-pane fade show" id="navs-top-${room_title}" role="tabpanel">
+              <div class="alert alert-primary" role="alert">
+                <h3 class="mb-4">Hiện tại </h3>
+                <div class="row">
+                  <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+                    <div class="card">
+                      <div class="card-body text-center">
+                        <div class="avatar avatar-md mx-auto mb-3">
+                          <span class="avatar-initial rounded-circle bg-label-primary"><i class='bx bx-happy-beaming fs-3'></i></span>
+                        </div>
+                        <span class="d-block mb-1 text-nowrap">Độ Thoải Mái</span>
+                        <h2 class="mb-0 feeling-${room_title}">72</h2>
+                        <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
+                      </div>
+                    </div>
+                  </div>
+          `;
+          // console.log('here', r_d['now']);
+          if (r_d.find(r => r.type === 'temperature')) {
+            // console.log(r_d.find(r => r.type === 'humidity')['average_value']);
+            html += `
+              <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <div class="avatar avatar-md mx-auto mb-3">
+                      <span class="avatar-initial rounded-circle bg-label-info"><i class='bx bx bxl-c-plus-plus fs-3'></i></span>
+                    </div>
+                    <span class="d-block mb-1 text-nowrap">Nhiệt Độ</span>
+                    <h2 class="mb-0 temp-${room_title}">${r_d.find(r => r.type === 'temperature')['average_value']}</h2>
+                    <span class="d-block mb-1 text-nowrap"><strong>°C</strong></span>
+                  </div>
+                </div>
+              </div>
+            `;
+            html_postfix += `
+              <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+                <div class="card">
+                  <div class="card-header d-flex align-items-start justify-content-between">
+                    <div class="m-0 me-2">
+                      <h5 class="card-title mb-0">Nhiệt Độ Trung Bình</h5>
+                      <small class="text-muted">Nhiệt độ nhà trong tuần qua</small>
+                    </div>
+                    <div class="d-flex flex-row gap-2">
+                      <h5 class="mb-0 temp-avg-${room_title}">20°C</h5>
+                      <span class="badge bg-label-success temp-percent-${room_title}">+2%</span>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div id="registrationsChart-${room_title}"></div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+          if (r_d.find(r => r.type === 'humidity')) {
+            html += `
+              <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <div class="avatar avatar-md mx-auto mb-3">
+                      <span class="avatar-initial rounded-circle bg-label-danger"><i class='bx bx-water fs-3'></i></span>
+                    </div>
+                    <span class="d-block mb-1 text-nowrap">Độ Ẩm Không Khí</span>
+                    <h2 class="mb-0 humidity-${room_title}">${
+              r_d.find(r => r.type === 'humidity')['average_value']
+            }</h2>
+                    <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
+                  </div>
+                </div>
+              </div>
+            `;
+            html_postfix += `
+              <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+                <div class="card">
+                  <div class="card-header d-flex align-items-start justify-content-between">
+                    <div class="m-0 me-2">
+                      <h5 class="card-title mb-0">Độ Ẩm Trung Bình</h5>
+                      <small class="text-muted">Độ ẩm nhà trong tuần qua</small>
+                    </div>
+                    <div class="d-flex flex-row gap-2">
+                      <h5 class="mb-0 humidity-avg-${room_title}">65%</h5>
+                      <span class="badge bg-label-danger humidity-percent-${room_title}">-18%</span>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div id="expensesChart-${room_title}"></div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+          if (r_d.find(r => r.type === 'light')) {
+            html += `
+              <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <div class="avatar avatar-md mx-auto mb-3">
+                      <span class="avatar-initial rounded-circle bg-label-danger"><i class='bx bx-bulb bx-sm fs-3'></i></span>
+                    </div>
+                    <span class="d-block mb-1 text-nowrap">Độ sáng</span>
+                    <h2 class="mb-0 light-${room_title}">${r_d.find(r => r.type === 'light')['average_value']}</h2>
+                    <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
+          html_postfix += `
+          </div>
+          </div>
+          <div class="alert alert-success" role="alert">
+        <h3 class="mb-4">Tóm tắt</h3>
+        <div class="row ">
+          <div class="col-xl-12 col-12 mb-4">
+            <div class="card mb-4">
+              <div class="row row-bordered m-0">
+                <div class="col-md-4 col-12 px-0">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Tuần Này</h5>
+                  </div>
+                  <div class="card-body">
+                    <p class="mb-4">Hãy xem thử báo cáo về mức độ tiêu thụ năng lượng của bạn xem phung phí thế nào nhé!</p>
+                    <ul class="list-unstyled m-0 pt-0">
+                      <li class="mb-4">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="avatar avatar-sm flex-shrink-0 me-2">
+                            <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-trending-up"></i></span>
+                          </div>
+                          <div>
+                            <p class="mb-0 lh-1 text-muted text-nowrap">So Với Tuần Trước</p>
+                            <small class="fw-medium text-nowrap">84,789%</small>
+                          </div>
+                        </div>
+                        <div class="progress" style="height:6px;">
+                          <div class="progress-bar bg-primary" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="avatar avatar-sm flex-shrink-0 me-2">
+                            <span class="avatar-initial rounded bg-label-success"><i class="bx bx-dollar"></i></span>
+                          </div>
+                          <div>
+                            <p class="mb-0 lh-1 text-muted text-nowrap">Chi Phí Dự Đoán</p>
+                            <small class="fw-medium text-nowrap">227,398 VNĐ</small>
+                          </div>
+                        </div>
+                        <div class="progress" style="height:6px;">
+                          <div class="progress-bar bg-success" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-md-8 col-12 px-0">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Báo Cáo Tổng Quan So Với Tuần Trước</h5>
+                    <div class="dropdown">
+                      <button class="btn p-0" type="button" id="orderSummaryOptions" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="bx bx-dots-vertical-rounded"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orderSummaryOptions">
+                        <a class="dropdown-item" href="javascript:void(0);">Theo ngày</a>
+                        <a class="dropdown-item" href="javascript:void(0);">Theo tuần</a>
+                        <a class="dropdown-item" href="javascript:void(0);">Theo tháng</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body p-0">
+                    <div id="lineChart-${room_title}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header header-elements">
+                <div>
+                  <h5 class="card-title mb-0">Tóm tắt</h5>
+                  <small class="text-muted">Bao gồm tất cả những thứ người dùng cần</small>
+                </div>
+              </div>
+              <div class="card-body">
+                <canvas id="lineChartJS-${room_title}" class="chartjs" data-height="500"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+          html += `</div></div>`;
+          html_postfix += `</div>
+      </div>`;
+          html += html_postfix;
+          $('.tab-content').append(html);
         });
         isLoading = true;
       }
+      room_data.forEach(room => {
+        //update data
+        // console.log(room);
+        var r = $('[room-id="' + room.room_id + '"]');
+      });
       // console.log(rooms);
     }
   }, 500);
