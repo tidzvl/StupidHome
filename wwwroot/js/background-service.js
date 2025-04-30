@@ -98,14 +98,14 @@ const API = document.querySelector('#domain').value;
   const connection = new signalR.HubConnectionBuilder().withUrl('/Hubs').build();
   const currentUrl = window.location.pathname;
   connection.on('ReceiveData', (data, data2) => {
-    console.log(data);
+    // console.log(JSON.parse(data));
     if (data2) {
-      data2 = JSON.parse(data2);
       localStorage.setItem('d2', Base64.encode(data2));
-      console.log(data2);
+      data2 = JSON.parse(data2);
+      // console.log(data2);
     }
     localStorage.setItem('d', Base64.encode(data));
-    console.log('asdsa');
+    // console.log('asdsa');
   });
   connection
     .start()

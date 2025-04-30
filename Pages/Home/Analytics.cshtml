@@ -32,11 +32,12 @@
       <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-home" aria-controls="navs-top-home" aria-selected="true">Báo Cáo Tổng Quan</button>
     </li>
     <li class="nav-item">
-      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-living-room" aria-controls="navs-top-living-room" aria-selected="false">Living Room</button>
+      <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-living-room" aria-controls="navs-top-living-room" aria-selected="false">Sample</button>
     </li>
   </ul>
   <div class="tab-content">
     <div class="tab-pane fade show active" id="navs-top-home" role="tabpanel">
+      <!-- main -->
       <div class="row ">
         <div class="col-xl-12 col-12 mb-4">
           <div class="card">
@@ -94,7 +95,7 @@
                   </div>
                 </div>
                 <div class="card-body p-0">
-                  <div id="lineChart"></div>
+                  <div id="lineChart-main"></div>
                 </div>
               </div>
             </div>
@@ -266,7 +267,7 @@
               </div>
             </div>
             <div class="card-body">
-              <div id="registrationsChart"></div>
+              <div id="temp-analysis-main"></div>
             </div>
           </div>
         </div>
@@ -283,7 +284,7 @@
               </div>
             </div>
             <div class="card-body">
-              <div id="expensesChart"></div>
+              <div id="humi-main"></div>
             </div>
           </div>
         </div>
@@ -300,7 +301,7 @@
               </div>
             </div>
             <div class="card-body">
-              <div id="usersChart"></div>
+              <div id="action-main"></div>
             </div>
           </div>
         </div>
@@ -464,6 +465,7 @@
         </div>
       </div>
     </div>
+    <!-- end main -->
     <div class="tab-pane fade show" id="navs-top-living-room" role="tabpanel">
       <div class="alert alert-primary" role="alert">
         <h3 class="mb-4">Hiện tại </h3>

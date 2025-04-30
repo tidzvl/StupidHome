@@ -32,19 +32,47 @@ public class ApiService
             try
             {
                 var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{roomId}");
-                return JArray.Parse(roomSensorData);
+                return new { RoomId = roomId, Sensors = JArray.Parse(roomSensorData) };
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error fetching sensor data for room {roomId}: {ex.Message}");
-                return new JArray();
+                return new { RoomId = roomId, Sensors = new JArray() };
             }
         });
 
         var allResponses = await Task.WhenAll(sensorTasks);
 
-        var mergedResponses = new JArray(allResponses.SelectMany(response => response));
+        var nowData = allResponses.Select(response =>
+        {
+            var roomId = response.RoomId;
+            var sensors = response.Sensors.OfType<JObject>().ToList();
 
+            var groupedData = sensors
+                .GroupBy(sensor => sensor["type"]?.ToString() ?? "Unknown")
+                .Select(group =>
+                {
+                    var validValues = group
+                        .Where(x => x["value"] != null && double.TryParse(x["value"].ToString(), out _))
+                        .Select(x => double.Parse(x["value"].ToString()));
+
+                    double averageValue = validValues.Any() ? validValues.Average() : 0;
+
+                    return new JObject
+                    {
+                        ["type"] = group.Key,
+                        ["average_value"] = averageValue
+                    };
+                });
+
+            return new JObject
+            {
+                ["room_id"] = roomId,
+                ["now"] = new JArray(groupedData)
+            };
+        });
+
+        var mergedResponses = new JArray(allResponses.SelectMany(response => response.Sensors));
         var sensorData = mergedResponses.OfType<JObject>().ToList();
         var sensorResult = sensorData
             .GroupBy(x => x["type"]?.ToString() ?? "Unknown")
@@ -82,7 +110,8 @@ public class ApiService
         {
             ["total_devices"] = totalDevices,
             ["devices_on"] = devicesOn,
-            ["pinned_devices"] = new JArray(pinnedDevices)
+            ["pinned_devices"] = new JArray(pinnedDevices),
+            ["rooms"] = new JArray(nowData)
         };
         finalJsonArray.Add(summary);
 
