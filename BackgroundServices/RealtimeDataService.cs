@@ -23,7 +23,7 @@ public class RealtimeDataService : BackgroundService
               await _apiService.FetchAndSendDataAsync(currentUrl, user);
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(50), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
         }
     }
 }
