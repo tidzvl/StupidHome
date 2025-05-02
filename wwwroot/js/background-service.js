@@ -91,21 +91,28 @@ const API = document.querySelector('#domain').value;
     }
     $('.user-home-name').length > 0 ? $('.user-home-name').text(user.home_name) : '';
     $('.user-home-name').unblock();
-    $('.user-address').length > 0 ? $('.user-address').text(user.address) : '';
+    $('.user-address').length > 0
+      ? ($('.user-address').text(user.address), $('.user-address').attr('value', user.admin_house[0]))
+      : '';
     $('.user-address').unblock();
   }
   await fc();
   const connection = new signalR.HubConnectionBuilder().withUrl('/Hubs').build();
   const currentUrl = window.location.pathname;
-  connection.on('ReceiveData', (data, data2) => {
+  connection.on('ReceiveData', (data, data2, data3) => {
     // console.log(JSON.parse(data));
     if (data2) {
       localStorage.setItem('d2', Base64.encode(data2));
-      data2 = JSON.parse(data2);
+      // data2 = JSON.parse(data2);
       // console.log(data2);
     }
+    if (data3) {
+      // console.log(data3);
+      localStorage.setItem('d3', Base64.encode(data3));
+      // data2 = JSON.parse(data2);
+    }
+    // console.log(data);
     localStorage.setItem('d', Base64.encode(data));
-    // console.log('asdsa');
   });
   connection
     .start()

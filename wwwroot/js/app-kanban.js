@@ -3,17 +3,32 @@
  */
 
 'use strict';
+
 window.Helpers.initCustomOptionCheck();
+$('.app-kanban').block({
+  message: '<div class="spinner-border spinner-border-sm text-primary" role="status"></div>',
+  css: {
+    backgroundColor: 'transparent',
+    border: '0'
+  },
+  overlayCSS: {
+    backgroundColor: '#fff',
+    opacity: 0.2
+  }
+});
 
 let loading = false;
 let boards;
+let userId = $('#user-id').val();
+let houseId = $('.user-address').attr('value');
 async function checkData() {
   return new Promise(resolve => {
     const interval = setInterval(() => {
-      const dd = JSON.parse(Base64.decode(localStorage.getItem('d')));
+      const dd = JSON.parse(Base64.decode(localStorage.getItem('d3')));
       // console.log(dd);
-      if (dd) {
+      if (dd[0].room_id) {
         clearInterval(interval);
+        $('.app-kanban').unblock();
         resolve(dd);
       } else {
         console.log('no data');
@@ -72,6 +87,10 @@ function transformApiDataToKanban(apiData) {
   console.log(boards);
   boards = transformApiDataToKanban(boards);
   console.log(boards);
+  // top board
+  $('.device-count').html(boards.length);
+  $('.room-count').html(boards.reduce((count, board) => count + board.item.length, 0));
+
   // datepicker init
   if (datePicker) {
     datePicker.flatpickr({
@@ -137,8 +156,6 @@ function transformApiDataToKanban(apiData) {
       "<div class='dropdown kanban-tasks-item-dropdown'>" +
       "<i class='dropdown-toggle bx bx-dots-vertical-rounded' id='kanban-tasks-item-dropdown' data-bs-toggle='dropdown' aria-haspopup='true' aria-expanded='false'></i>" +
       "<div class='dropdown-menu dropdown-menu-end' aria-labelledby='kanban-tasks-item-dropdown'>" +
-      "<a class='dropdown-item' href='javascript:void(0)'>Copy task link</a>" +
-      "<a class='dropdown-item' href='javascript:void(0)'>Duplicate task</a>" +
       "<a class='dropdown-item delete-task' href='javascript:void(0)'>Delete</a>" +
       '</div>' +
       '</div>'
@@ -146,15 +163,15 @@ function transformApiDataToKanban(apiData) {
   }
   // Render header
   function renderHeader(category, categoryName) {
-    console.log(category, ',', categoryName);
+    // console.log(category, ',', categoryName);
     var color = {
       '-tv': 'success',
       '-book-content': 'primary',
       fan: 'info',
       '-door-open': 'danger',
-      's-hot': 'warning',
+      light: 'warning',
       '-speaker': 'dark',
-      '-bulb': 'warning'
+      default: 'success'
     };
     return (
       "<div class='d-flex justify-content-between flex-wrap align-items-center mb-2 pb-1'>" +
@@ -172,7 +189,12 @@ function transformApiDataToKanban(apiData) {
 
   // Render footer
   function renderFooter(on, temp, light) {
-    let value = on ? 'checked' : '';
+    let value;
+    if (on == 'true') {
+      value = 'checked';
+    } else if (on == 'false') {
+      value = '';
+    }
     if (temp > 0) {
       var html = `
       <span class="switch-label"><i class='bx bxs-thermometer'></i>${temp}</span>
@@ -204,7 +226,7 @@ function transformApiDataToKanban(apiData) {
   const kanban = new jKanban({
     element: '.kanban-wrapper',
     gutter: '15px',
-    widthBoard: '250px',
+    widthBoard: '500px',
     dragItems: true,
     boards: boards,
     dragBoards: true,
@@ -241,7 +263,7 @@ function transformApiDataToKanban(apiData) {
       $('.kanban-update-item-sidebar').find(select2).val(labelValue).trigger('change');
 
       // render per category
-      let on = element.getAttribute('data-on') ? 'checked' : '',
+      let on = element.getAttribute('data-on') == 'true' ? 'checked' : '',
         temp = element.getAttribute('data-temp'),
         mood = element.getAttribute('data-mood'),
         light = element.getAttribute('data-light'),
@@ -381,15 +403,15 @@ function transformApiDataToKanban(apiData) {
       addNew.setAttribute('class', 'new-item-form');
       addNew.innerHTML =
         '<div class="mb-3">' +
-        '<textarea class="form-control add-new-item" rows="2" placeholder="Add Content" autofocus required></textarea>' +
+        '<textarea class="form-control add-new-item" rows="2" placeholder="Tên thiết bị" autofocus required></textarea>' +
         '</div>' +
         '<div class="mb-3">' +
-        '<button type="submit" class="btn btn-primary btn-sm me-2">Add</button>' +
-        '<button type="button" class="btn btn-label-secondary btn-sm cancel-add-item">Cancel</button>' +
+        '<button type="submit" class="btn btn-primary btn-sm me-2">Thêm</button>' +
+        '<button type="button" class="btn btn-label-secondary btn-sm cancel-add-item">Hủy</button>' +
         '</div>';
       kanban.addForm(boardId, addNew);
 
-      addNew.addEventListener('submit', function (e) {
+      addNew.addEventListener('submit', async function (e) {
         e.preventDefault();
         const currentBoard = [].slice.call(
           document.querySelectorAll('.kanban-board[data-id=' + boardId + '] .kanban-item')
@@ -398,7 +420,76 @@ function transformApiDataToKanban(apiData) {
           title: "<h5 class='kanban-text'>" + e.target[0].value + '</h5>',
           id: boardId + '-' + currentBoard.length + 1
         });
+        const newItemTitle = e.target[0].value;
+        const id = boardId.replace('board-', '');
+        // console.log(userId);
+        try {
+          $('.app-kanban').block({
+            message: '<div class="spinner-border spinner-border-sm text-primary" role="status"></div>',
+            css: {
+              backgroundColor: 'transparent',
+              border: '0'
+            },
+            overlayCSS: {
+              backgroundColor: '#fff',
+              opacity: 0.7
+            }
+          });
+          const response = await fetch(API + '/createDevice', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: newItemTitle,
+              type: 'default',
+              brand: 'default',
+              value: 0,
+              room_id: id,
+              on_off: false,
+              pinned: false,
+              user_id: userId
+            })
+          });
 
+          if (!response.ok) {
+            Swal.fire({
+              title: 'Lỗi!',
+              text: 'Óh oh, hãy kiểm tra backend!',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            });
+            throw new Error('Check be pls');
+          }
+          $('.app-kanban').unblock();
+          Swal.fire({
+            title: 'Tạo thành công!',
+            text: 'Hãy cấu hình cho thiết bị của bạn!',
+            icon: 'success',
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+          }).then(result => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
+        } catch (error) {
+          console.error('Error adding item:', error);
+          Swal.fire({
+            title: 'Error!',
+            text: ' Lỗi code!',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+          });
+        }
         // add dropdown in new boards
         const kanbanText = [].slice.call(
           document.querySelectorAll('.kanban-board[data-id=' + boardId + '] .kanban-text')
@@ -454,8 +545,8 @@ function transformApiDataToKanban(apiData) {
     '-bulb': 'bx-bulb',
     '-hot': 'bx-hot',
     fan: 'bx-wind',
-    '-light': 'bx-light',
-    '-mood': 'bx-smile',
+    light: 'bx-bulb',
+    default: 'bx-cog',
     '-volume': 'bx-volume',
     '-speed': 'bx-tachometer'
   };
@@ -477,7 +568,7 @@ function transformApiDataToKanban(apiData) {
           <i class="bx ${categoryIcon[el.getAttribute('data-category')]} text-secondary display-6 text-center"></i>
         `;
       }
-      console.log(img);
+      // console.log(img);
       el.textContent = '';
       if (el.getAttribute('data-badge') !== undefined && el.getAttribute('data-category-name') !== undefined) {
         el.insertAdjacentHTML(
@@ -556,9 +647,62 @@ function transformApiDataToKanban(apiData) {
   const deleteTask = [].slice.call(document.querySelectorAll('.delete-task'));
   if (deleteTask) {
     deleteTask.forEach(function (e) {
-      e.addEventListener('click', function () {
-        const id = this.closest('.kanban-item').getAttribute('data-eid');
-        kanban.removeElement(id);
+      e.addEventListener('click', async function () {
+        const kanbanItem = this.closest('.kanban-item');
+        const eid = kanbanItem.getAttribute('data-eid');
+        const id = eid.replace('device-', '');
+
+        const confirmDelete = await Swal.fire({
+          title: 'Bạn có chắc chắn?',
+          text: 'Thiết bị này sẽ bị xóa vĩnh viễn!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Xóa',
+          cancelButtonText: 'Hủy',
+          customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-secondary'
+          },
+          buttonsStyling: false
+        });
+
+        if (confirmDelete.isConfirmed) {
+          try {
+            const response = await fetch(API + `/deleteDevice/${id}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+
+            if (!response.ok) {
+              throw new Error('Không thể xóa thiết bị. Vui lòng kiểm tra lại!');
+            }
+
+            kanban.removeElement(eid);
+
+            Swal.fire({
+              title: 'Đã xóa!',
+              text: 'Thiết bị đã được xóa thành công.',
+              icon: 'success',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            });
+          } catch (error) {
+            console.error('Lỗi khi xóa thiết bị:', error);
+            Swal.fire({
+              title: 'Lỗi!',
+              text: 'Không thể xóa thiết bị. Vui lòng thử lại sau!',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            });
+          }
+        }
       });
     });
   }
@@ -572,21 +716,56 @@ function transformApiDataToKanban(apiData) {
       });
     });
   }
-
+  console.log(houseId);
   // Add new board
   if (kanbanAddNewBoard) {
-    kanbanAddNewBoard.addEventListener('submit', function (e) {
+    kanbanAddNewBoard.addEventListener('submit', async function (e) {
       e.preventDefault();
       const thisEle = this,
         value = thisEle.querySelector('.form-control').value,
         id = value.replace(/\s+/g, '-').toLowerCase();
+      console.log(id, value);
       kanban.addBoards([
         {
           id: id,
           title: value
         }
       ]);
-
+      try {
+        const response = await fetch(API + '/createRoom', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: value,
+            house_id: houseId
+          })
+        });
+        if (!response.ok) {
+          throw new Error('Lỗi khi tạo phòng mới!');
+        }
+        Swal.fire({
+          title: 'Thành công!',
+          text: value + ' đã được xóa thành công.',
+          icon: 'success',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        });
+      } catch (error) {
+        console.error('Lỗi khi tạo phòng mới:', error);
+        Swal.fire({
+          title: 'Lỗi!',
+          text: 'Không thể tạo phòng mới. Vui lòng thử lại sau!',
+          icon: 'error',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        });
+      }
       // Adds delete board option to new board, delete new boards & updates data-order
       const kanbanBoardLastChild = document.querySelectorAll('.kanban-board:last-child')[0];
       if (kanbanBoardLastChild) {

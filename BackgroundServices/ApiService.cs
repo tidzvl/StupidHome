@@ -134,6 +134,8 @@ public class ApiService
         if (allDevice == "") return;
         var allDeviceJson = JArray.Parse(allDevice);
         if (allDeviceJson == null) return;
+        string finalJson = string.Empty;
+        JArray mergedResponses = new JArray();
         // foreach (var room in allDeviceJson)
         // {
         //     var sensorTasks = allDeviceJson.Select(async room =>
@@ -162,7 +164,7 @@ public class ApiService
         // var finalJson2 = allDeviceJson.ToString(Formatting.Indented);
 
         if (c_url.ToLower() == "/home"){
-          var finalJson = await GenerateFinalJsonAsync(allDeviceJson);
+          finalJson = await GenerateFinalJsonAsync(allDeviceJson);
           await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson);
         }
         else if (c_url.ToLower() == "/home/analytics")
@@ -271,20 +273,20 @@ public class ApiService
 
             var allResponses = await Task.WhenAll(sensorTasks);
 
-            var mergedResponses = new JArray(allResponses);
+            mergedResponses = new JArray(allResponses);
 
             var allSensorData = mergedResponses
                 .SelectMany(room => room["merged_data"] ?? new JArray())
                 .OfType<JObject>()
                 .ToList();
 
-            var finalJson = await GenerateFinalJsonAsync(allDeviceJson);
+            finalJson = await GenerateFinalJsonAsync(allDeviceJson);
 
             await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson, mergedResponses.ToString(Formatting.Indented));
         }
         else if (c_url.ToLower() == "/home/devices")
         {
-            await _hubContext.Clients.All.SendAsync("ReceiveData", allDeviceJson.ToString(Formatting.Indented));
+            await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson, mergedResponses.ToString(Formatting.Indented),allDeviceJson.ToString(Formatting.Indented));
         }
     }
 
