@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="~/vendor/libs/quill/katex.dist.css" />
 <link rel="stylesheet" href="~/vendor/libs/quill/editor.dist.css" />
 <link rel="stylesheet" href="~/vendor/libs/nouislider/nouislider.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/spinkit/spinkit.dist.css" />
 }
 
 @section PageStyles {
@@ -33,10 +34,14 @@
 <script src="~/vendor/libs/quill/katex.dist.js"></script>
 <script src="~/vendor/libs/quill/quill.dist.js"></script>
 <script src="~/vendor/libs/nouislider/nouislider.dist.js"></script>
+<script src="~/vendor/libs/block-ui/block-ui.dist.js"></script>
 }
 
 @section PageScripts {
-<script src="~/js/app-kanban.dist.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.12/signalr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.7/base64.min.js"></script>
+<script src="~/js/background-service.js"></script>
+<script src="~/js/app-kanban.js"></script>
 }
 
 @* ************** Content ************** *@

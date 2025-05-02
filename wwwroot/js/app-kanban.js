@@ -5,8 +5,46 @@
 'use strict';
 window.Helpers.initCustomOptionCheck();
 
+let loading = false;
+let boards;
+async function checkData() {
+  return new Promise(resolve => {
+    const interval = setInterval(() => {
+      const dd = JSON.parse(Base64.decode(localStorage.getItem('d')));
+      // console.log(dd);
+      if (dd) {
+        clearInterval(interval);
+        resolve(dd);
+      } else {
+        console.log('no data');
+      }
+    }, 500);
+  });
+}
+
+function transformApiDataToKanban(apiData) {
+  return apiData.map(room => ({
+    id: `board-${room.room_id}`,
+    title: room.room_title,
+    item: room.devices.map(device => ({
+      id: `device-${device.device_id}`,
+      category: `${device.type}`,
+      'category-name': device.type.charAt(0).toUpperCase() + device.type.slice(1),
+      title: device.name,
+      'add-date': new Date(device.date_created).toLocaleDateString('vi-VN'),
+      pinned: device.pinned,
+      'energy-consumed': device.value,
+      on: device.on_off,
+      temp: device.type === 'ac' ? device.value : null,
+      mood: null,
+      light: device.type === 'light' ? device.value : null,
+      voilume: null,
+      speed: device.type === 'fan' ? device.value : null
+    }))
+  }));
+}
+
 (async function () {
-  let boards;
   const kanbanSidebar = document.querySelector('.kanban-update-item-sidebar'),
     kanbanWrapper = document.querySelector('.kanban-wrapper'),
     commentEditor = document.querySelector('.comment-editor'),
@@ -21,12 +59,19 @@ window.Helpers.initCustomOptionCheck();
   const kanbanOffcanvas = new bootstrap.Offcanvas(kanbanSidebar);
 
   // Get kanban data
-  const kanbanResponse = await fetch(assetsPath + 'json/kanban.json');
-  if (!kanbanResponse.ok) {
-    console.error('error', kanbanResponse);
-  }
-  boards = await kanbanResponse.json();
-
+  // var dd;
+  // setInterval(() => {
+  //   dd = JSON.parse(Base64.decode(localStorage.getItem('d')));
+  //   console.log(dd);
+  // }, 500);
+  // const kanbanResponse = await fetch(assetsPath + 'json/kanban.json');
+  // if (!kanbanResponse.ok) {
+  //   console.error('error', kanbanResponse);
+  // }
+  boards = await checkData();
+  console.log(boards);
+  boards = transformApiDataToKanban(boards);
+  console.log(boards);
   // datepicker init
   if (datePicker) {
     datePicker.flatpickr({
@@ -101,10 +146,11 @@ window.Helpers.initCustomOptionCheck();
   }
   // Render header
   function renderHeader(category, categoryName) {
+    console.log(category, ',', categoryName);
     var color = {
       '-tv': 'success',
       '-book-content': 'primary',
-      '-wind': 'info',
+      fan: 'info',
       '-door-open': 'danger',
       's-hot': 'warning',
       '-speaker': 'dark',
@@ -172,6 +218,7 @@ window.Helpers.initCustomOptionCheck();
     },
     click: function (el) {
       let element = el;
+      console.log(element);
       let title = element.getAttribute('data-eid')
           ? element.querySelector('.kanban-text').textContent
           : element.textContent,
@@ -399,12 +446,26 @@ window.Helpers.initCustomOptionCheck();
     kanbanTitleBoard = [].slice.call(document.querySelectorAll('.kanban-title-board')),
     kanbanItem = [].slice.call(document.querySelectorAll('.kanban-item'));
 
+  const categoryIcon = {
+    '-tv': 'bx-tv',
+    '-book-content': 'bx-book-content',
+    '-door-open': 'bx-door-open',
+    '-speaker': 'bx-speaker',
+    '-bulb': 'bx-bulb',
+    '-hot': 'bx-hot',
+    fan: 'bx-wind',
+    '-light': 'bx-light',
+    '-mood': 'bx-smile',
+    '-volume': 'bx-volume',
+    '-speed': 'bx-tachometer'
+  };
   // Render custom items
   if (kanbanItem) {
     kanbanItem.forEach(function (el) {
       const element = "<h5 class='kanban-text text-center'>" + el.textContent + '</h5>';
       let img = '';
-      if (el.getAttribute('data-image') != '') {
+      if (el.getAttribute('data-image') == '') {
+        //skip img
         img =
           "<img class='img-fluid rounded mb-2' src='" +
           assetsPath +
@@ -413,9 +474,10 @@ window.Helpers.initCustomOptionCheck();
           "'>";
       } else {
         img = `
-          <i class="bx bx${el.getAttribute('data-category')} text-secondary display-6 text-center"></i>
+          <i class="bx ${categoryIcon[el.getAttribute('data-category')]} text-secondary display-6 text-center"></i>
         `;
       }
+      console.log(img);
       el.textContent = '';
       if (el.getAttribute('data-badge') !== undefined && el.getAttribute('data-category-name') !== undefined) {
         el.insertAdjacentHTML(
@@ -575,3 +637,10 @@ window.Helpers.initCustomOptionCheck();
     });
   }
 })();
+
+$(function () {
+  // setInterval(() => {
+  //   var dd = JSON.parse(Base64.decode(localStorage.getItem('d')));
+  //   console.log(dd);
+  // }, 500);
+});

@@ -282,6 +282,10 @@ public class ApiService
 
             await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson, mergedResponses.ToString(Formatting.Indented));
         }
+        else if (c_url.ToLower() == "/home/devices")
+        {
+            await _hubContext.Clients.All.SendAsync("ReceiveData", allDeviceJson.ToString(Formatting.Indented));
+        }
     }
 
 }
