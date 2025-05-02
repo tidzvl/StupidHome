@@ -186,7 +186,7 @@ function transformApiDataToKanban(apiData) {
       "<div class='d-flex justify-content-between align-items-center flex-wrap mt-2 pt-1'>" +
       "<div class='d-flex'>" +
       `<label class="switch switch-sm">
-        <input type="checkbox" class="switch-input " ${value}/>
+        <input type="checkbox" style="z-index: 10" class="switch-input " ${value} onclick="event.stopPropagation()"/>
         <span class="switch-toggle-slider">
           <span class="switch-on">
             <i class="bx bx-check"></i>
