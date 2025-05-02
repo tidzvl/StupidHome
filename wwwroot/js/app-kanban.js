@@ -72,6 +72,62 @@ function transformApiDataToKanban(apiData) {
 
   // Init kanban Offcanvas
   const kanbanOffcanvas = new bootstrap.Offcanvas(kanbanSidebar);
+  // config slide bar
+  document.querySelector('.kanban-update-item-sidebar .btn-primary').addEventListener('click', async function () {
+    const title = document.querySelector('#title').value;
+    const dueDate = document.querySelector('#due-date').value;
+    const label = document.querySelector('#label').value;
+    const pinned = document.querySelector('#pin').checked;
+    const value = document.querySelector('#slider-light');
+    const kanbanItem = document.querySelector('.kanban-item.active');
+    const eid = kanbanItem.getAttribute('data-eid');
+    const id = eid.replace('device-', '');
+
+    try {
+      const response = await fetch(API + `/postDeviceData`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          device_id: id,
+          on_off: kanbanItem.getAttribute('data-on') == 'true' ? false : true,
+          value: value ? value.noUiSlider.get() : 0,
+          pinned: pinned,
+          user_id: userId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Không thể cập nhật thiết bị. Vui lòng kiểm tra lại!');
+      }
+
+      Swal.fire({
+        title: 'Thành công!',
+        text: 'Thiết bị đã được cập nhật thành công.',
+        icon: 'success',
+        customClass: {
+          confirmButton: 'btn btn-primary'
+        },
+        buttonsStyling: false
+      });
+
+      kanbanItem.querySelector('.kanban-text').textContent = title;
+      kanbanItem.setAttribute('data-category', label);
+      kanbanItem.setAttribute('data-pinned', pinned);
+    } catch (error) {
+      console.error('Lỗi khi cập nhật thiết bị:', error);
+      Swal.fire({
+        title: 'Lỗi!',
+        text: 'Không thể cập nhật thiết bị. Vui lòng thử lại sau!',
+        icon: 'error',
+        customClass: {
+          confirmButton: 'btn btn-primary'
+        },
+        buttonsStyling: false
+      });
+    }
+  });
 
   // Get kanban data
   // var dd;
@@ -252,7 +308,11 @@ function transformApiDataToKanban(apiData) {
           : dateObj.getDate() + ' ' + dateObj.toLocaleString('vie', { month: 'long' }) + ', ' + year,
         label = element.getAttribute('data-category-name'),
         labelValue = element.getAttribute('data-category');
+      document.querySelectorAll('.kanban-item').forEach(item => {
+        item.classList.remove('active');
+      });
 
+      el.classList.add('active');
       // Show kanban offcanvas
       kanbanOffcanvas.show();
 
