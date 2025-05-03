@@ -22,6 +22,7 @@ $('.content-wrapper').block({
   }
 });
 let growthRadialChart;
+let userId = $('#user-id').val();
 (function () {
   let cardColor, headingColor, labelColor, legendColor, borderColor, shadeColor;
   if (isDarkStyle) {
@@ -340,17 +341,17 @@ $(function () {
         const da = localStorage.getItem('d');
         if (da) {
           clearInterval(interval);
-          console.log('Đã lấy dữ liệu từ localStorage');
           let response = JSON.parse(Base64.decode(localStorage.getItem('d')));
           // console.log(response[response.length - 1]['pinned_devices']);
           let data = response[response.length - 1]['pinned_devices'];
           data.forEach(function (item, index) {
             if (item.pinned == false) return;
             let last_used = calculateLastUsage(item.last_update);
-            let isChecked = item.on ? 'checked' : '';
-            let isOn = item.on ? 'success' : 'dark';
+            let isChecked = item.on_off ? 'checked' : '';
+            // console.log(item.on_off);
+            let isOn = item.on_off ? 'success' : 'dark';
             let html = `
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-4" data-eid="${item.device_id}">
               <div class="card drag-item cursor-move mb-lg-0 mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                   <label class="switch switch-success me-0">
@@ -407,14 +408,50 @@ $(function () {
   const cardEl = document.getElementById('sortable-cards');
   Sortable.create(cardEl);
 
-  $('#sortable-cards').on('change', '.price-duration-toggler', function () {
+  $('#sortable-cards').on('change', '.price-duration-toggler', async function () {
     var card = $(this).closest('.col-lg-3.col-md-6.col-sm-12.mb-4');
     var iconElement = card.find('i');
-
+    var on_off;
     if ($(this).is(':checked')) {
       iconElement.removeClass('text-dark').addClass('text-success');
+      on_off = true;
     } else {
       iconElement.removeClass('text-success').addClass('text-dark');
+      on_off = false;
+    }
+    var deviceid = card.attr('data-eid');
+    card.block({
+      message: '<div class="spinner-border spinner-border-sm text-primary" role="status"></div>',
+      css: {
+        backgroundColor: 'transparent',
+        border: '0'
+      },
+      overlayCSS: {
+        backgroundColor: '#fff',
+        opacity: 0.8
+      }
+    });
+    try {
+      const response = await customFetch(API + `/postDeviceData`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          device_id: deviceid,
+          on_off: on_off,
+          value: '0',
+          pinned: true,
+          id: userId
+        })
+      });
+      card.unblock();
+      if (!response.ok) {
+        console.log(response);
+        throw new Error('Database đã cập nhật nhưng adafruit thì hên xui!');
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật thiết bị:', error);
     }
   });
 });

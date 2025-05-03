@@ -949,6 +949,7 @@ function transformApiDataToKanban(apiData) {
         if (!response.ok) {
           throw new Error('Lỗi khi tạo phòng mới!');
         }
+        $('.room-count').html(boards.length + 1);
         Swal.fire({
           title: 'Thành công!',
           text: value + ' đã được thêm thành công.',

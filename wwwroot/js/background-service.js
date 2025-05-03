@@ -8,6 +8,7 @@
  */
 
 'use strict';
+
 ['.user-name', '.user-address', '.user-home-name'].forEach(selector => {
   $(selector).block({
     message: '<div class="spinner-border spinner-border-sm text-primary" role="status"></div>',
@@ -75,6 +76,19 @@ function logout() {
         }
       })
         .then(response => {
+          // console.log(response);
+          if (response.status === 401) {
+            Swal.fire({
+              title: 'Thông báo!',
+              text: 'Phiên đăng nhập đã hết hạn! Vui lòng đăng nhập lại!',
+              icon: 'info',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            });
+            logout();
+          }
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
@@ -89,6 +103,7 @@ function logout() {
             });
             $('.user-name').unblock();
           }
+          $('#user-id').text(data.id);
           $('.user-home-name').length > 0 ? $('.user-home-name').text(data.home_name) : '';
           $('.user-home-name').unblock();
           $('.user-address').length > 0 ? $('.user-address').text(data.address) : '';
