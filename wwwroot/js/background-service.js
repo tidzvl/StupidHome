@@ -76,7 +76,7 @@ function logout() {
         }
       })
         .then(response => {
-          // console.log(response);
+          console.log(response);
           if (response.status === 401) {
             Swal.fire({
               title: 'Thông báo!',

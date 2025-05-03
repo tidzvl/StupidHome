@@ -423,7 +423,7 @@ function transformApiDataToKanban(apiData) {
       class: 'kanban-title-button btn btn-default', // default class of the button
       footer: false // position the button on footer
     },
-    click: function (el) {
+    click: async function (el) {
       let element = el;
       console.log(element);
       let title = element.getAttribute('data-eid')
@@ -440,7 +440,8 @@ function transformApiDataToKanban(apiData) {
       document.querySelectorAll('.kanban-item').forEach(item => {
         item.classList.remove('active');
       });
-
+      const id = element.getAttribute('data-eid').replace('device-', '');
+      console.log(id);
       el.classList.add('active');
       // Show kanban offcanvas
       kanbanOffcanvas.show();
@@ -585,6 +586,42 @@ function transformApiDataToKanban(apiData) {
           <label class="form-check-label" for="pin"><i class='bx bxs-pin'></i>Ghim lên trang chủ</label>
         </div>
       `);
+      try {
+        await customFetch(API + `/getLogDevice/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(data => {
+            console.log(data);
+            var html = ``;
+            data.forEach(function (e) {
+              html += `
+                <div class="media mb-4 d-flex align-items-start">
+                  <div class="avatar me-2 flex-shrink-0 mt-1">
+                    <i class='bx bx-user rounded-circle' alt="Avatar"></i>
+                  </div>
+                  <div class="media-body">
+                    <p class="mb-0">
+                      ${e.action}<span class="fw-medium"> ${e.on_off ? 'Bật' : 'Tắt'} và ${e.value}</span>
+                    </p>
+                    <small class="text-muted">${e.time}</small>
+                  </div>
+                </div>
+              `;
+            });
+            $('#tab-activity').html(html);
+          });
+      } catch (error) {
+        console.error('Error:', error);
+      }
     },
 
     buttonClick: function (el, boardId) {
@@ -949,7 +986,7 @@ function transformApiDataToKanban(apiData) {
         if (!response.ok) {
           throw new Error('Lỗi khi tạo phòng mới!');
         }
-        $('.room-count').html(boards.length + 1);
+        $('.room-count').text(parseInt($('.room-count').text()) + 1);
         Swal.fire({
           title: 'Thành công!',
           text: value + ' đã được thêm thành công.',
