@@ -36,6 +36,10 @@ async function customFetch(url, options = {}) {
 
   return fetch(url, options);
 }
+function logout() {
+  localStorage.clear();
+  window.location.href = '/login';
+}
 (async function () {
   async function fc() {
     if (navigator.geolocation) {
@@ -77,6 +81,7 @@ async function customFetch(url, options = {}) {
           return response.json();
         })
         .then(data => {
+          if (data['admin_house'].length <= 0) window.location.href = '/Home/Pricing';
           localStorage.setItem('user', Base64.encode(JSON.stringify(data)));
           if ($('.user-name').length > 0) {
             $('.user-name').each(function (item, index) {
@@ -97,6 +102,7 @@ async function customFetch(url, options = {}) {
     await ft();
   } else {
     user = JSON.parse(Base64.decode(localStorage.getItem('user')));
+    if (user['admin_house'].length <= 0) window.location.href = '/Home/Pricing';
     if ($('.user-name').length > 0) {
       $('.user-name').each(function (item, index) {
         $(index).text(user.first_name + ' ' + user.last_name);

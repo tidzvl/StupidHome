@@ -882,8 +882,8 @@ $(function () {
       light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
       humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
       // var rooms = dd2;
-      console.log(dd2);
-      console.log(dd);
+      // console.log(dd2);
+      // console.log(dd);
       var room_data = dd[dd.length - 1]['rooms'];
       // console.log(room_data);
       if (!isLoading) {

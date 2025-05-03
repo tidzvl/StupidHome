@@ -23,11 +23,11 @@
         const currentPath = window.location.pathname;
         var user = localStorage.getItem('user');
         if (!token) {
-            if (currentPath !== '/login' && currentPath !== '/register' && currentPath !== '/') {
+            if (currentPath.toLowerCase() !== '/login' && currentPath.toLowerCase() !== '/register' && currentPath.toLowerCase() !== '/') {
                 window.location.href = '/login';
             }
         } else {
-            if (currentPath === '/login' || currentPath === '/register') {
+            if (currentPath.toLowerCase() === '/login' || currentPath.toLowerCase() === '/register') {
                 window.location.href = '/home';
             }
         }

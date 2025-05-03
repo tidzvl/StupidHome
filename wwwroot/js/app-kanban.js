@@ -113,18 +113,6 @@ function transformApiDataToKanban(apiData) {
         } else {
           defaultValue = 1;
         }
-        // console.log(
-        //   JSON.stringify({
-        //     name: title,
-        //     type: label,
-        //     brand: 'default',
-        //     value: defaultValue,
-        //     room_id: parseInt(roomid),
-        //     on_off: false,
-        //     pinned: false,
-        //     user_id: userId
-        //   })
-        // );
         const response = await customFetch(API + '/createDevice', {
           method: 'POST',
           headers: {
@@ -185,7 +173,7 @@ function transformApiDataToKanban(apiData) {
       // const title = kanbanItem.querySelector('#title').value;
       // const dueDate = kanbanItem.querySelector('#due-date').value;
       // const label = kanbanItem.querySelector('#label').value;
-      const pinned = kanbanItem.getAttribute('data-pinned') == 'true' ? true : false;
+      const pinned = sidebar.querySelector('#pin').checked;
       const value = document.querySelector('#slider-light');
       const eid = kanbanItem.getAttribute('data-eid');
       const id = eid.replace('device-', '');
@@ -208,6 +196,15 @@ function transformApiDataToKanban(apiData) {
         const e = $('[data-eid="' + eid + '"]');
         e.find('.footer-value').text(parseInt(value.noUiSlider.get()));
       }
+      console.log(
+        JSON.stringify({
+          device_id: id,
+          on_off: kanbanItem.getAttribute('data-on') == 'true' ? true : false,
+          value: value ? String(parseInt(value.noUiSlider.get())) : '0',
+          pinned: pinned,
+          id: userId
+        })
+      );
       try {
         const response = await customFetch(API + `/postDeviceData`, {
           method: 'POST',
@@ -271,8 +268,8 @@ function transformApiDataToKanban(apiData) {
   boards = transformApiDataToKanban(boards);
   console.log(boards);
   // top board
-  $('.device-count').html(boards.length);
-  $('.room-count').html(boards.reduce((count, board) => count + board.item.length, 0));
+  $('.device-count').html(boards.reduce((count, board) => count + board.item.length, 0));
+  $('.room-count').html(boards.length);
 
   // datepicker init
   if (datePicker) {
@@ -954,7 +951,7 @@ function transformApiDataToKanban(apiData) {
         }
         Swal.fire({
           title: 'Thành công!',
-          text: value + ' đã được xóa thành công.',
+          text: value + ' đã được thêm thành công.',
           icon: 'success',
           customClass: {
             confirmButton: 'btn btn-primary'

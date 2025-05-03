@@ -23,10 +23,16 @@ public class ApiService
         _hubContext = hubContext;
     }
 
-    private async Task<string> SendApiRequestAsync(string url, string token)
+    private async Task<string> SendApiRequestAsync(string url, string token, HttpMethod method = null, object body = null)
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        var request = new HttpRequestMessage(method ?? HttpMethod.Get, url);
         request.Headers.Add("Authorization", $"Bearer {token}");
+
+        if (body != null)
+        {
+            var jsonBody = JsonConvert.SerializeObject(body);
+            request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+        }
 
         var response = await _httpClient.SendAsync(request);
         if (!response.IsSuccessStatusCode)
@@ -183,9 +189,14 @@ public class ApiService
             start_time = startTime,
             end_time = endTime
         };
-
-        var timeDataResponseContent = await SendApiRequestAsync($"{_api}/sensorDataTime/{room.RoomId}", decodedToken);
-
+        // Console.WriteLine($"{timeDataRequest}");
+        // var timeDataResponseContent = await SendApiRequestAsync($"{_api}/sensorDataTime/{room.RoomId}", decodedToken);
+        var timeDataResponseContent = await SendApiRequestAsync(
+            $"{_api}/sensorDataTime/{room.RoomId}",
+            decodedToken,
+            HttpMethod.Get,
+            timeDataRequest
+        );
         if (string.IsNullOrEmpty(timeDataResponseContent))
         {
             Console.WriteLine($"Error: Empty response for room {room.RoomId}");

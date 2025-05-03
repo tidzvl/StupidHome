@@ -310,8 +310,21 @@ let growthRadialChart;
 
 $(function () {
   //get use date
-  var icon = {
-    fan: '-wind'
+  // var icon = {
+  //   fan: '-wind'
+  // };
+  const icon = {
+    '-tv': 'bx-tv',
+    '-book-content': 'bx-book-content',
+    '-door-open': 'bx-door-open',
+    '-speaker': 'bx-speaker',
+    '-bulb': 'bx-bulb',
+    ac: 'bx-cloud-snow',
+    fan: 'bx-wind',
+    light: 'bx-bulb',
+    default: 'bx-cog',
+    '-volume': 'bx-volume',
+    '-speed': 'bx-tachometer'
   };
   function calculateLastUsage(lastUpdate) {
     const diffDays = Math.ceil((new Date() - new Date(lastUpdate)) / (1000 * 60 * 60 * 24));
@@ -350,7 +363,7 @@ $(function () {
                 </div>
                 <div class="card-body text-center">
                   <h2>
-                    <i class="bx bx${icon[item.type]} text-${isOn} display-6"></i>
+                    <i class="bx ${icon[item.type]} text-${isOn} display-6"></i>
                   </h2>
                   <h5>${item.name}</h5>
                   <h6>${last_used}</h6>
