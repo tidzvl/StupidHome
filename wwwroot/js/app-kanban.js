@@ -70,62 +70,189 @@ function transformApiDataToKanban(apiData) {
     select2 = $('.select2'), // ! Using jquery vars due to select2 jQuery dependency
     assetsPath = document.querySelector('html').getAttribute('data-assets-path');
 
+  //switch box
+  document.querySelector('.kanban-update-item-sidebar').addEventListener('click', function (event) {
+    if (event.target.matches('.switch-input')) {
+      const kanbanItem = document.querySelector('.kanban-item.active');
+      if (kanbanItem) {
+        kanbanItem.setAttribute('data-on', event.target.checked ? 'true' : 'false');
+      }
+    }
+  });
   // Init kanban Offcanvas
   const kanbanOffcanvas = new bootstrap.Offcanvas(kanbanSidebar);
   // config slide bar
   document.querySelector('.kanban-update-item-sidebar .btn-primary').addEventListener('click', async function () {
-    const title = document.querySelector('#title').value;
-    const dueDate = document.querySelector('#due-date').value;
-    const label = document.querySelector('#label').value;
-    const pinned = document.querySelector('#pin').checked;
-    const value = document.querySelector('#slider-light');
+    const sidebar = document.querySelector('.kanban-update-item-sidebar');
     const kanbanItem = document.querySelector('.kanban-item.active');
-    const eid = kanbanItem.getAttribute('data-eid');
-    const id = eid.replace('device-', '');
+    // console.log(kanbanItem.getAttribute('data-pinned'));
+    if (!kanbanItem.getAttribute('data-pinned')) {
+      console.log('Device luồng tạo');
+      const title = sidebar.querySelector('#title').value;
+      const dueDate = sidebar.querySelector('#due-date').value;
+      const label = sidebar.querySelector('#label').value;
+      const eid = kanbanItem.getAttribute('data-eid');
+      const roomid = eid.replace('board-', '');
+      console.log(title, dueDate, label);
+      console.log(userId);
+      try {
+        $('.app-kanban').block({
+          message: '<div class="spinner-border spinner-border-sm text-primary" role="status"></div>',
+          css: {
+            backgroundColor: 'transparent',
+            border: '0'
+          },
+          overlayCSS: {
+            backgroundColor: '#fff',
+            opacity: 0.7
+          }
+        });
+        var defaultValue;
+        if (label == 'ac') {
+          defaultValue = 16;
+        } else {
+          defaultValue = 1;
+        }
+        // console.log(
+        //   JSON.stringify({
+        //     name: title,
+        //     type: label,
+        //     brand: 'default',
+        //     value: defaultValue,
+        //     room_id: parseInt(roomid),
+        //     on_off: false,
+        //     pinned: false,
+        //     user_id: userId
+        //   })
+        // );
+        const response = await fetch(API + '/createDevice', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: title,
+            type: label,
+            brand: 'default',
+            value: defaultValue,
+            room_id: parseInt(roomid),
+            on_off: false,
+            pinned: false,
+            user_id: userId
+          })
+        });
 
-    try {
-      const response = await fetch(API + `/postDeviceData`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          device_id: id,
-          on_off: kanbanItem.getAttribute('data-on') == 'true' ? false : true,
-          value: value ? value.noUiSlider.get() : 0,
-          pinned: pinned,
-          user_id: userId
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Không thể cập nhật thiết bị. Vui lòng kiểm tra lại!');
+        if (!response.ok) {
+          Swal.fire({
+            title: 'Lỗi!',
+            text: 'Óh oh, hãy kiểm tra backend!',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+          });
+          throw new Error('Check be pls');
+        }
+        $('.app-kanban').unblock();
+        Swal.fire({
+          title: 'Tạo thành công!',
+          text: 'Hãy cấu hình cho thiết bị của bạn!',
+          icon: 'success',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        }).then(result => {
+          if (result.isConfirmed) {
+            localStorage.removeItem('d3');
+            window.location.reload();
+          }
+        });
+      } catch (error) {
+        console.error('Error adding item:', error);
+        Swal.fire({
+          title: 'Error!',
+          text: ' Lỗi code!',
+          icon: 'error',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        });
       }
+    } else {
+      // const title = kanbanItem.querySelector('#title').value;
+      // const dueDate = kanbanItem.querySelector('#due-date').value;
+      // const label = kanbanItem.querySelector('#label').value;
+      const pinned = kanbanItem.getAttribute('data-pinned') == 'true' ? true : false;
+      const value = document.querySelector('#slider-light');
+      const eid = kanbanItem.getAttribute('data-eid');
+      const id = eid.replace('device-', '');
+      // if (kanbanItem.getAttribute('data-on') == 'true') {
+      //   $('[data-eid="'+eid+'"]').attr('data-on', false);
+      // }
+      console.log(pinned);
+      if (kanbanItem.getAttribute('data-on') == 'true') {
+        const e = $('[data-eid="' + eid + '"]');
+        e.attr('data-on', true);
+        const s = e.find('.switch-input');
+        s.prop('checked', true);
+      } else {
+        const e = $('[data-eid="' + eid + '"]');
+        e.attr('data-on', false);
+        const s = e.find('.switch-input');
+        s.prop('checked', false);
+      }
+      if (value) {
+        const e = $('[data-eid="' + eid + '"]');
+        e.find('.footer-value').text(parseInt(value.noUiSlider.get()));
+      }
+      try {
+        const response = await fetch(API + `/postDeviceData`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            device_id: id,
+            on_off: kanbanItem.getAttribute('data-on') == 'true' ? true : false,
+            value: value ? String(parseInt(value.noUiSlider.get())) : '0',
+            pinned: pinned,
+            id: userId
+          })
+        });
 
-      Swal.fire({
-        title: 'Thành công!',
-        text: 'Thiết bị đã được cập nhật thành công.',
-        icon: 'success',
-        customClass: {
-          confirmButton: 'btn btn-primary'
-        },
-        buttonsStyling: false
-      });
+        if (!response.ok) {
+          console.log(response);
+          throw new Error('Database đã cập nhật nhưng adafruit thì hên xui!');
+        }
 
-      kanbanItem.querySelector('.kanban-text').textContent = title;
-      kanbanItem.setAttribute('data-category', label);
-      kanbanItem.setAttribute('data-pinned', pinned);
-    } catch (error) {
-      console.error('Lỗi khi cập nhật thiết bị:', error);
-      Swal.fire({
-        title: 'Lỗi!',
-        text: 'Không thể cập nhật thiết bị. Vui lòng thử lại sau!',
-        icon: 'error',
-        customClass: {
-          confirmButton: 'btn btn-primary'
-        },
-        buttonsStyling: false
-      });
+        Swal.fire({
+          title: 'Thành công!',
+          text: 'Thiết bị đã được cập nhật thành công.',
+          icon: 'success',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        });
+
+        // kanbanItem.querySelector('.kanban-text').textContent = title;
+        // kanbanItem.setAttribute('data-category', label);
+        // kanbanItem.setAttribute('data-pinned', pinned);
+      } catch (error) {
+        console.error('Lỗi khi cập nhật thiết bị:', error);
+        Swal.fire({
+          title: 'Lỗi!',
+          text: 'Database đã cập nhật nhưng adafruit thì hên xui!',
+          icon: 'error',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        });
+      }
     }
   });
 
@@ -183,15 +310,15 @@ function transformApiDataToKanban(apiData) {
   }
 
   // Comment editor
-  if (commentEditor) {
-    new Quill(commentEditor, {
-      modules: {
-        toolbar: '.comment-toolbar'
-      },
-      placeholder: 'Nhập chú thích ... ',
-      theme: 'snow'
-    });
-  }
+  // if (commentEditor) {
+  //   new Quill(commentEditor, {
+  //     modules: {
+  //       toolbar: '.comment-toolbar'
+  //     },
+  //     placeholder: 'Nhập chú thích ... ',
+  //     theme: 'snow'
+  //   });
+  // }
 
   // Render board dropdown
   function renderBoardDropdown() {
@@ -221,7 +348,7 @@ function transformApiDataToKanban(apiData) {
   function renderHeader(category, categoryName) {
     // console.log(category, ',', categoryName);
     var color = {
-      '-tv': 'success',
+      ac: 'info',
       '-book-content': 'primary',
       fan: 'info',
       '-door-open': 'danger',
@@ -244,7 +371,7 @@ function transformApiDataToKanban(apiData) {
   }
 
   // Render footer
-  function renderFooter(on, temp, light) {
+  function renderFooter(on, temp, light, speed) {
     let value;
     if (on == 'true') {
       value = 'checked';
@@ -253,18 +380,23 @@ function transformApiDataToKanban(apiData) {
     }
     if (temp > 0) {
       var html = `
-      <span class="switch-label"><i class='bx bxs-thermometer'></i>${temp}</span>
+      <span class="switch-label"><i class='bx bxs-thermometer'></i><span class="footer-value">${temp}</span></span>
       `;
     } else if (light > 0) {
       var html = `
-        <span class="switch-label"><i class='bx bx-bulb'></i>${light}</span>
+        <span class="switch-label"><i class='bx bx-bulb'></i><span class="footer-value">${light}</span></span>
+      `;
+    } else if (speed > 0) {
+      var html = `
+        <span class="switch-label"><i class='bx bx-tachometer'></i><span class="footer-value">${speed}</span></span>
       `;
     }
     return (
+      //<input type="checkbox" style="z-index: 10" class="switch-input " ${value} onclick="event.stopPropagation()"/> dùng nếu cần bật tắt trực tiếp
       "<div class='d-flex justify-content-between align-items-center flex-wrap mt-2 pt-1'>" +
       "<div class='d-flex'>" +
       `<label class="switch switch-sm">
-        <input type="checkbox" style="z-index: 10" class="switch-input " ${value} onclick="event.stopPropagation()"/>
+        <input type="checkbox" class="switch-input " ${value} onclick="event.stopPropagation()"/>
         <span class="switch-toggle-slider">
           <span class="switch-on">
             <i class="bx bx-check"></i>
@@ -350,11 +482,11 @@ function transformApiDataToKanban(apiData) {
         $('.optional').append(`
           <div class="mb-2">
             <label class="form-label">Chọn Nhiệt Độ</label>
-            <div id="slider-pips" class="my-3"></div>
+            <div id="slider-light" class="my-3"></div>
           </div>
         `);
         // Render AC
-        noUiSlider.create(document.getElementById('slider-pips'), {
+        noUiSlider.create(document.getElementById('slider-light'), {
           start: [temp],
           behaviour: 'tap-drag',
           step: 1,
@@ -478,78 +610,88 @@ function transformApiDataToKanban(apiData) {
         );
         kanban.addElement(boardId, {
           title: "<h5 class='kanban-text'>" + e.target[0].value + '</h5>',
-          id: boardId + '-' + currentBoard.length + 1
+          // id: boardId + '-' + currentBoard.length + 1
+          id: boardId
         });
-        const newItemTitle = e.target[0].value;
-        const id = boardId.replace('board-', '');
+        // const newItemTitle = e.target[0].value;
+        // const id = boardId.replace('board-', '');
         // console.log(userId);
-        try {
-          $('.app-kanban').block({
-            message: '<div class="spinner-border spinner-border-sm text-primary" role="status"></div>',
-            css: {
-              backgroundColor: 'transparent',
-              border: '0'
-            },
-            overlayCSS: {
-              backgroundColor: '#fff',
-              opacity: 0.7
-            }
-          });
-          const response = await fetch(API + '/createDevice', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              name: newItemTitle,
-              type: 'default',
-              brand: 'default',
-              value: 0,
-              room_id: id,
-              on_off: false,
-              pinned: false,
-              user_id: userId
-            })
-          });
+        // try {
+        //   $('.app-kanban').block({
+        //     message: '<div class="spinner-border spinner-border-sm text-primary" role="status"></div>',
+        //     css: {
+        //       backgroundColor: 'transparent',
+        //       border: '0'
+        //     },
+        //     overlayCSS: {
+        //       backgroundColor: '#fff',
+        //       opacity: 0.7
+        //     }
+        //   });
+        //   const response = await fetch(API + '/createDevice', {
+        //     method: 'POST',
+        //     headers: {
+        //       'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //       name: newItemTitle,
+        //       type: 'default',
+        //       brand: 'default',
+        //       value: 0,
+        //       room_id: id,
+        //       on_off: false,
+        //       pinned: false,
+        //       user_id: userId
+        //     })
+        //   });
 
-          if (!response.ok) {
-            Swal.fire({
-              title: 'Lỗi!',
-              text: 'Óh oh, hãy kiểm tra backend!',
-              icon: 'error',
-              customClass: {
-                confirmButton: 'btn btn-primary'
-              },
-              buttonsStyling: false
-            });
-            throw new Error('Check be pls');
-          }
-          $('.app-kanban').unblock();
-          Swal.fire({
-            title: 'Tạo thành công!',
-            text: 'Hãy cấu hình cho thiết bị của bạn!',
-            icon: 'success',
-            customClass: {
-              confirmButton: 'btn btn-primary'
-            },
-            buttonsStyling: false
-          }).then(result => {
-            if (result.isConfirmed) {
-              window.location.reload();
-            }
-          });
-        } catch (error) {
-          console.error('Error adding item:', error);
-          Swal.fire({
-            title: 'Error!',
-            text: ' Lỗi code!',
-            icon: 'error',
-            customClass: {
-              confirmButton: 'btn btn-primary'
-            },
-            buttonsStyling: false
-          });
-        }
+        //   if (!response.ok) {
+        //     Swal.fire({
+        //       title: 'Lỗi!',
+        //       text: 'Óh oh, hãy kiểm tra backend!',
+        //       icon: 'error',
+        //       customClass: {
+        //         confirmButton: 'btn btn-primary'
+        //       },
+        //       buttonsStyling: false
+        //     });
+        //     throw new Error('Check be pls');
+        //   }
+        //   $('.app-kanban').unblock();
+        //   Swal.fire({
+        //     title: 'Tạo thành công!',
+        //     text: 'Hãy cấu hình cho thiết bị của bạn!',
+        //     icon: 'success',
+        //     customClass: {
+        //       confirmButton: 'btn btn-primary'
+        //     },
+        //     buttonsStyling: false
+        //   }).then(result => {
+        //     if (result.isConfirmed) {
+        //       window.location.reload();
+        //     }
+        //   });
+        // } catch (error) {
+        //   console.error('Error adding item:', error);
+        //   Swal.fire({
+        //     title: 'Error!',
+        //     text: ' Lỗi code!',
+        //     icon: 'error',
+        //     customClass: {
+        //       confirmButton: 'btn btn-primary'
+        //     },
+        //     buttonsStyling: false
+        //   });
+        // }
+        Swal.fire({
+          title: 'Tạo thành công!',
+          text: 'Hãy cấu hình cho thiết bị của bạn!',
+          icon: 'success',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        });
         // add dropdown in new boards
         const kanbanText = [].slice.call(
           document.querySelectorAll('.kanban-board[data-id=' + boardId + '] .kanban-text')
@@ -603,7 +745,7 @@ function transformApiDataToKanban(apiData) {
     '-door-open': 'bx-door-open',
     '-speaker': 'bx-speaker',
     '-bulb': 'bx-bulb',
-    '-hot': 'bx-hot',
+    ac: 'bx-cloud-snow',
     fan: 'bx-wind',
     light: 'bx-bulb',
     default: 'bx-cog',
@@ -643,7 +785,12 @@ function transformApiDataToKanban(apiData) {
       ) {
         el.insertAdjacentHTML(
           'beforeend',
-          renderFooter(el.getAttribute('data-on'), el.getAttribute('data-temp'), el.getAttribute('data-light'))
+          renderFooter(
+            el.getAttribute('data-on'),
+            el.getAttribute('data-temp'),
+            el.getAttribute('data-light'),
+            el.getAttribute('data-speed')
+          )
         );
       }
     });
@@ -862,9 +1009,9 @@ function transformApiDataToKanban(apiData) {
   }
 
   // Clear comment editor on close
-  kanbanSidebar.addEventListener('hidden.bs.offcanvas', function () {
-    kanbanSidebar.querySelector('.ql-editor').firstElementChild.innerHTML = '';
-  });
+  // kanbanSidebar.addEventListener('hidden.bs.offcanvas', function () {
+  //   kanbanSidebar.querySelector('.ql-editor').firstElementChild.innerHTML = '';
+  // });
 
   // Re-init tooltip when offcanvas opens(Bootstrap bug)
   if (kanbanSidebar) {

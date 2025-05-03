@@ -10,6 +10,8 @@ public class ApiService
     private readonly HttpClient _httpClient;
     private readonly IHubContext<StupidHomeHub> _hubContext;
     private string _api = "http://127.0.0.1:8000/api/v1";
+    private string finalJson = string.Empty;
+    private JArray mergedResponses = new JArray();
     // private string _previousData;
     // private JObject _cachedUserJson;
     // private string _cachedHouseId;
@@ -134,8 +136,6 @@ public class ApiService
         if (allDevice == "") return;
         var allDeviceJson = JArray.Parse(allDevice);
         if (allDeviceJson == null) return;
-        string finalJson = string.Empty;
-        JArray mergedResponses = new JArray();
         // foreach (var room in allDeviceJson)
         // {
         //     var sensorTasks = allDeviceJson.Select(async room =>
