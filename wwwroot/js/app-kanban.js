@@ -125,7 +125,7 @@ function transformApiDataToKanban(apiData) {
         //     user_id: userId
         //   })
         // );
-        const response = await fetch(API + '/createDevice', {
+        const response = await customFetch(API + '/createDevice', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -209,7 +209,7 @@ function transformApiDataToKanban(apiData) {
         e.find('.footer-value').text(parseInt(value.noUiSlider.get()));
       }
       try {
-        const response = await fetch(API + `/postDeviceData`, {
+        const response = await customFetch(API + `/postDeviceData`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -875,7 +875,7 @@ function transformApiDataToKanban(apiData) {
 
         if (confirmDelete.isConfirmed) {
           try {
-            const response = await fetch(API + `/deleteDevice/${id}`, {
+            const response = await customFetch(API + `/deleteDevice/${id}`, {
               method: 'DELETE',
               headers: {
                 'Content-Type': 'application/json'
@@ -939,7 +939,7 @@ function transformApiDataToKanban(apiData) {
         }
       ]);
       try {
-        const response = await fetch(API + '/createRoom', {
+        const response = await customFetch(API + '/createRoom', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

@@ -20,7 +20,8 @@ public class RealtimeDataService : BackgroundService
             {
               var currentUrl = StupidHomeHub.CurrentUrl;
               var user = StupidHomeHub.User;
-              await _apiService.FetchAndSendDataAsync(currentUrl, user);
+              var token = StupidHomeHub.Token;
+              await _apiService.FetchAndSendDataAsync(currentUrl, user, token);
             }
 
             await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);

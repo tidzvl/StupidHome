@@ -22,6 +22,20 @@
   });
 });
 const API = document.querySelector('#domain').value;
+async function customFetch(url, options = {}) {
+  const token = Base64.decode(localStorage.getItem('t'));
+  const defaultHeaders = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
+  };
+
+  options.headers = {
+    ...defaultHeaders,
+    ...options.headers
+  };
+
+  return fetch(url, options);
+}
 (async function () {
   async function fc() {
     if (navigator.geolocation) {
@@ -117,8 +131,8 @@ const API = document.querySelector('#domain').value;
   connection
     .start()
     .then(() => {
-      console.log(currentUrl, localStorage.getItem('user'));
-      connection.invoke('SetCurrentUrl', currentUrl, localStorage.getItem('user'));
+      // console.log(currentUrl, localStorage.getItem('user'), localStorage.getItem('t'));
+      connection.invoke('SetCurrentUrl', currentUrl, localStorage.getItem('user'), localStorage.getItem('t'));
     })
     .catch(err => console.error(err));
 })();

@@ -23,7 +23,22 @@ public class ApiService
         _hubContext = hubContext;
     }
 
-    private async Task<string> GenerateFinalJsonAsync(JArray allDeviceJson)
+    private async Task<string> SendApiRequestAsync(string url, string token)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Add("Authorization", $"Bearer {token}");
+
+        var response = await _httpClient.SendAsync(request);
+        if (!response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Error fetching data: {response.StatusCode} - {response.ReasonPhrase}");
+            return string.Empty;
+        }
+
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    private async Task<string> GenerateFinalJsonAsync(JArray allDeviceJson, string token)
     {
         var roomIds = allDeviceJson.Select(room => room["room_id"]?.ToString())
                                   .Where(roomId => !string.IsNullOrEmpty(roomId))
@@ -33,7 +48,8 @@ public class ApiService
         {
             try
             {
-                var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{roomId}");
+                var roomSensorData = await SendApiRequestAsync($"{_api}/getRoomSensorData/{roomId}", token);
+                // if (string.IsNullOrEmpty(roomSensorData)) return;
                 return new { RoomId = roomId, Sensors = JArray.Parse(roomSensorData) };
             }
             catch (Exception ex)
@@ -120,7 +136,7 @@ public class ApiService
         return finalJsonArray.ToString(Formatting.Indented);
     }
 
-    public async Task FetchAndSendDataAsync(string c_url, string user)
+    public async Task FetchAndSendDataAsync(string c_url, string user, string token)
     {
         if(user == null || c_url == null) return;
         byte[] u_db = Convert.FromBase64String(user);
@@ -132,39 +148,16 @@ public class ApiService
             var houseArray = JArray.Parse(house_id);
             house_id = houseArray.FirstOrDefault()?.ToString();
         }
-        var allDevice = await _httpClient.GetStringAsync($"{_api}/getAllDevices/{house_id}");
+        byte[] tokenBytes = Convert.FromBase64String(token);
+        string decodedToken = Encoding.UTF8.GetString(tokenBytes);
+        var allDevice = await SendApiRequestAsync($"{_api}/getAllDevices/{house_id}", decodedToken);
+        if (string.IsNullOrEmpty(allDevice)) return;
         if (allDevice == "") return;
         var allDeviceJson = JArray.Parse(allDevice);
         if (allDeviceJson == null) return;
-        // foreach (var room in allDeviceJson)
-        // {
-        //     var sensorTasks = allDeviceJson.Select(async room =>
-        //     {
-        //         var roomId = room["room_id"]?.ToString();
-        //         if (!string.IsNullOrEmpty(roomId))
-        //         {
-        //             try
-        //             {
-        //                 var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{roomId}");
-        //                 if (!string.IsNullOrEmpty(roomSensorData))
-        //                 {
-        //                     var sensorDataJson = JArray.Parse(roomSensorData);
-        //                     room["sensors"] = sensorDataJson;
-        //                 }
-        //             }
-        //             catch (Exception ex)
-        //             {
-        //                 Console.WriteLine($"Error fetching sensor data for room {roomId}: {ex.Message}");
-        //             }
-        //         }
-        //     });
-
-        //     await Task.WhenAll(sensorTasks);
-        // }
-        // var finalJson2 = allDeviceJson.ToString(Formatting.Indented);
 
         if (c_url.ToLower() == "/home"){
-          finalJson = await GenerateFinalJsonAsync(allDeviceJson);
+          finalJson = await GenerateFinalJsonAsync(allDeviceJson, decodedToken);
           await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson);
         }
         else if (c_url.ToLower() == "/home/analytics")
@@ -182,57 +175,37 @@ public class ApiService
 
             var sensorTasks = roomData.Select(async room =>
             {
-                    // var roomSensorData = await _httpClient.GetStringAsync($"{_api}/getRoomSensorData/{room.RoomId}");
-                    // JArray sensorDataJson;
 
-                    // if (!string.IsNullOrEmpty(roomSensorData) && roomSensorData.TrimStart().StartsWith("["))
-                    // {
-                    //     sensorDataJson = JArray.Parse(roomSensorData);
-                    // }
-                    // else
-                    // {
-                    //     sensorDataJson = new JArray();
-                    // }
-
+                  try{
                     var timeDataRequest = new
-                    {
-                        room_id = room.RoomId,
-                        start_time = startTime,
-                        end_time = endTime
-                    };
+        {
+            room_id = room.RoomId,
+            start_time = startTime,
+            end_time = endTime
+        };
 
-                    var timeDataUrl = $"{_api}/sensorDataTime/{room.RoomId}";
-                    var request = new HttpRequestMessage(HttpMethod.Get, timeDataUrl)
-                    {
-                        Content = new StringContent(JsonConvert.SerializeObject(timeDataRequest), Encoding.UTF8, "application/json")
-                    };
+        var timeDataResponseContent = await SendApiRequestAsync($"{_api}/sensorDataTime/{room.RoomId}", decodedToken);
 
-                    try
-                    {
-                        var timeDataResponse = await _httpClient.SendAsync(request);
+        if (string.IsNullOrEmpty(timeDataResponseContent))
+        {
+            Console.WriteLine($"Error: Empty response for room {room.RoomId}");
+            return new JObject
+            {
+                ["room_id"] = room.RoomId,
+                ["room_title"] = room.RoomTitle,
+                ["merged_data"] = new JArray()
+            };
+        }
 
-                        if (!timeDataResponse.IsSuccessStatusCode)
-                        {
-                            Console.WriteLine($"Error fetching time data for room {room.RoomId}: {timeDataResponse.StatusCode} - {timeDataResponse.ReasonPhrase}");
-                            return new JObject
-                            {
-                                ["room_id"] = room.RoomId,
-                                ["room_title"] = room.RoomTitle,
-                                ["merged_data"] = new JArray()
-                            };
-                        }
-
-                        var timeDataResponseContent = await timeDataResponse.Content.ReadAsStringAsync();
-                        JArray timeDataJson;
-
-                        if (!string.IsNullOrEmpty(timeDataResponseContent) && timeDataResponseContent.TrimStart().StartsWith("["))
-                        {
-                            timeDataJson = JArray.Parse(timeDataResponseContent);
-                        }
-                        else
-                        {
-                            timeDataJson = new JArray();
-                        }
+        JArray timeDataJson;
+        if (timeDataResponseContent.TrimStart().StartsWith("["))
+        {
+            timeDataJson = JArray.Parse(timeDataResponseContent);
+        }
+        else
+        {
+            timeDataJson = new JArray();
+        }
 
                         var mergedData = timeDataJson
                             .GroupBy(sensor => sensor["type"]?.ToString() ?? "Unknown")
@@ -280,7 +253,7 @@ public class ApiService
                 .OfType<JObject>()
                 .ToList();
 
-            finalJson = await GenerateFinalJsonAsync(allDeviceJson);
+            finalJson = await GenerateFinalJsonAsync(allDeviceJson, decodedToken);
 
             await _hubContext.Clients.All.SendAsync("ReceiveData", finalJson, mergedResponses.ToString(Formatting.Indented));
         }
