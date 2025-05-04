@@ -91,6 +91,28 @@ function processData(jsonData, option) {
     });
 
     return cleanedData;
+  } else if (option === 'weeks') {
+    const startOfMonth = new Date(now);
+    startOfMonth.setDate(now.getDate() - 15);
+
+    const filteredData = jsonData.filter(item => {
+      const itemDate = new Date(item.time);
+      return itemDate >= startOfMonth && itemDate <= now;
+    });
+
+    const groupedByDate = filteredData.reduce((acc, item) => {
+      const date = new Date(item.time).toISOString().split('T')[0];
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(item.value);
+      return acc;
+    }, {});
+
+    const cleanedData = Object.entries(groupedByDate).map(([date, values]) => {
+      const average = values.reduce((sum, val) => sum + val, 0) / values.length;
+      return { date, average: parseFloat(average.toFixed(2)) };
+    });
+
+    return cleanedData;
   } else if (option === 'month') {
     const startOfMonth = new Date(now);
     startOfMonth.setDate(now.getDate() - 30);
@@ -319,6 +341,9 @@ function updateApexChartDataForLastWeek(jsonData, chartInstance) {
 }
 
 let cardColor, borderColor, shadeColor, labelColor, headingColor;
+const yellowColor = '#ffe800';
+const yellowGreen = '#b2ff59';
+const kWLabel = '#836AF9';
 (function () {
   if (isDarkStyle) {
     cardColor = config.colors_dark.cardColor;
@@ -335,9 +360,6 @@ let cardColor, borderColor, shadeColor, labelColor, headingColor;
   }
 
   // Color Variables
-  const yellowColor = '#ffe800';
-  const yellowGreen = '#b2ff59';
-  const kWLabel = '#836AF9';
   let gridColor, tickColor;
   if (isDarkStyle) {
     borderColor = 'rgba(100, 100, 100, 1)';
@@ -1391,6 +1413,7 @@ $(function () {
                             </div>
                           </div>
                           <div class="card-body p-0">
+                            <h5 class="card-title mb-0">Đang nghiên cứu cách tính tiền điện. Sẽ update sau</h5>
                             <div id="lineChart-${room_title}"></div>
                           </div>
                         </div>
@@ -1417,6 +1440,7 @@ $(function () {
           $('.tab-content').append(html);
           // const registrationChartEl = document.querySelector('#registrationsChart-' + room_title);
           // console.log(registrationChartEl);
+          var temp, humi, light, pir;
           element['time_data'].forEach(e => {
             var c = processData(e['data'], 'week');
             // console.log(room_title);
@@ -1425,6 +1449,7 @@ $(function () {
               categories = updateApexChartData(c)[1];
             // console.log(series, categories);
             if (e['type'] === 'temperature') {
+              temp = processData(e['data'], 'weeks');
               $('.temp-avg-' + room_title).text(calculateAverage(c));
               const registrationChartEl = document.querySelector('#registrationsChart-' + room_title),
                 registrationChartConfig = {
@@ -1490,6 +1515,7 @@ $(function () {
                 registrationChartRoom.render();
               }
             } else if (e['type'] === 'humidity') {
+              humi = processData(e['data'], 'weeks');
               $('.humidity-avg-' + room_title).text(calculateAverage(c));
               const expensesChartEl = document.querySelector('#expensesChart-' + room_title),
                 expensesChartConfig = {
@@ -1555,6 +1581,7 @@ $(function () {
                 expensesChartRoom.render();
               }
             } else if (e['type'] === 'pir') {
+              pir = processData(e['data'], 'weeks');
               $('.pir-' + room_title).text(calculateAverage(c));
               const usersChartEl = document.querySelector('#action-' + room_title),
                 usersChartConfig = {
@@ -1619,8 +1646,186 @@ $(function () {
                 const usersChartRoom = new ApexCharts(usersChartEl, usersChartConfig);
                 usersChartRoom.render();
               }
+            } else if (e['type'] === 'light') {
+              light = processData(e['data'], 'weeks');
             }
           });
+          console.log(temp, humi, light, pir);
+          var lineChartJSRoom = document.querySelector('#lineChartJS-' + room_title);
+          console.log(lineChartJSRoom);
+          if (lineChartJSRoom) {
+            if (lineChartJSRoom.chartInstance) {
+              lineChartJSRoom.chartInstance.destroy();
+            }
+            var lineChartVarRoom = new Chart(lineChartJSRoom, {
+              type: 'line',
+              data: {
+                labels: temp
+                  ? temp
+                      .sort((a, b) => new Date(a.date) - new Date(b.date))
+                      .map(item => {
+                        const [year, month, day] = item.date.split('-');
+                        return `${day}/${month}`;
+                      })
+                  : [],
+                datasets: [
+                  {
+                    data: temp
+                      ? temp.sort((a, b) => new Date(a.date) - new Date(b.date)).map(item => item.average)
+                      : [],
+                    label: 'Nhiệt độ',
+                    borderColor: config.colors.danger,
+                    tension: 0.5,
+                    pointStyle: 'circle',
+                    backgroundColor: config.colors.danger,
+                    fill: false,
+                    pointRadius: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBorderWidth: 5,
+                    pointBorderColor: 'transparent',
+                    pointHoverBorderColor: cardColor,
+                    pointHoverBackgroundColor: config.colors.danger
+                  },
+                  {
+                    data: humi
+                      ? humi.sort((a, b) => new Date(a.date) - new Date(b.date)).map(item => item.average)
+                      : [],
+                    label: 'Độ ẩm',
+                    borderColor: config.colors.primary,
+                    tension: 0.5,
+                    pointStyle: 'circle',
+                    backgroundColor: config.colors.primary,
+                    fill: false,
+                    pointRadius: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBorderWidth: 5,
+                    pointBorderColor: 'transparent',
+                    pointHoverBorderColor: cardColor,
+                    pointHoverBackgroundColor: config.colors.primary
+                  },
+                  {
+                    data: light
+                      ? light.sort((a, b) => new Date(a.date) - new Date(b.date)).map(item => item.average)
+                      : [],
+                    label: 'Độ sáng',
+                    borderColor: yellowColor,
+                    tension: 0.5,
+                    pointStyle: 'circle',
+                    backgroundColor: yellowColor,
+                    fill: false,
+                    pointRadius: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBorderWidth: 5,
+                    pointBorderColor: 'transparent',
+                    pointHoverBorderColor: cardColor,
+                    pointHoverBackgroundColor: yellowColor
+                  },
+                  {
+                    data: pir ? pir.sort((a, b) => new Date(a.date) - new Date(b.date)).map(item => item.average) : [],
+                    label: 'Chuyển động',
+                    borderColor: yellowGreen,
+                    tension: 0.5,
+                    pointStyle: 'circle',
+                    backgroundColor: yellowGreen,
+                    fill: false,
+                    pointRadius: 1,
+                    pointHoverRadius: 5,
+                    pointHoverBorderWidth: 5,
+                    pointBorderColor: 'transparent',
+                    pointHoverBorderColor: cardColor,
+                    pointHoverBackgroundColor: yellowGreen
+                    // },
+                    // {
+                    //   data: [
+                    //     //that be data max(device in day in room)
+                    //     { x: 3, y: 15, r: 10, name: 'Quạt' },
+                    //     { x: 7, y: 35, r: 8, name: 'Máy bơm' },
+                    //     { x: 10, y: 20, r: 12, name: 'Quạt' }
+                    //   ],
+                    //   type: 'bubble',
+                    //   label: 'Tiêu thụ',
+                    //   backgroundColor: kWLabel,
+                    //   borderColor: kWLabel,
+                    //   borderWidth: 1
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  x: {
+                    grid: {
+                      color: borderColor,
+                      drawBorder: false,
+                      borderColor: borderColor
+                    },
+                    ticks: {
+                      color: labelColor
+                    }
+                  },
+                  y: {
+                    scaleLabel: {
+                      display: true
+                    },
+                    min: 0,
+                    max: 100,
+                    ticks: {
+                      color: labelColor,
+                      stepSize: 25
+                    },
+                    grid: {
+                      color: borderColor,
+                      drawBorder: false,
+                      borderColor: borderColor
+                    }
+                  }
+                },
+                plugins: {
+                  // tooltip: {
+                  //   rtl: isRtl,
+                  //   backgroundColor: cardColor,
+                  //   titleColor: headingColor,
+                  //   bodyColor: headingColor,
+                  //   borderWidth: 1,
+                  //   borderColor: borderColor,
+                  //   callbacks: {
+                  //     label: function (context) {
+                  //       const name = context.raw.name;
+                  //       return name + ': ' + context.raw.y + 'kW' || '';
+                  //     }
+                  //   }
+                  tooltip: {
+                    enabled: true,
+                    backgroundColor: cardColor,
+                    titleColor: headingColor,
+                    bodyColor: headingColor,
+                    borderWidth: 1,
+                    borderColor: borderColor,
+                    callbacks: {
+                      label: function (context) {
+                        const value = context.raw;
+                        return `${context.dataset.label}: ${value}`;
+                      }
+                    }
+                  },
+                  legend: {
+                    position: 'top',
+                    align: 'start',
+                    rtl: isRtl,
+                    labels: {
+                      usePointStyle: true,
+                      padding: 35,
+                      boxWidth: 6,
+                      boxHeight: 6,
+                      color: labelColor
+                    }
+                  }
+                }
+              }
+            });
+            lineChartJSRoom.chartInstance = lineChartVarRoom;
+          }
         });
 
         isLoading = true;
