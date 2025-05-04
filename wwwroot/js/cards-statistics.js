@@ -39,7 +39,87 @@ function calculateTotal(data) {
   return parseFloat(total.toFixed(0));
 }
 
+function processData(jsonData, option) {
+  const now = new Date();
+  // now.setDate(now.getDate() + 1);
+  // console.log(now);
+  if (option === 'day') {
+    const startOfDay = new Date(now);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const filteredData = jsonData.filter(item => {
+      const itemDate = new Date(item.time);
+      return itemDate >= startOfDay && itemDate <= endOfDay;
+    });
+
+    const groupedByHour = filteredData.reduce((acc, item) => {
+      const hour = new Date(item.time).getHours();
+      if (!acc[hour]) acc[hour] = [];
+      acc[hour].push(item.value);
+      return acc;
+    }, {});
+
+    const cleanedData = Object.entries(groupedByHour).map(([hour, values]) => {
+      const average = values.reduce((sum, val) => sum + val, 0) / values.length;
+      return { hour: parseInt(hour), average: parseFloat(average.toFixed(2)) };
+    });
+
+    return cleanedData;
+  } else if (option === 'week') {
+    // const startOfWeek = new Date(now);
+    // startOfWeek.setDate(now.getDate() - 7);
+    const now = new Date();
+    const startOfWeek = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 6));
+    // console.log(now);
+    const filteredData = jsonData.filter(item => {
+      const itemDate = new Date(item.time);
+      return itemDate >= startOfWeek && itemDate <= now;
+    });
+    const groupedByDate = filteredData.reduce((acc, item) => {
+      const date = new Date(item.time).toISOString().split('T')[0];
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(item.value);
+      return acc;
+    }, {});
+    console.log(groupedByDate);
+    const cleanedData = Object.entries(groupedByDate).map(([date, values]) => {
+      const average = values.reduce((sum, val) => sum + val, 0) / values.length;
+      return { date, average: parseFloat(average.toFixed(2)) };
+    });
+
+    return cleanedData;
+  } else if (option === 'month') {
+    const startOfMonth = new Date(now);
+    startOfMonth.setDate(now.getDate() - 30);
+
+    const filteredData = jsonData.filter(item => {
+      const itemDate = new Date(item.time);
+      return itemDate >= startOfMonth && itemDate <= now;
+    });
+
+    const groupedByDate = filteredData.reduce((acc, item) => {
+      const date = new Date(item.time).toISOString().split('T')[0];
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(item.value);
+      return acc;
+    }, {});
+
+    const cleanedData = Object.entries(groupedByDate).map(([date, values]) => {
+      const average = values.reduce((sum, val) => sum + val, 0) / values.length;
+      return { date, average: parseFloat(average.toFixed(2)) };
+    });
+
+    return cleanedData;
+  } else {
+    throw new Error("Invalid option. Use 'day', 'week', or 'month'.");
+  }
+}
+
 function processRoomData(dd2) {
+  //data to now week
   const aggregatedData = {};
 
   dd2.forEach(room => {
@@ -85,6 +165,7 @@ function processRoomData(dd2) {
 }
 
 function processRoomDataForLastWeek(dd2) {
+  //data to last week
   const aggregatedData = {};
 
   const today = new Date();
@@ -171,7 +252,7 @@ function updateApexChartData(jsonData, chartInstance) {
     });
     return date ? parseFloat(date.average.toFixed(2)) : 0;
   });
-
+  if (chartInstance == null) return [seriesData, categories];
   chartInstance.updateOptions({
     xaxis: {
       categories: categories
@@ -237,8 +318,8 @@ function updateApexChartDataForLastWeek(jsonData, chartInstance) {
   });
 }
 
+let cardColor, borderColor, shadeColor, labelColor, headingColor;
 (function () {
-  let cardColor, borderColor, shadeColor, labelColor, headingColor;
   if (isDarkStyle) {
     cardColor = config.colors_dark.cardColor;
     labelColor = config.colors_dark.textMuted;
@@ -1104,7 +1185,7 @@ $(function () {
       // console.log(room_data);
       if (!isLoading) {
         dd2.forEach(element => {
-          // console.log(element);
+          console.log(element);
           var room_title = element.room_title.replace(/\s+/g, '-');
           var r_d = room_data.find(r => r.room_id === element.room_id)['now'];
           $('.nav.nav-tabs').append(`
@@ -1159,7 +1240,7 @@ $(function () {
                       <small class="text-muted">Nhiệt độ nhà trong tuần qua</small>
                     </div>
                     <div class="d-flex flex-row gap-2">
-                      <h5 class="mb-0 temp-avg-${room_title}">20°C</h5>
+                      <h5 class="mb-0"><span class="temp-avg-${room_title}">-</span>°C</h5>
                       <span class="badge bg-label-success temp-percent-${room_title}">+2%</span>
                     </div>
                   </div>
@@ -1196,7 +1277,7 @@ $(function () {
                       <small class="text-muted">Độ ẩm nhà trong tuần qua</small>
                     </div>
                     <div class="d-flex flex-row gap-2">
-                      <h5 class="mb-0 humidity-avg-${room_title}">65%</h5>
+                      <h5 class="mb-0"><span class="humidity-avg-${room_title}">-</span>%</h5>
                       <span class="badge bg-label-danger humidity-percent-${room_title}">-18%</span>
                     </div>
                   </div>
@@ -1223,95 +1304,329 @@ $(function () {
               </div>
             `;
           }
-          html_postfix += `
-          </div>
-          </div>
-          <div class="alert alert-success" role="alert">
-        <h3 class="mb-4">Tóm tắt</h3>
-        <div class="row ">
-          <div class="col-xl-12 col-12 mb-4">
-            <div class="card mb-4">
-              <div class="row row-bordered m-0">
-                <div class="col-md-4 col-12 px-0">
-                  <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Tuần Này</h5>
+          if (r_d.find(r => r.type === 'pir')) {
+            console.log(
+              room_title,
+              r_d.find(r => r.type === 'pir')
+            );
+            html_postfix += `
+              <div class="col-lg-4 col-md-6 col-sm-6 mb-0">
+                <div class="card">
+                  <div class="card-header d-flex align-items-start justify-content-between">
+                    <div class="m-0 me-2">
+                      <h5 class="card-title mb-0">Hoạt Động</h5>
+                      <small class="text-muted">Tương tác của người dùng</small>
+                    </div>
+                    <div class="d-flex flex-row gap-2">
+                      <h5 class="mb-0"><span class="pir-${room_title}">-</span>/d</h5>
+                      <span class="badge bg-label-success">+67%</span>
+                    </div>
                   </div>
                   <div class="card-body">
-                    <p class="mb-4">Hãy xem thử báo cáo về mức độ tiêu thụ năng lượng của bạn xem phung phí thế nào nhé!</p>
-                    <ul class="list-unstyled m-0 pt-0">
-                      <li class="mb-4">
-                        <div class="d-flex align-items-center mb-2">
-                          <div class="avatar avatar-sm flex-shrink-0 me-2">
-                            <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-trending-up"></i></span>
-                          </div>
-                          <div>
-                            <p class="mb-0 lh-1 text-muted text-nowrap">So Với Tuần Trước</p>
-                            <small class="fw-medium text-nowrap">84,789%</small>
-                          </div>
-                        </div>
-                        <div class="progress" style="height:6px;">
-                          <div class="progress-bar bg-primary" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="d-flex align-items-center mb-2">
-                          <div class="avatar avatar-sm flex-shrink-0 me-2">
-                            <span class="avatar-initial rounded bg-label-success"><i class="bx bx-dollar"></i></span>
-                          </div>
-                          <div>
-                            <p class="mb-0 lh-1 text-muted text-nowrap">Chi Phí Dự Đoán</p>
-                            <small class="fw-medium text-nowrap">227,398 VNĐ</small>
-                          </div>
-                        </div>
-                        <div class="progress" style="height:6px;">
-                          <div class="progress-bar bg-success" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                      </li>
-                    </ul>
+                    <div id="action-${room_title}"></div>
                   </div>
                 </div>
-                <div class="col-md-8 col-12 px-0">
-                  <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Báo Cáo Tổng Quan So Với Tuần Trước</h5>
-                    <div class="dropdown">
-                      <button class="btn p-0" type="button" id="orderSummaryOptions" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="bx bx-dots-vertical-rounded"></i>
-                      </button>
-                      <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orderSummaryOptions">
-                        <a class="dropdown-item" href="javascript:void(0);">Theo ngày</a>
-                        <a class="dropdown-item" href="javascript:void(0);">Theo tuần</a>
-                        <a class="dropdown-item" href="javascript:void(0);">Theo tháng</a>
+              </div>
+            `;
+          }
+          html_postfix += `
+          </div>
+            </div>
+              <div class="alert alert-success" role="alert">
+                <h3 class="mb-4">Tóm tắt</h3>
+                <div class="row ">
+                  <div class="col-xl-12 col-12 mb-4">
+                    <div class="card mb-4">
+                      <div class="row row-bordered m-0">
+                        <div class="col-md-4 col-12 px-0">
+                          <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Tuần Này</h5>
+                          </div>
+                          <div class="card-body">
+                            <p class="mb-4">Hãy xem thử báo cáo về mức độ tiêu thụ năng lượng của bạn xem phung phí thế nào nhé!</p>
+                            <ul class="list-unstyled m-0 pt-0">
+                              <li class="mb-4">
+                                <div class="d-flex align-items-center mb-2">
+                                  <div class="avatar avatar-sm flex-shrink-0 me-2">
+                                    <span class="avatar-initial rounded bg-label-primary"><i class="bx bx-trending-up"></i></span>
+                                  </div>
+                                  <div>
+                                    <p class="mb-0 lh-1 text-muted text-nowrap">So Với Tuần Trước</p>
+                                    <small class="fw-medium text-nowrap">84,789%</small>
+                                  </div>
+                                </div>
+                                <div class="progress" style="height:6px;">
+                                  <div class="progress-bar bg-primary" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                              </li>
+                              <li>
+                                <div class="d-flex align-items-center mb-2">
+                                  <div class="avatar avatar-sm flex-shrink-0 me-2">
+                                    <span class="avatar-initial rounded bg-label-success"><i class="bx bx-dollar"></i></span>
+                                  </div>
+                                  <div>
+                                    <p class="mb-0 lh-1 text-muted text-nowrap">Chi Phí Dự Đoán</p>
+                                    <small class="fw-medium text-nowrap">227,398 VNĐ</small>
+                                  </div>
+                                </div>
+                                <div class="progress" style="height:6px;">
+                                  <div class="progress-bar bg-success" style="width: 75%" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="col-md-8 col-12 px-0">
+                          <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Báo Cáo Tổng Quan So Với Tuần Trước</h5>
+                            <div class="dropdown">
+                              <button class="btn p-0" type="button" id="orderSummaryOptions" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bx bx-dots-vertical-rounded"></i>
+                              </button>
+                              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="orderSummaryOptions">
+                                <a class="dropdown-item" href="javascript:void(0);">Theo ngày</a>
+                                <a class="dropdown-item" href="javascript:void(0);">Theo tuần</a>
+                                <a class="dropdown-item" href="javascript:void(0);">Theo tháng</a>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-body p-0">
+                            <div id="lineChart-${room_title}"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header header-elements">
+                        <div>
+                          <h5 class="card-title mb-0">Tóm tắt</h5>
+                          <small class="text-muted">Bao gồm tất cả những thứ người dùng cần</small>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <canvas id="lineChartJS-${room_title}" class="chartjs" data-height="500"></canvas>
                       </div>
                     </div>
                   </div>
-                  <div class="card-body p-0">
-                    <div id="lineChart-${room_title}"></div>
-                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header header-elements">
-                <div>
-                  <h5 class="card-title mb-0">Tóm tắt</h5>
-                  <small class="text-muted">Bao gồm tất cả những thứ người dùng cần</small>
-                </div>
-              </div>
-              <div class="card-body">
-                <canvas id="lineChartJS-${room_title}" class="chartjs" data-height="500"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>`;
+              </div>`;
           html += `</div></div>`;
           html_postfix += `</div>
-      </div>`;
+          </div>`;
           html += html_postfix;
           $('.tab-content').append(html);
+          // const registrationChartEl = document.querySelector('#registrationsChart-' + room_title);
+          // console.log(registrationChartEl);
+          element['time_data'].forEach(e => {
+            var c = processData(e['data'], 'week');
+            // console.log(room_title);
+            // console.log(c);
+            var series = updateApexChartData(c)[0],
+              categories = updateApexChartData(c)[1];
+            // console.log(series, categories);
+            if (e['type'] === 'temperature') {
+              $('.temp-avg-' + room_title).text(calculateAverage(c));
+              const registrationChartEl = document.querySelector('#registrationsChart-' + room_title),
+                registrationChartConfig = {
+                  series: [
+                    {
+                      data: series
+                    }
+                  ],
+                  chart: {
+                    height: 120,
+                    parentHeightOffset: 0,
+                    parentWidthOffset: 0,
+                    type: 'line',
+                    toolbar: {
+                      show: false
+                    }
+                  },
+                  dataLabels: {
+                    enabled: false
+                  },
+                  stroke: {
+                    width: 3,
+                    curve: 'straight'
+                  },
+                  grid: {
+                    show: false,
+                    padding: {
+                      top: -30,
+                      left: 2,
+                      right: 0,
+                      bottom: -10
+                    }
+                  },
+                  colors: [config.colors.success],
+                  xaxis: {
+                    show: false,
+                    categories: categories,
+                    axisBorder: {
+                      show: true,
+                      color: borderColor
+                    },
+                    axisTicks: {
+                      show: true,
+                      color: borderColor
+                    },
+                    labels: {
+                      show: true,
+                      style: {
+                        fontSize: '0.813rem',
+                        fontFamily: 'IBM Plex Sans',
+                        colors: labelColor
+                      }
+                    }
+                  },
+                  yaxis: {
+                    labels: {
+                      show: false
+                    }
+                  }
+                };
+              if (typeof registrationChartEl !== undefined && registrationChartEl !== null) {
+                const registrationChartRoom = new ApexCharts(registrationChartEl, registrationChartConfig);
+                registrationChartRoom.render();
+              }
+            } else if (e['type'] === 'humidity') {
+              $('.humidity-avg-' + room_title).text(calculateAverage(c));
+              const expensesChartEl = document.querySelector('#expensesChart-' + room_title),
+                expensesChartConfig = {
+                  series: [
+                    {
+                      data: series
+                    }
+                  ],
+                  chart: {
+                    height: 120,
+                    parentHeightOffset: 0,
+                    parentWidthOffset: 0,
+                    type: 'line',
+                    toolbar: {
+                      show: false
+                    }
+                  },
+                  dataLabels: {
+                    enabled: false
+                  },
+                  stroke: {
+                    width: 3,
+                    curve: 'straight'
+                  },
+                  grid: {
+                    show: false,
+                    padding: {
+                      top: -30,
+                      left: 2,
+                      right: 0,
+                      bottom: -10
+                    }
+                  },
+                  colors: [config.colors.danger],
+                  xaxis: {
+                    show: false,
+                    categories: categories,
+                    axisBorder: {
+                      show: true,
+                      color: borderColor
+                    },
+                    axisTicks: {
+                      show: true,
+                      color: borderColor
+                    },
+                    labels: {
+                      show: true,
+                      style: {
+                        fontSize: '0.813rem',
+                        fontFamily: 'IBM Plex Sans',
+                        colors: labelColor
+                      }
+                    }
+                  },
+                  yaxis: {
+                    labels: {
+                      show: false
+                    }
+                  }
+                };
+              if (typeof expensesChartEl !== undefined && expensesChartEl !== null) {
+                const expensesChartRoom = new ApexCharts(expensesChartEl, expensesChartConfig);
+                expensesChartRoom.render();
+              }
+            } else if (e['type'] === 'pir') {
+              $('.pir-' + room_title).text(calculateAverage(c));
+              const usersChartEl = document.querySelector('#action-' + room_title),
+                usersChartConfig = {
+                  series: [
+                    {
+                      data: series
+                    }
+                  ],
+                  chart: {
+                    height: 120,
+                    parentHeightOffset: 0,
+                    parentWidthOffset: 0,
+                    type: 'line',
+                    toolbar: {
+                      show: false
+                    }
+                  },
+                  dataLabels: {
+                    enabled: false
+                  },
+                  stroke: {
+                    width: 3,
+                    curve: 'straight'
+                  },
+                  grid: {
+                    show: false,
+                    padding: {
+                      top: -30,
+                      left: 2,
+                      right: 0,
+                      bottom: -10
+                    }
+                  },
+                  colors: [config.colors.primary],
+                  xaxis: {
+                    show: false,
+                    categories: categories,
+                    axisBorder: {
+                      show: true,
+                      color: borderColor
+                    },
+                    axisTicks: {
+                      show: true,
+                      color: borderColor
+                    },
+                    labels: {
+                      show: true,
+                      style: {
+                        fontSize: '0.813rem',
+                        fontFamily: 'IBM Plex Sans',
+                        colors: labelColor
+                      }
+                    }
+                  },
+                  yaxis: {
+                    labels: {
+                      show: false
+                    }
+                  }
+                };
+              if (typeof usersChartEl !== undefined && usersChartEl !== null) {
+                const usersChartRoom = new ApexCharts(usersChartEl, usersChartConfig);
+                usersChartRoom.render();
+              }
+            }
+          });
         });
+
         isLoading = true;
+        // console.log(dd2);
         const result = processRoomData(dd2);
+        console.log(result);
         result.forEach(element => {
           if (element['type'] === 'temperature') {
             $('.temp-main-avg').text(calculateAverage(element['data']));
