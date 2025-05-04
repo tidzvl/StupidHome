@@ -66,16 +66,16 @@
               <!-- Details -->
               <div id="details" class="content pt-3 pt-lg-0">
                 <div class="mb-3">
-                  <input type="text" class="form-control form-control-lg" id="rules-name" placeholder="Nhập tên kich bản">
+                  <input type="text" class="form-control form-control-lg" id="rules-name" placeholder="Nhập tên kich bản" required >
                 </div>
                 <h5>Chọn phòng</h5>
                 <ul class="p-0 m-0 room-loading" style="height: 200px; position: relative;">
                 </ul>
                 <div class="col-12 d-flex justify-content-between mt-4">
                   <button class="btn btn-label-secondary btn-prev" disabled> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i>
-                    <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                    <span class="align-middle d-sm-inline-block d-none">Quay lại</span>
                   </button>
-                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
+                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Tiếp</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
                 </div>
               </div>
 
@@ -88,8 +88,8 @@
                   </select>
                 </div>
                 <div class="col-12 d-flex justify-content-between mt-4">
-                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Previous</span> </button>
-                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
+                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Quay lại</span> </button>
+                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Tiếp</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
                 </div>
               </div>
 
@@ -101,57 +101,37 @@
                   </select>
                 </div>
                 <div class="col-12 d-flex justify-content-between mt-4">
-                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Previous</span> </button>
-                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
+                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Quay lại</span> </button>
+                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Tiếp</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
                 </div>
               </div>
 
               <div id="setting" class="content">
-                <div id="AppNewCCForm" class="row g-3 pt-3 pt-lg-0 mb-5" onsubmit="return false">
-                  <div class="col-12">
-                    <div class="input-group input-group-merge">
-                      <input class="form-control app-credit-card-mask" type="text" placeholder="1356 3215 6548 7898" aria-describedby="modalAppAddCard" />
-                      <span class="input-group-text cursor-pointer p-1" id="modalAppAddCard"><span class="app-card-type"></span></span>
-                    </div>
-                  </div>
-                  <div class="col-12 col-md-6">
-                    <input type="text" class="form-control" placeholder="John Doe" />
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <input type="text" class="form-control app-expiry-date-mask" placeholder="MM/YY" />
-                  </div>
-                  <div class="col-6 col-md-3">
-                    <div class="input-group input-group-merge">
-                      <input type="text" id="modalAppAddCardCvv" class="form-control app-cvv-code-mask" maxlength="3" placeholder="654" />
-                      <span class="input-group-text cursor-pointer" id="modalAppAddCardCvv2"><i class="text-muted bx bx-help-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Card Verification Value"></i></span>
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <label class="switch">
-                      <input type="checkbox" class="switch-input" checked>
-                      <span class="switch-toggle-slider">
-                        <span class="switch-on"></span>
-                        <span class="switch-off"></span>
-                      </span>
-                      <span class="switch-label">Save card for future billing?</span>
-                    </label>
-                  </div>
-                </div>
+                <label for="selectpickerSubtext" class="form-label">Loại điều kiện</label>
+                <select id="selectpickerSubtext" class="selectpickerOrAnd w-100 mb-2" data-style="btn-default" data-show-subtext="true">
+                  <option data-subtext="Cần 1 điều kiện để chạy" value="or">Hoặc</option>
+                  <option data-subtext="Cấn tất cả điều kiện để chạy" value="and">Và</option>
+                </select>
+                <ul class="p-0 m-0 loading-sensor-and-or">
+                </ul>
+                <label for="selectpickerSubtext" class="form-label">Hành động</label>
+                <ul class="p-0 m-0 loading-device-and-or">
+                </ul>
                 <div class="col-12 d-flex justify-content-between mt-4">
-                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Previous</span> </button>
-                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
+                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Quay lại</span> </button>
+                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Tiếp</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
                 </div>
               </div>
 
               <!-- submit -->
               <div id="submit" class="content text-center pt-3 pt-lg-0">
-                <h5 class="mb-2 mt-3">Submit</h5>
-                <p>Submit to kick start your project.</p>
+                <h5 class="mb-2 mt-3">Đã xong</h5>
+                <p>Hãy chờ đợi điều kỳ diệu trong ngôi nhà của bạn.</p>
                 <!-- image -->
                 <img src="~/img/illustrations/boy-deal-review-light.png" alt="Create App img" width="300" class="img-fluid" data-app-light-img="illustrations/boy-deal-review-light.png" data-app-dark-img="illustrations/boy-deal-review-dark.png">
                 <div class="col-12 d-flex justify-content-between mt-4 pt-2">
-                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Previous</span> </button>
-                  <button class="btn btn-success btn-submit"> <span class="align-middle d-sm-inline-block d-none">Submit</span> <i class="bx bx-check bx-xs ms-sm-1 ms-0"></i> </button>
+                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Quay lại</span> </button>
+                  <button class="btn btn-success btn-submit"> <span class="align-middle d-sm-inline-block d-none">Hoàn tất</span> <i class="bx bx-check bx-xs ms-sm-1 ms-0"></i> </button>
                 </div>
               </div>
             </form>
