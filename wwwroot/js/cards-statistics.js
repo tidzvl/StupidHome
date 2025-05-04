@@ -882,13 +882,13 @@ $(function () {
       light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
       humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
       // var rooms = dd2;
-      // console.log(dd2);
+      console.log(dd2);
       // console.log(dd);
       var room_data = dd[dd.length - 1]['rooms'];
       // console.log(room_data);
       if (!isLoading) {
         dd2.forEach(element => {
-          // console.log(element.room_title);
+          console.log(element);
           var room_title = element.room_title.replace(/\s+/g, '-');
           var r_d = room_data.find(r => r.room_id === element.room_id)['now'];
           $('.nav.nav-tabs').append(`
@@ -897,8 +897,8 @@ $(function () {
             </li>
             `);
           var html_postfix = `<div class="alert alert-info" role="alert">
-        <h3 class="mb-4">Chi tiết</h3>
-        <div class="row">`;
+            <h3 class="mb-4">Chi tiết</h3>
+            <div class="row">`;
           var html = `
             <div class="tab-pane fade show" id="navs-top-${room_title}" role="tabpanel">
               <div class="alert alert-primary" role="alert">
@@ -1098,7 +1098,7 @@ $(function () {
       }
       room_data.forEach(room => {
         //update data
-        // console.log(room);
+        console.log(room);
         var r = $('[room-id="' + room.room_id + '"]');
       });
       // console.log(rooms);

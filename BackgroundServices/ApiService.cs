@@ -197,6 +197,7 @@ public class ApiService
             HttpMethod.Get,
             timeDataRequest
         );
+        // Console.WriteLine($"{timeDataResponseContent}");
         if (string.IsNullOrEmpty(timeDataResponseContent))
         {
             Console.WriteLine($"Error: Empty response for room {room.RoomId}");
@@ -204,7 +205,8 @@ public class ApiService
             {
                 ["room_id"] = room.RoomId,
                 ["room_title"] = room.RoomTitle,
-                ["merged_data"] = new JArray()
+                ["merged_data"] = new JArray(),
+                ["time_data"] = new JArray()
             };
         }
 
@@ -217,31 +219,49 @@ public class ApiService
         {
             timeDataJson = new JArray();
         }
+        // Console.WriteLine($"{timeDataJson}");
+        var cleanedTimeData = timeDataJson
+          .GroupBy(sensor => new {
+              SensorId = sensor["sensor_id"]?.ToObject<int>(),
+              Type = sensor["type"]?.ToString()
+          })
+          .Select(group => new JObject
+          {
+              ["sensor_id"] = group.Key.SensorId,
+              ["type"] = group.Key.Type,
+              ["data"] = new JArray(
+                  group.Select(sensor => new JObject
+                  {
+                      ["value"] = sensor["value"],
+                      ["time"] = sensor["time"]
+                  })
+              )
+          });
 
-                        var mergedData = timeDataJson
-                            .GroupBy(sensor => sensor["type"]?.ToString() ?? "Unknown")
-                            .Select(group =>
-                            {
-                                var validValues = group
-                                    .Where(x => x["value"] != null && double.TryParse(x["value"].ToString(), out _))
-                                    .Select(x => double.Parse(x["value"].ToString()));
+      var mergedData = timeDataJson
+          .GroupBy(sensor => sensor["type"]?.ToString() ?? "Unknown")
+          .Select(group =>
+          {
+              var validValues = group
+                  .Where(x => x["value"] != null && double.TryParse(x["value"].ToString(), out _))
+                  .Select(x => double.Parse(x["value"].ToString()));
 
-                                double averageValue = validValues.Any() ? validValues.Average() : 0;
+              double averageValue = validValues.Any() ? validValues.Average() : 0;
 
-                                return new JObject
-                                {
-                                    ["type"] = group.Key,
-                                    ["average_value"] = averageValue
-                                };
-                            });
+              return new JObject
+              {
+                  ["type"] = group.Key,
+                  ["average_value"] = averageValue
+              };
+          });
 
-                        return new JObject
-                        {
-                            ["room_id"] = room.RoomId,
-                            ["room_title"] = room.RoomTitle,
-                            ["merged_data"] = new JArray(mergedData),
-                            ["time_data"] = timeDataJson
-                        };
+      return new JObject
+      {
+          ["room_id"] = room.RoomId,
+          ["room_title"] = room.RoomTitle,
+          ["merged_data"] = new JArray(mergedData),
+          ["time_data"] = new JArray(cleanedTimeData)
+      };
                     }
                     catch (Exception ex)
                     {
@@ -258,7 +278,7 @@ public class ApiService
             var allResponses = await Task.WhenAll(sensorTasks);
 
             mergedResponses = new JArray(allResponses);
-
+            // Console.WriteLine($"Merged Responses: {mergedResponses}");
             var allSensorData = mergedResponses
                 .SelectMany(room => room["merged_data"] ?? new JArray())
                 .OfType<JObject>()
