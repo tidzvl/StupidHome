@@ -5,14 +5,78 @@
   ViewData["Title"] = "Kịch Bản - Home";
 }
 
+@section VendorStyles {
+<link rel="stylesheet" href="~/vendor/libs/select2/select2.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/umd/styles/index.min.css" />
+<link rel="stylesheet" href="~/vendor/libs/bs-stepper/bs-stepper.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/spinkit/spinkit.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/animate-css/animate.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/sweetalert2/sweetalert2.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/bootstrap-select/bootstrap-select.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/tagify/tagify.dist.css " />
+}
 @section VendorScripts {
-  <script src="~/vendor/libs/sortablejs/sortable.dist.js"></script>
+<script src="~/vendor/libs/cleavejs/cleave.dist.js"></script>
+<script src="~/vendor/libs/cleavejs/cleave-phone.dist.js"></script>
+<script src="~/vendor/libs/select2/select2.dist.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/umd/bundle/popular.min.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/umd/plugin-bootstrap5/index.min.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/umd/plugin-auto-focus/index.min.js"></script>
+<script src="~/vendor/libs/select2/select2.dist.js"></script>
+<script src="~/vendor/libs/bs-stepper/bs-stepper.dist.js"></script>
+<script src="~/vendor/libs/sortablejs/sortable.dist.js"></script>
+<script src="~/vendor/libs/block-ui/block-ui.dist.js"></script>
+<script src="~/vendor/libs/perfect-scrollbar/perfect-scrollbar.dist.js"></script>
+<script src="~/vendor/libs/bootstrap-select/bootstrap-select.dist.js"></script>
+<script src="~/vendor/libs/tagify/tagify.dist.js"></script>
 }
 
 @section PageScripts {
-  <script src="~/js/rules.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.12/signalr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.7/base64.min.js"></script>
+<script src="~/js/background-service.js"></script>
+<script src="~/js/rules.js"></script>
 }
 
 
 @* ************** Content ************** *@
 <h4 class="py-3 breadcrumb-wrapper mb-4"><small class="text-muted">Home /</small> Kịch Bản</h4>
+<p>Khiến ngôi nhà thông minh hơn bằng các phương thức tự động hóa mà chúng tôi hỗ trợ <br> hoặc thiết lặp những kịch bản tiện ích để nâng cáo chất lượng sống của bạn.</p>
+<div class="row g-4 rules-list">
+  <div class="col-xl-4 col-lg-6 col-md-6">
+    <div class="card h-100">
+      <div class="row h-100">
+        <div class="col-sm-5">
+          <div class="d-flex align-items-end h-100 justify-content-center mt-sm-0 mt-3">
+            <img src="~/img/illustrations/lady-with-laptop-light.png" class="img-fluid" alt="Image" width="100" data-app-light-img="illustrations/lady-with-laptop-light.png" data-app-dark-img="illustrations/lady-with-laptop-dark.png">
+          </div>
+        </div>
+        <div class="col-sm-7">
+          <div class="card-body text-sm-end text-center ps-sm-0">
+            <button type="button" class="btn btn-primary btn btn-primary mb-3 text-nowrap add-new-role" data-bs-toggle="modal" data-bs-target="#createApp">Thêm kịch bản mới</button>
+            <p class="mb-0">Thêm đi, nếu nó chưa có</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-6 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between mb-2">
+          <h6 class="fw-normal">Tương tác với <span class="devices-count-act">-</span> thiết bị</h6>
+        </div>
+        <div class="d-flex justify-content-between align-items-end">
+          <div class="role-heading">
+            <h4 class="mb-1">Tự bật đèn</h4>
+            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#addRoleModal" class="role-edit-modal"><small>Chỉnh sửa</small></a>
+          </div>
+          <a href="javascript:void(0);" class="text-muted"><i class="bx bx-trash"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@await Html.PartialAsync("../_Partials/_Modals/ModalCreateApp")

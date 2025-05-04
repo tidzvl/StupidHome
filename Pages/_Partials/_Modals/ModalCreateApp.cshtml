@@ -1,0 +1,165 @@
+<!-- Create App Modal -->
+<div class="modal fade" id="createApp" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-simple modal-upgrade-plan">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body p-2">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center">
+          <h3 class="mb-2">Thêm Kịch Bản</h3>
+          <p>Hãy tự tay thiết kế kịch bản hoàn hảo cho ngôi nhà của bạn.</p>
+        </div>
+        <!-- Property Listing Wizard -->
+        <div id="wizard-create-app" class="bs-stepper vertical mt-2 shadow-none">
+          <div class="bs-stepper-header border-0 p-1">
+            <div class="step" data-target="#details">
+              <button type="button" class="step-trigger">
+                <span class="bs-stepper-circle"><i class="bx bx-file fs-5"></i></span>
+                <span class="bs-stepper-label">
+                  <span class="bs-stepper-title text-uppercase">Thông tin</span>
+                  <span class="bs-stepper-subtitle">Nhập Thông Tin</span>
+                </span>
+              </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#device">
+              <button type="button" class="step-trigger">
+                <span class="bs-stepper-circle"><i class="bx bx-data fs-5"></i></span>
+                <span class="bs-stepper-label">
+                  <span class="bs-stepper-title text-uppercase">Thiết bị</span>
+                  <span class="bs-stepper-subtitle">Chọn Thiết Bị</span>
+                </span>
+              </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#sensor">
+              <button type="button" class="step-trigger">
+                <span class="bs-stepper-circle"><i class="bx bx-box fs-5"></i></span>
+                <span class="bs-stepper-label">
+                  <span class="bs-stepper-title text-uppercase">Cảm biến</span>
+                  <span class="bs-stepper-subtitle">Chọn Cảm Biến</span>
+                </span>
+              </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#setting">
+              <button type="button" class="step-trigger">
+                <span class="bs-stepper-circle"><i class="bx bx-credit-card fs-5"></i></span>
+                <span class="bs-stepper-label">
+                  <span class="bs-stepper-title text-uppercase">Cấu hình</span>
+                  <span class="bs-stepper-subtitle">Đặt Điều Kiện</span>
+                </span>
+              </button>
+            </div>
+            <div class="line"></div>
+            <div class="step" data-target="#submit">
+              <button type="button" class="step-trigger" disabled>
+                <span class="bs-stepper-circle"><i class="bx bx-check fs-5"></i></span>
+                <span class="bs-stepper-label">
+                  <span class="bs-stepper-title text-uppercase">Hoàn tất</span>
+                  <span class="bs-stepper-subtitle">Hoàn Tất</span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="bs-stepper-content p-1">
+            <form onSubmit="return false">
+              <!-- Details -->
+              <div id="details" class="content pt-3 pt-lg-0">
+                <div class="mb-3">
+                  <input type="text" class="form-control form-control-lg" id="rules-name" placeholder="Nhập tên kich bản">
+                </div>
+                <h5>Chọn phòng</h5>
+                <ul class="p-0 m-0 room-loading" style="height: 200px; position: relative;">
+                </ul>
+                <div class="col-12 d-flex justify-content-between mt-4">
+                  <button class="btn btn-label-secondary btn-prev" disabled> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i>
+                    <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                  </button>
+                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
+                </div>
+              </div>
+
+              <!-- Frameworks -->
+              <div id="sensor" class="content pt-3 pt-lg-0">
+                <h5>Bạn muốn lắng nghe cảm biến nào?</h5>
+                <div class="mb-3">
+                  <label for="selectpickerSelectDeselectSensor" class="form-label-sensor">Chọn / Bỏ chọn tất cả</label>
+                  <select id="selectpickerSelectDeselectSensor" class="selectpickerSensor w-100" data-style="btn-default" multiple data-actions-box="true">
+                  </select>
+                </div>
+                <div class="col-12 d-flex justify-content-between mt-4">
+                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Previous</span> </button>
+                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
+                </div>
+              </div>
+
+              <div id="device" class="content pt-3 pt-lg-0">
+                <h5>Chọn thiết bị cần tương tác</h5>
+                <div class="mb-3">
+                  <label for="selectpickerSelectDeselect" class="form-label">Chọn / Bỏ chọn tất cả</label>
+                  <select id="selectpickerSelectDeselect" class="selectpicker w-100" data-style="btn-default" multiple data-actions-box="true">
+                  </select>
+                </div>
+                <div class="col-12 d-flex justify-content-between mt-4">
+                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Previous</span> </button>
+                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
+                </div>
+              </div>
+
+              <div id="setting" class="content">
+                <div id="AppNewCCForm" class="row g-3 pt-3 pt-lg-0 mb-5" onsubmit="return false">
+                  <div class="col-12">
+                    <div class="input-group input-group-merge">
+                      <input class="form-control app-credit-card-mask" type="text" placeholder="1356 3215 6548 7898" aria-describedby="modalAppAddCard" />
+                      <span class="input-group-text cursor-pointer p-1" id="modalAppAddCard"><span class="app-card-type"></span></span>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <input type="text" class="form-control" placeholder="John Doe" />
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <input type="text" class="form-control app-expiry-date-mask" placeholder="MM/YY" />
+                  </div>
+                  <div class="col-6 col-md-3">
+                    <div class="input-group input-group-merge">
+                      <input type="text" id="modalAppAddCardCvv" class="form-control app-cvv-code-mask" maxlength="3" placeholder="654" />
+                      <span class="input-group-text cursor-pointer" id="modalAppAddCardCvv2"><i class="text-muted bx bx-help-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Card Verification Value"></i></span>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label class="switch">
+                      <input type="checkbox" class="switch-input" checked>
+                      <span class="switch-toggle-slider">
+                        <span class="switch-on"></span>
+                        <span class="switch-off"></span>
+                      </span>
+                      <span class="switch-label">Save card for future billing?</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-12 d-flex justify-content-between mt-4">
+                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Previous</span> </button>
+                  <button class="btn btn-primary btn-next"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Next</span> <i class="bx bx-right-arrow-alt bx-xs"></i></button>
+                </div>
+              </div>
+
+              <!-- submit -->
+              <div id="submit" class="content text-center pt-3 pt-lg-0">
+                <h5 class="mb-2 mt-3">Submit</h5>
+                <p>Submit to kick start your project.</p>
+                <!-- image -->
+                <img src="~/img/illustrations/boy-deal-review-light.png" alt="Create App img" width="300" class="img-fluid" data-app-light-img="illustrations/boy-deal-review-light.png" data-app-dark-img="illustrations/boy-deal-review-dark.png">
+                <div class="col-12 d-flex justify-content-between mt-4 pt-2">
+                  <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Previous</span> </button>
+                  <button class="btn btn-success btn-submit"> <span class="align-middle d-sm-inline-block d-none">Submit</span> <i class="bx bx-check bx-xs ms-sm-1 ms-0"></i> </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <!--/ Property Listing Wizard -->
+    </div>
+  </div>
+</div>
+<!--/ Create App Modal -->
