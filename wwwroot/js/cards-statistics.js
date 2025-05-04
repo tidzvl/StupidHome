@@ -15,11 +15,226 @@ $('.content-wrapper').block({
     opacity: 0.8
   }
 });
-let lineChart, registrationChart, expensesChart, usersChart;
+let lineChart, registrationChart, expensesChart, usersChart, activityAreaChart;
 let isLoading = false;
 // let render = false;
 function GenTime() {
   var today = new Date();
+}
+
+function calculateAverage(data) {
+  if (!data || data.length === 0) {
+    return 0;
+  }
+  const total = data.reduce((sum, item) => sum + item.average, 0);
+  const average = total / data.length;
+  return parseFloat(average.toFixed(2));
+}
+
+function calculateTotal(data) {
+  if (!data || data.length === 0) {
+    return 0;
+  }
+  const total = data.reduce((sum, item) => sum + item.average, 0);
+  return parseFloat(total.toFixed(0));
+}
+
+function processRoomData(dd2) {
+  const aggregatedData = {};
+
+  dd2.forEach(room => {
+    const roomId = room.room_id;
+    const timeData = room.time_data;
+
+    timeData.forEach(sensor => {
+      const type = sensor.type;
+      const data = sensor.data;
+
+      const groupedByDate = data.reduce((acc, item) => {
+        // const date = new Date(item.time).toISOString().split('T')[0];
+        const date = item.time.split('T')[0];
+        // if (date === '2025-04-28') console.log(item.time);
+        if (!acc[date]) acc[date] = [];
+        acc[date].push(item.value);
+        return acc;
+      }, {});
+
+      const dailyAverages = Object.entries(groupedByDate).map(([date, values]) => {
+        const average = values.reduce((sum, val) => sum + parseFloat(val), 0) / values.length;
+        return { date, average: parseFloat(average.toFixed(2)) };
+      });
+
+      if (!aggregatedData[type]) aggregatedData[type] = {};
+      dailyAverages.forEach(({ date, average }) => {
+        if (!aggregatedData[type][date]) aggregatedData[type][date] = [];
+        aggregatedData[type][date].push(average);
+      });
+    });
+  });
+
+  const finalData = Object.entries(aggregatedData).map(([type, dates]) => {
+    const aggregatedByDate = Object.entries(dates).map(([date, averages]) => {
+      const overallAverage = averages.reduce((sum, val) => sum + val, 0) / averages.length;
+      return { date, average: parseFloat(overallAverage.toFixed(2)) };
+    });
+
+    return { type, data: aggregatedByDate };
+  });
+
+  return finalData;
+}
+
+function processRoomDataForLastWeek(dd2) {
+  const aggregatedData = {};
+
+  const today = new Date();
+  const startOfLastWeek = new Date(today);
+  startOfLastWeek.setDate(today.getDate() - today.getDay() - 14);
+  const endOfLastWeek = new Date(today);
+  endOfLastWeek.setDate(today.getDate() - today.getDay() - 7);
+
+  dd2.forEach(room => {
+    const roomId = room.room_id;
+    const timeData = room.time_data;
+
+    timeData.forEach(sensor => {
+      const type = sensor.type;
+      const data = sensor.data;
+
+      const filteredData = data.filter(item => {
+        const itemDate = new Date(item.time.split('T')[0]);
+        return itemDate >= startOfLastWeek && itemDate <= endOfLastWeek;
+      });
+
+      const groupedByDate = filteredData.reduce((acc, item) => {
+        const date = item.time.split('T')[0];
+        if (!acc[date]) acc[date] = [];
+        acc[date].push(item.value);
+        return acc;
+      }, {});
+
+      const dailyAverages = Object.entries(groupedByDate).map(([date, values]) => {
+        const average = values.reduce((sum, val) => sum + parseFloat(val), 0) / values.length;
+        return { date, average: parseFloat(average.toFixed(2)) };
+      });
+
+      if (!aggregatedData[type]) aggregatedData[type] = {};
+      dailyAverages.forEach(({ date, average }) => {
+        if (!aggregatedData[type][date]) aggregatedData[type][date] = [];
+        aggregatedData[type][date].push(average);
+      });
+    });
+  });
+
+  const finalData = Object.entries(aggregatedData).map(([type, dates]) => {
+    const aggregatedByDate = Object.entries(dates).map(([date, averages]) => {
+      const overallAverage = averages.reduce((sum, val) => sum + val, 0) / averages.length;
+      return { date, average: parseFloat(overallAverage.toFixed(2)) };
+    });
+
+    return { type, data: aggregatedByDate };
+  });
+  console.log('finalData', finalData);
+  return finalData;
+}
+
+function updateApexChartData(jsonData, chartInstance) {
+  const today = new Date();
+  const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const todayIndex = today.getDay();
+
+  const categories = [];
+  for (let i = 0; i < 7; i++) {
+    const dayIndex = (todayIndex - i + 7) % 7;
+    categories.unshift(weekdays[dayIndex]);
+  }
+
+  const startDate = new Date(today);
+  startDate.setDate(today.getDate() - 7);
+
+  const filteredData = jsonData
+    .filter(item => {
+      const itemDate = new Date(item.date);
+      return itemDate >= startDate && itemDate <= today;
+    })
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  // console.log('filteredData', filteredData);
+
+  const seriesData = categories.map((category, index) => {
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() - (6 - index));
+
+    const targetDateString = targetDate.toISOString().split('T')[0];
+
+    const date = filteredData.find(item => {
+      return item.date === targetDateString;
+    });
+    return date ? parseFloat(date.average.toFixed(2)) : 0;
+  });
+
+  chartInstance.updateOptions({
+    xaxis: {
+      categories: categories
+    },
+    series: [
+      {
+        name: 'Average',
+        data: seriesData
+      }
+    ]
+  });
+}
+
+function updateApexChartDataForLastWeek(jsonData, chartInstance) {
+  const today = new Date();
+
+  const startOfCurrentWeek = new Date(today);
+  startOfCurrentWeek.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
+
+  const startOfLastWeek = new Date(startOfCurrentWeek);
+  startOfLastWeek.setDate(startOfCurrentWeek.getDate() - 8);
+
+  const endOfLastWeek = new Date(startOfCurrentWeek);
+  endOfLastWeek.setDate(startOfCurrentWeek.getDate() - 1);
+
+  const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const categories = [];
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(startOfLastWeek);
+    day.setDate(startOfLastWeek.getDate() + i);
+    categories.push(weekdays[day.getDay()]);
+  }
+
+  const filteredData = jsonData
+    .filter(item => {
+      const itemDate = new Date(item.date);
+      return itemDate >= startOfLastWeek && itemDate <= endOfLastWeek;
+    })
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  console.log('filteredData', filteredData);
+  const seriesData = categories.map((category, index) => {
+    const targetDate = new Date(startOfLastWeek);
+    targetDate.setDate(startOfLastWeek.getDate() + index + 1);
+
+    const targetDateString = targetDate.toISOString().split('T')[0];
+
+    const date = filteredData.find(item => {
+      return item.date === targetDateString;
+    });
+    return date ? parseFloat(date.average.toFixed(2)) : 0;
+  });
+
+  chartInstance.updateOptions({
+    xaxis: {
+      categories: categories
+    },
+    series: [
+      {
+        name: 'Average (Last Week)',
+        data: seriesData
+      }
+    ]
+  });
 }
 
 (function () {
@@ -365,7 +580,7 @@ function GenTime() {
     registrationChartConfig = {
       series: [
         {
-          data: [17, 15, 24, 22, 18, 22, 22]
+          data: [0, 0, 0, 0, 0, 0, 0]
         }
       ],
       chart: {
@@ -431,7 +646,7 @@ function GenTime() {
     expensesChartConfig = {
       series: [
         {
-          data: [100, 70, 90, 34, 80, 21, 62]
+          data: [0, 0, 0, 0, 0, 0, 0]
         }
       ],
       chart: {
@@ -497,7 +712,7 @@ function GenTime() {
     usersChartConfig = {
       series: [
         {
-          data: [58, 27, 141, 60, 98, 31, 165]
+          data: [0, 0, 0, 0, 0, 0, 0]
         }
       ],
       chart: {
@@ -859,7 +1074,7 @@ function GenTime() {
       }
     };
   if (typeof activityAreaChartEl !== undefined && activityAreaChartEl !== null) {
-    const activityAreaChart = new ApexCharts(activityAreaChartEl, activityAreaChartConfig);
+    activityAreaChart = new ApexCharts(activityAreaChartEl, activityAreaChartConfig);
     activityAreaChart.render();
   }
 })();
@@ -881,14 +1096,15 @@ $(function () {
       temp_in.textContent = dd.find(sensor => sensor.type === 'temperature').average_value;
       light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
       humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
+      $('.device-on').text(dd[dd.length - 1]['devices_on']);
       // var rooms = dd2;
-      console.log(dd2);
+      // console.log(dd2);
       // console.log(dd);
       var room_data = dd[dd.length - 1]['rooms'];
       // console.log(room_data);
       if (!isLoading) {
         dd2.forEach(element => {
-          console.log(element);
+          // console.log(element);
           var room_title = element.room_title.replace(/\s+/g, '-');
           var r_d = room_data.find(r => r.room_id === element.room_id)['now'];
           $('.nav.nav-tabs').append(`
@@ -1095,13 +1311,50 @@ $(function () {
           $('.tab-content').append(html);
         });
         isLoading = true;
+        const result = processRoomData(dd2);
+        result.forEach(element => {
+          if (element['type'] === 'temperature') {
+            $('.temp-main-avg').text(calculateAverage(element['data']));
+            updateApexChartData(element['data'], registrationChart);
+          } else if (element['type'] === 'humidity') {
+            $('.humi-main-avg').text(calculateAverage(element['data']));
+            updateApexChartData(element['data'], expensesChart);
+          } else if (element['type'] === 'pir') {
+            $('.pir-main').text(calculateAverage(element['data']));
+            updateApexChartData(element['data'], usersChart);
+          }
+        });
+        const result_weeked = processRoomDataForLastWeek(dd2);
+        result_weeked.forEach(element => {
+          if (element['type'] === 'pir') {
+            $('.sum-pir-main').text(calculateTotal(element['data']));
+            updateApexChartDataForLastWeek(element['data'], activityAreaChart);
+          }
+        });
       }
       room_data.forEach(room => {
         //update data
-        console.log(room);
+        // console.log(room);
         var r = $('[room-id="' + room.room_id + '"]');
       });
-      // console.log(rooms);
     }
   }, 500);
+  setInterval(() => {
+    var dd2 = JSON.parse(Base64.decode(localStorage.getItem('d2')));
+    // console.log(dd2);
+    const result = processRoomData(dd2);
+    // console.log(result);
+    result.forEach(element => {
+      if (element['type'] === 'temperature') {
+        $('.temp-main-avg').text(calculateAverage(element['data']));
+        updateApexChartData(element['data'], registrationChart);
+      } else if (element['type'] === 'humidity') {
+        $('.humi-main-avg').text(calculateAverage(element['data']));
+        updateApexChartData(element['data'], expensesChart);
+      } else if (element['type'] === 'pir') {
+        $('.pir-main').text(calculateAverage(element['data']));
+        updateApexChartData(element['data'], usersChart);
+      }
+    });
+  }, 5000);
 });
