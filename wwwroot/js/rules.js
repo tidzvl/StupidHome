@@ -9,7 +9,18 @@
 
 let userId = $('#user-id').val();
 let houseId = $('.user-address').attr('value');
-
+function findPlanById(planId, data) {
+  console.log(data);
+  console.log(planId);
+  for (const room of data) {
+    console.log(room.plans);
+    const plan = room.plans.find(p => p.plan_id === planId);
+    if (plan) {
+      return plan;
+    }
+  }
+  return null;
+}
 (async function () {
   // const handleList1 = document.getElementById('handle-list-1'),
   //   handleList2 = document.getElementById('handle-list-2');
@@ -56,25 +67,27 @@ let houseId = $('.user-address').attr('value');
     console.log(data);
     data.forEach(plan => {
       if (plan['plans'].length <= 0) return;
-      var html = `
-        <div class="col-xl-4 col-lg-6 col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <div class="d-flex justify-content-between mb-2">
-                <h6 class="fw-normal">Tương tác với <span class="devices-count-act">${plan['plans'][0]['devices'].length}</span> thiết bị</h6>
-              </div>
-              <div class="d-flex justify-content-between align-items-end">
-                <div class="role-heading">
-                  <h4 class="mb-1">${plan['plans'][0]['name']}</h4>
-                  <a id="edit-plan-${plan['plans'][0]['plan_id']}" href="javascript:;" data-bs-toggle="modal" data-bs-target="#addRoleModal" class="role-edit-modal"><small>Chỉnh sửa</small></a>
+      plan['plans'].forEach(plan => {
+        var html = `
+          <div class="col-xl-4 col-lg-6 col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                  <h6 class="fw-normal">Tương tác với <span class="devices-count-act">${plan['devices'].length}</span> thiết bị</h6>
                 </div>
-                <a id="delete-plan-${plan['plans'][0]['plan_id']}" href="javascript:void(0);" class="text-muted"><i class="bx bx-trash"></i></a>
+                <div class="d-flex justify-content-between align-items-end">
+                  <div class="role-heading">
+                    <h4 class="mb-1">${plan['name']}</h4>
+                    <a id="edit-plan-${plan['plan_id']}" href="javascript:;" data-bs-toggle="modal" data-bs-target="#EditApp" class="role-edit-modal"><small>Chỉnh sửa</small></a>
+                  </div>
+                  <a id="delete-plan-${plan['plan_id']}" href="javascript:void(0);" class="text-muted"><i class="bx bx-trash"></i></a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      `;
-      $('.rules-list').append(html);
+        `;
+        $('.rules-list').append(html);
+      });
     });
     $('.content-wrapper').unblock();
     // localStorage.setItem('ad', Base64.encode(JSON.stringify(data)));
@@ -101,37 +114,38 @@ let houseId = $('.user-address').attr('value');
 })();
 
 $(function () {
+  const makeColor = {
+    1: 'primary',
+    2: 'success',
+    3: 'warning',
+    4: 'danger',
+    5: 'info'
+  };
+  const makeIcon = {
+    1: 'bx-paint-roll',
+    2: 'bx-bowling-ball',
+    3: 'bxs-component',
+    4: 'bx-certification',
+    5: 'bx-mask'
+  };
+  const categoryIcon = {
+    '-tv': 'bx-tv',
+    '-book-content': 'bx-book-content',
+    '-door-open': 'bx-door-open',
+    pir: 'bx-child',
+    humidity: 'bx-droplet',
+    ac: 'bx-cloud-snow',
+    fan: 'bx-wind',
+    light: 'bx-bulb',
+    default: 'bx-cog',
+    temperature: 'bx-log-in-circle',
+    '-speed': 'bx-tachometer'
+  };
   const appModal = document.getElementById('createApp');
   appModal.addEventListener('show.bs.modal', function (event) {
     const wizardCreateApp = document.querySelector('#wizard-create-app');
     var where = 0;
-    const makeColor = {
-      1: 'primary',
-      2: 'success',
-      3: 'warning',
-      4: 'danger',
-      5: 'info'
-    };
-    const makeIcon = {
-      1: 'bx-paint-roll',
-      2: 'bx-bowling-ball',
-      3: 'bxs-component',
-      4: 'bx-certification',
-      5: 'bx-mask'
-    };
-    const categoryIcon = {
-      '-tv': 'bx-tv',
-      '-book-content': 'bx-book-content',
-      '-door-open': 'bx-door-open',
-      pir: 'bx-child',
-      humidity: 'bx-droplet',
-      ac: 'bx-cloud-snow',
-      fan: 'bx-wind',
-      light: 'bx-bulb',
-      default: 'bx-cog',
-      temperature: 'bx-log-in-circle',
-      '-speed': 'bx-tachometer'
-    };
+
     if (typeof wizardCreateApp !== undefined && wizardCreateApp !== null) {
       // Wizard next prev button
       const wizardCreateAppNextList = [].slice.call(wizardCreateApp.querySelectorAll('.btn-next'));
@@ -266,7 +280,7 @@ $(function () {
                         <option data-subtext="Cao hơn" value=">">></option>
                         <option data-subtext="Bằng" value="=">=</option>
                       </select>
-                      <input type="number" min="1" max="100" class="form-control w-25 form-control-input" id="valueSensor-${sensor}" placeholder="Giá trị" aria-describedby="defaultFormControlHelp" />
+                      <input type="number" min="1" max="100" value="1" class="form-control w-25 form-control-input" id="valueSensor-${sensor}" placeholder="Giá trị" aria-describedby="defaultFormControlHelp" />
                   </li>
                 `;
               });
@@ -304,8 +318,8 @@ $(function () {
                         $('.selectpicker')
                           .find('option[value="' + device + '"]')
                           .data('type') === 'ac'
-                          ? 'min="16" max="30"'
-                          : 'min="1" max="100"'
+                          ? 'min="16" max="30" value="16"'
+                          : 'min="1" max="100" value="1"'
                       } class="form-control w-25 form-control-input" id="ValueDevice-${device}" placeholder="Giá trị" aria-describedby="defaultFormControlHelp" />
                   </li>
                 `;
@@ -343,7 +357,7 @@ $(function () {
 
       if (wizardCreateAppBtnSubmit) {
         wizardCreateAppBtnSubmit.addEventListener('click', event => {
-          $('.modal-content').block({
+          $('.modal-body').block({
             message: '<div class="spinner-border spinner-border-sm text-primary" role="status"></div>',
             css: {
               backgroundColor: 'transparent',
@@ -380,8 +394,6 @@ $(function () {
               on_off: on_off
             });
           });
-          console.log(deviceDataPost);
-          console.log(sensorDataPost);
           console.log(
             JSON.stringify({
               name: planName,
@@ -404,21 +416,42 @@ $(function () {
               })
             });
 
-            if (!response.ok) {
-              throw new Error('Lỗi throw!');
-            }
-            console.log(response);
-            $('.modal-content').unblock();
+            // if (!response.ok) {
+            //   throw new Error('Lỗi throw!');
+            // }
+            $('.modal-body').unblock();
+            Swal.fire({
+              title: 'Chúc mừng!',
+              text: 'Kịch bản ' + planName + ' đã được tạo thành công!',
+              icon: 'success',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            }).then(function (result) {
+              window.location.reload();
+            });
             // const data = await response.json();
             // localStorage.setItem('ad', Base64.encode(JSON.stringify(data)));
           } catch (error) {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Vui lòng kiểm tra lại!',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-primary'
+              },
+              buttonsStyling: false
+            });
             console.error('Lỗi houseid:', error);
           }
-          alert('Submitted..!!');
         });
       }
     }
   });
+  // $('.btn-submit').on('click', function () {
+
+  // })
   // document.querySelectorAll('.form-control-input').forEach(input => {
   //   input.addEventListener('blur', function (e) {
   //     const value = parseFloat(e.target.value);
@@ -431,4 +464,82 @@ $(function () {
   //     }
   //   });
   // });
+  const EditModal = document.getElementById('EditApp');
+  EditModal.addEventListener('show.bs.modal', function (event) {
+    // $('.selectpickerOrAndEdit').selectpicker();
+    console.log(event.relatedTarget.id);
+    const element = event.relatedTarget;
+    const id = element.id.replace('edit-plan-', '');
+    const data = JSON.parse(Base64.decode(localStorage.getItem('ap')));
+    const plan = findPlanById(parseInt(id), data);
+    console.log(plan);
+    var devices = plan.devices;
+    var sensors = plan.sensors;
+    var html_sensor = ``,
+      html_device = ``;
+    sensors.forEach(sensor => {
+      html_sensor += `
+        <li class="d-flex align-items-start mb-3">
+          <div class="badge bg-label-${makeColor[Math.floor(Math.random() * 5) + 1]} p-2 me-3 rounded"><i class="bx ${
+        categoryIcon[sensor.type]
+      } bx-sm"></i></div>
+            <div>
+              <h6 class="mb-0">${sensor.name}</h6>
+              <small class="text-muted">Khoảng hoạt động: 1 đến 100</small>
+            </div>
+            <select id="selectpickerBasic-edit-${
+              sensor.sensor_id
+            }" class="selectpickerBasic w-25 me-5 ms-5" data-style="btn-default" data-show-subtext="true">
+              <option data-subtext="Thấp hơn" value="<" ${sensor.sign === '<' ? 'selected' : ''} ><</option>
+              <option data-subtext="Cao hơn" value=">" ${sensor.sign === '>' ? 'selected' : ''}>></option>
+              <option data-subtext="Bằng" value="=" ${sensor.sign === '=' ? 'selected' : ''}>>=</option>
+            </select>
+            <input type="number" min="1" max="100" class="form-control w-25 form-control-input ms-3" id="valueSensor-edit-${
+              sensor.sensor_id
+            }" placeholder="Giá trị" aria-describedby="defaultFormControlHelp" value="${sensor.value}"/>
+        </li>
+      `;
+    });
+    $('.loading-sensor-and-or-edit').html(html_sensor);
+    $('.selectpickerBasic').selectpicker();
+    devices.forEach(device => {
+      html_device += `
+        <li class="d-flex align-items-start mb-3">
+          <div class="badge bg-label-${makeColor[Math.floor(Math.random() * 5) + 1]} p-2 me-3 rounded"><i class="bx ${
+        categoryIcon[device.type]
+      } bx-sm"></i></div>
+            <div>
+              <h6 class="mb-0">${device.name}</h6>
+              <small class="text-muted">Khoảng hoạt động: ${device.type === 'ac' ? '16 đến 30' : '1 đến 100'}</small>
+            </div>
+            <select id="selectpickerDevice-edit-${
+              device.device_id
+            }" class="selectpickerDevice w-25 me-5 ms-5" data-style="btn-default">
+              <option value="true" ${device.on_off ? 'selected' : ''}>Bật</option>
+              <option value="false" ${!device.on_off ? 'selected' : ''}>Tắt</option>
+            </select>
+            <input type="number" ${
+              device.type === 'ac' ? 'min="16" max="30"' : 'min="1" max="100"'
+            } class="form-control w-25 form-control-input ms-3" id="ValueDevice-edit-${
+        device.device_id
+      }" placeholder="Giá trị" aria-describedby="defaultFormControlHelp" value="${device.value}" />
+        </li>
+      `;
+    });
+    $('.loading-device-and-or-edit').html(html_device);
+    $('.selectpickerDevice').selectpicker();
+    $('.selectpickerOrAndEdit').val(plan.and_or);
+    document.querySelectorAll('.form-control-input').forEach(input => {
+      input.addEventListener('blur', function (e) {
+        const value = parseFloat(e.target.value);
+        const min = parseFloat(e.target.getAttribute('min')) || -Infinity;
+        const max = parseFloat(e.target.getAttribute('max')) || Infinity;
+
+        if (value < min || value > max) {
+          alert(`Giá trị phải nằm trong khoảng từ ${min} đến ${max}`);
+          e.target.value = '';
+        }
+      });
+    });
+  });
 });

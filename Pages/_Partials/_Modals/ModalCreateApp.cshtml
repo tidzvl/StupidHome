@@ -1,4 +1,3 @@
-<!-- Create App Modal -->
 <div class="modal fade" id="createApp" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-simple modal-upgrade-plan">
     <div class="modal-content p-3 p-md-5">
@@ -8,7 +7,6 @@
           <h3 class="mb-2">Thêm Kịch Bản</h3>
           <p>Hãy tự tay thiết kế kịch bản hoàn hảo cho ngôi nhà của bạn.</p>
         </div>
-        <!-- Property Listing Wizard -->
         <div id="wizard-create-app" class="bs-stepper vertical mt-2 shadow-none">
           <div class="bs-stepper-header border-0 p-1">
             <div class="step" data-target="#details">
@@ -63,7 +61,6 @@
           </div>
           <div class="bs-stepper-content p-1">
             <form onSubmit="return false">
-              <!-- Details -->
               <div id="details" class="content pt-3 pt-lg-0">
                 <div class="mb-3">
                   <input type="text" class="form-control form-control-lg" id="rules-name" placeholder="Nhập tên kich bản" required >
@@ -79,7 +76,6 @@
                 </div>
               </div>
 
-              <!-- Frameworks -->
               <div id="sensor" class="content pt-3 pt-lg-0">
                 <h5>Bạn muốn lắng nghe cảm biến nào?</h5>
                 <div class="mb-3">
@@ -109,8 +105,8 @@
               <div id="setting" class="content">
                 <label for="selectpickerSubtext" class="form-label">Loại điều kiện</label>
                 <select id="selectpickerSubtext" class="selectpickerOrAnd w-100 mb-2" data-style="btn-default" data-show-subtext="true">
-                  <option data-subtext="Cần 1 điều kiện để chạy" value="or">Hoặc</option>
-                  <option data-subtext="Cấn tất cả điều kiện để chạy" value="and">Và</option>
+                  <option data-subtext="Cần 1 điều kiện để chạy" value="OR">Hoặc</option>
+                  <option data-subtext="Cấn tất cả điều kiện để chạy" value="AND">Và</option>
                 </select>
                 <ul class="p-0 m-0 loading-sensor-and-or">
                 </ul>
@@ -123,11 +119,9 @@
                 </div>
               </div>
 
-              <!-- submit -->
               <div id="submit" class="content text-center pt-3 pt-lg-0">
                 <h5 class="mb-2 mt-3">Đã xong</h5>
                 <p>Hãy chờ đợi điều kỳ diệu trong ngôi nhà của bạn.</p>
-                <!-- image -->
                 <img src="~/img/illustrations/boy-deal-review-light.png" alt="Create App img" width="300" class="img-fluid" data-app-light-img="illustrations/boy-deal-review-light.png" data-app-dark-img="illustrations/boy-deal-review-dark.png">
                 <div class="col-12 d-flex justify-content-between mt-4 pt-2">
                   <button class="btn btn-label-secondary btn-prev"> <i class="bx bx-left-arrow-alt bx-xs me-sm-1 me-0"></i> <span class="align-middle d-sm-inline-block d-none">Quay lại</span> </button>
@@ -138,8 +132,35 @@
           </div>
         </div>
       </div>
-      <!--/ Property Listing Wizard -->
     </div>
   </div>
 </div>
-<!--/ Create App Modal -->
+
+<div class="modal fade" id="EditApp" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-simple modal-upgrade-plan">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body p-2">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center">
+          <h3 class="mb-2">Chỉnh Sửa Kịch Bản</h3>
+          <p>Sửa nhanh nhanh đi trời.</p>
+        </div>
+        <div id="setting" class="content">
+          <label for="defaultSelect" class="form-label">Loại điều kiện</label>
+          <select id="defaultSelect" class="form-select selectpickerOrAndEdit w-100 mb-2" data-style="btn-default" data-show-subtext="true">
+            <option data-subtext="Cần 1 điều kiện để chạy" value="OR">Hoặc</option>
+            <option data-subtext="Cấn tất cả điều kiện để chạy" value="AND">Và</option>
+          </select>
+          <ul class="p-0 m-0 loading-sensor-and-or-edit">
+          </ul>
+          <label for="selectpickerSubtext" class="form-label">Hành động</label>
+          <ul class="p-0 m-0 loading-device-and-or-edit">
+          </ul>
+          <div class="col-12 d-flex justify-content-between mt-4">
+            <button class="btn btn-success btn-submit"> <span class="align-middle d-sm-inline-block d-none me-sm-1">Hoàn tất</span> <i class="bx bx-check bx-xs ms-sm-1 ms-0"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

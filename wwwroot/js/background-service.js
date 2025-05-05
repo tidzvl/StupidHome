@@ -35,7 +35,24 @@ async function customFetch(url, options = {}) {
     ...options.headers
   };
 
-  return fetch(url, options);
+  // return fetch(url, options);
+  const response = await fetch(url, options);
+
+  if (response.status === 401) {
+    Swal.fire({
+      title: 'Thông báo!',
+      text: 'Phiên đăng nhập đã hết hạn! Vui lòng đăng nhập lại!',
+      icon: 'info',
+      customClass: {
+        confirmButton: 'btn btn-primary'
+      },
+      buttonsStyling: false
+    }).then(() => {
+      logout();
+    });
+    throw new Error('Unauthorized: Token expired');
+  }
+  return response;
 }
 function logout() {
   localStorage.clear();
