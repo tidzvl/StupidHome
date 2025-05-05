@@ -46,7 +46,9 @@ async function customFetch(url, options = {}) {
       customClass: {
         confirmButton: 'btn btn-primary'
       },
-      buttonsStyling: false
+      buttonsStyling: false,
+      timer: 5000,
+      showConfirmButton: false
     }).then(() => {
       logout();
     });

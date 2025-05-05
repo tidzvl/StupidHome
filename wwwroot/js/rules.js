@@ -10,10 +10,10 @@
 let userId = $('#user-id').val();
 let houseId = $('.user-address').attr('value');
 function findPlanById(planId, data) {
-  console.log(data);
-  console.log(planId);
+  // console.log(data);
+  // console.log(planId);
   for (const room of data) {
-    console.log(room.plans);
+    // console.log(room.plans);
     const plan = room.plans.find(p => p.plan_id === planId);
     if (plan) {
       return plan;
@@ -80,7 +80,7 @@ function findPlanById(planId, data) {
                     <h4 class="mb-1">${plan['name']}</h4>
                     <a id="edit-plan-${plan['plan_id']}" href="javascript:;" data-bs-toggle="modal" data-bs-target="#EditApp" class="role-edit-modal"><small>Chỉnh sửa</small></a>
                   </div>
-                  <a id="delete-plan-${plan['plan_id']}" href="javascript:void(0);" class="text-muted"><i class="bx bx-trash"></i></a>
+                  <a id="delete-plan-${plan['plan_id']}" href="javascript:void(0);" class="text-muted delete-button"><i class="bx bx-trash"></i></a>
                 </div>
               </div>
             </div>
@@ -334,8 +334,8 @@ $(function () {
                   const max = parseFloat(e.target.getAttribute('max')) || Infinity;
 
                   if (value < min || value > max) {
-                    alert(`Giá trị phải nằm trong khoảng từ ${min} đến ${max}`);
-                    e.target.value = '';
+                    // alert(`Giá trị phải nằm trong khoảng từ ${min} đến ${max}`);
+                    e.target.value = min;
                   }
                 });
               });
@@ -489,19 +489,19 @@ $(function () {
             </div>
             <select id="selectpickerBasic-edit-${
               sensor.sensor_id
-            }" class="selectpickerBasic w-25 me-5 ms-5" data-style="btn-default" data-show-subtext="true">
+            }" class="selectpickerBasic form-select w-25 me-5 ms-5" data-style="btn-default" data-show-subtext="true">
               <option data-subtext="Thấp hơn" value="<" ${sensor.sign === '<' ? 'selected' : ''} ><</option>
               <option data-subtext="Cao hơn" value=">" ${sensor.sign === '>' ? 'selected' : ''}>></option>
-              <option data-subtext="Bằng" value="=" ${sensor.sign === '=' ? 'selected' : ''}>>=</option>
+              <option data-subtext="Bằng" value="=" ${sensor.sign === '=' ? 'selected' : ''}>=</option>
             </select>
             <input type="number" min="1" max="100" class="form-control w-25 form-control-input ms-3" id="valueSensor-edit-${
               sensor.sensor_id
-            }" placeholder="Giá trị" aria-describedby="defaultFormControlHelp" value="${sensor.value}"/>
+            }" placeholder="Giá trị" aria-describedby="defaultFormControlHelp" value="${sensor.threshold}"/>
         </li>
       `;
     });
     $('.loading-sensor-and-or-edit').html(html_sensor);
-    $('.selectpickerBasic').selectpicker();
+    // $('.selectpickerBasic').selectpicker();
     devices.forEach(device => {
       html_device += `
         <li class="d-flex align-items-start mb-3">
@@ -514,7 +514,7 @@ $(function () {
             </div>
             <select id="selectpickerDevice-edit-${
               device.device_id
-            }" class="selectpickerDevice w-25 me-5 ms-5" data-style="btn-default">
+            }" class="selectpickerDevice form-select w-25 me-5 ms-5" data-style="btn-default">
               <option value="true" ${device.on_off ? 'selected' : ''}>Bật</option>
               <option value="false" ${!device.on_off ? 'selected' : ''}>Tắt</option>
             </select>
@@ -526,8 +526,10 @@ $(function () {
         </li>
       `;
     });
+    $('.name-edit').val(plan.name);
+    $('.name-edit').attr('id', plan.plan_id);
     $('.loading-device-and-or-edit').html(html_device);
-    $('.selectpickerDevice').selectpicker();
+    // $('.selectpickerDevice').selectpicker();
     $('.selectpickerOrAndEdit').val(plan.and_or);
     document.querySelectorAll('.form-control-input').forEach(input => {
       input.addEventListener('blur', function (e) {
@@ -537,9 +539,130 @@ $(function () {
 
         if (value < min || value > max) {
           alert(`Giá trị phải nằm trong khoảng từ ${min} đến ${max}`);
-          e.target.value = '';
+          e.target.value = min;
         }
       });
     });
+  });
+  $('.submit-edit').on('click', async function () {
+    $('.modal-body').block({
+      message: '<div class="spinner-border spinner-border-sm text-primary" role="status"></div>',
+      css: {
+        backgroundColor: 'transparent',
+        border: '0'
+      },
+      overlayCSS: {
+        backgroundColor: '#fff',
+        opacity: 0.8
+      }
+    });
+    try {
+      const data = JSON.parse(Base64.decode(localStorage.getItem('ap')));
+      console.log(this.parentElement.parentElement);
+      const id = this.parentElement.parentElement.querySelector('.name-edit').id;
+      console.log(id);
+      const sensorElements = document.querySelectorAll('.loading-sensor-and-or-edit li');
+      const deviceElements = document.querySelectorAll('.loading-device-and-or-edit li');
+      const sensors = [];
+      const devices = [];
+      sensorElements.forEach(li => {
+        const inputElement = li.querySelector('input[id^="valueSensor-edit-"]');
+        const sensorId = inputElement.id.replace('valueSensor-edit-', '');
+        const sensorValue = inputElement.value;
+
+        const selectElement = li.querySelector('select[id^="selectpickerBasic-edit-"]');
+        const sensorSign = selectElement.value;
+
+        sensors.push({
+          sensor_id: sensorId,
+          threshold: sensorValue,
+          sign: sensorSign
+        });
+      });
+      console.log(deviceElements);
+      deviceElements.forEach(li => {
+        const inputElement = li.querySelector('input[id^="ValueDevice-edit-"]');
+        console.log(inputElement);
+        const deviceId = inputElement.id.replace('ValueDevice-edit-', '');
+        const deviceValue = inputElement.value;
+
+        const selectElement = li.querySelector('select[id^="selectpickerDevice-edit-"]');
+        const deviceOnOff = selectElement.value;
+
+        devices.push({
+          device_id: deviceId,
+          value: deviceValue,
+          on_off: deviceOnOff
+        });
+      });
+      console.log(sensors);
+      console.log(devices);
+      console.log(
+        JSON.stringify({
+          name: this.parentElement.parentElement.querySelector('.name-edit').value,
+          and_or: this.parentElement.parentElement.querySelector('.selectpickerOrAndEdit').value,
+          sensors: sensors,
+          devices: devices
+        })
+      );
+      try {
+        const response = await customFetch(API + `/plan/edit-plan/${id}/`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: this.parentElement.parentElement.querySelector('.name-edit').value,
+            and_or: this.parentElement.parentElement.querySelector('.selectpickerOrAndEdit').value,
+            sensors: sensors,
+            devices: devices
+          })
+        });
+        if (!response.ok) {
+          throw new Error('Lỗi throw!');
+        }
+        Swal.fire({
+          title: 'Chúc mừng!',
+          text:
+            'Kịch bản ' +
+            this.parentElement.parentElement.querySelector('.name-edit').value +
+            ' đã được sửa thành công!',
+          icon: 'success',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        }).then(function (result) {
+          window.location.reload();
+        });
+      } catch (e) {
+        console.log(e);
+        Swal.fire({
+          title: 'Ẩu!',
+          text: 'Spam là ăn đòn!',
+          icon: 'error',
+          customClass: {
+            confirmButton: 'btn btn-primary'
+          },
+          buttonsStyling: false
+        }).then(() => {
+          window.location.reload();
+        });
+      }
+    } catch (e) {
+      console.log(e);
+      // Swal.fire({
+      //   title: 'Ẩu!',
+      //   text: 'Spam là ăn đòn!',
+      //   icon: 'error',
+      //   customClass: {
+      //     confirmButton: 'btn btn-primary'
+      //   },
+      //   buttonsStyling: false
+      // }).then(() => {
+      //   window.location.reload();
+      // });
+    }
+    // localStorage.setItem('ap', Base64.encode(JSON.stringify(data)));
   });
 });
