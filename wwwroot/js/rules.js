@@ -90,6 +90,60 @@ function findPlanById(planId, data) {
       });
     });
     $('.content-wrapper').unblock();
+    $('.delete-button').on('click', async function () {
+      const id = this.id.replace('delete-plan-', '');
+      console.log(id);
+      const result = await Swal.fire({
+        title: 'Bạn có chắc chắn?',
+        text: 'Kịch bản này sẽ bị xóa vĩnh viễn!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy',
+        customClass: {
+          confirmButton: 'btn btn-danger',
+          cancelButton: 'btn btn-secondary'
+        },
+        buttonsStyling: false
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const response = await customFetch(API + `/plan/delete-plan/${id}/`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Lỗi throw!');
+          }
+          Swal.fire({
+            title: 'Đã xóa!',
+            text: 'Kịch bản đã được xóa thành công.',
+            icon: 'success',
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+          }).then(() => {
+            window.location.reload();
+          });
+        } catch (error) {
+          console.error('Lỗi plan:', error);
+          Swal.fire({
+            title: 'Lỗi!',
+            text: 'Không thể xóa kịch bản. Vui lòng thử lại!',
+            icon: 'error',
+            customClass: {
+              confirmButton: 'btn btn-primary'
+            },
+            buttonsStyling: false
+          });
+        }
+      }
+    });
     // localStorage.setItem('ad', Base64.encode(JSON.stringify(data)));
   } catch (error) {
     console.error('Lỗi houseid:', error);
