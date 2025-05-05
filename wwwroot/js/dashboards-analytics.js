@@ -440,7 +440,7 @@ $(function () {
         body: JSON.stringify({
           device_id: deviceid,
           on_off: on_off,
-          value: '0',
+          value: '20',
           pinned: true,
           id: userId
         })

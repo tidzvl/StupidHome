@@ -22,6 +22,21 @@ function GenTime() {
   var today = new Date();
 }
 
+function toUTC(date) {
+  // return new Date(
+  //   Date.UTC(
+  //     date.getUTCFullYear(),
+  //     date.getUTCMonth(),
+  //     date.getUTCDate(),
+  //     date.getUTCHours(),
+  //     date.getUTCMinutes(),
+  //     date.getUTCSeconds(),
+  //     date.getUTCMilliseconds()
+  //   )
+  // );
+  return new Date(date);
+}
+
 function calculateAverage(data) {
   if (!data || data.length === 0) {
     return 0;
@@ -40,15 +55,16 @@ function calculateTotal(data) {
 }
 
 function processData(jsonData, option) {
-  const now = new Date();
+  const a = new Date();
+  const now = toUTC(a);
   // now.setDate(now.getDate() + 1);
   // console.log(now);
   if (option === 'day') {
     const startOfDay = new Date(now);
-    startOfDay.setHours(0, 0, 0, 0);
+    startOfDay.setUTCHours(0, 0, 0, 0);
 
     const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999);
+    endOfDay.setUTCHours(23, 59, 59, 999);
 
     const filteredData = jsonData.filter(item => {
       const itemDate = new Date(item.time);
@@ -56,7 +72,7 @@ function processData(jsonData, option) {
     });
 
     const groupedByHour = filteredData.reduce((acc, item) => {
-      const hour = new Date(item.time).getHours();
+      const hour = new Date(item.time).getUTCHours();
       if (!acc[hour]) acc[hour] = [];
       acc[hour].push(item.value);
       return acc;
@@ -69,11 +85,8 @@ function processData(jsonData, option) {
 
     return cleanedData;
   } else if (option === 'week') {
-    // const startOfWeek = new Date(now);
-    // startOfWeek.setDate(now.getDate() - 7);
     const now = new Date();
-    const startOfWeek = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 6));
-    // console.log(now);
+    const startOfWeek = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 7));
     const filteredData = jsonData.filter(item => {
       const itemDate = new Date(item.time);
       return itemDate >= startOfWeek && itemDate <= now;
@@ -84,7 +97,7 @@ function processData(jsonData, option) {
       acc[date].push(item.value);
       return acc;
     }, {});
-    console.log(groupedByDate);
+    // console.log(groupedByDate);
     const cleanedData = Object.entries(groupedByDate).map(([date, values]) => {
       const average = values.reduce((sum, val) => sum + val, 0) / values.length;
       return { date, average: parseFloat(average.toFixed(2)) };
@@ -92,21 +105,20 @@ function processData(jsonData, option) {
 
     return cleanedData;
   } else if (option === 'weeks') {
-    const startOfMonth = new Date(now);
-    startOfMonth.setDate(now.getDate() - 15);
-
+    const a = new Date();
+    const now = toUTC(a);
+    const startOfWeek = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 14));
     const filteredData = jsonData.filter(item => {
       const itemDate = new Date(item.time);
-      return itemDate >= startOfMonth && itemDate <= now;
+      return itemDate >= startOfWeek && itemDate <= now;
     });
-
     const groupedByDate = filteredData.reduce((acc, item) => {
       const date = new Date(item.time).toISOString().split('T')[0];
       if (!acc[date]) acc[date] = [];
       acc[date].push(item.value);
       return acc;
     }, {});
-
+    // console.log(groupedByDate);
     const cleanedData = Object.entries(groupedByDate).map(([date, values]) => {
       const average = values.reduce((sum, val) => sum + val, 0) / values.length;
       return { date, average: parseFloat(average.toFixed(2)) };
@@ -182,22 +194,24 @@ function processRoomData(dd2) {
 
     return { type, data: aggregatedByDate };
   });
-
   return finalData;
 }
 
 function processRoomDataForLastWeek(dd2) {
-  //data to last week
   const aggregatedData = {};
 
   const today = new Date();
+
   const startOfLastWeek = new Date(today);
-  startOfLastWeek.setDate(today.getDate() - today.getDay() - 14);
+  startOfLastWeek.setDate(today.getDate() - 14);
+
   const endOfLastWeek = new Date(today);
-  endOfLastWeek.setDate(today.getDate() - today.getDay() - 7);
+  endOfLastWeek.setDate(today.getDate() - 7);
+
+  // console.log('startOfLastWeek:', toUTC(startOfLastWeek));
+  // console.log('endOfLastWeek:', toUTC(endOfLastWeek));
 
   dd2.forEach(room => {
-    const roomId = room.room_id;
     const timeData = room.time_data;
 
     timeData.forEach(sensor => {
@@ -205,10 +219,14 @@ function processRoomDataForLastWeek(dd2) {
       const data = sensor.data;
 
       const filteredData = data.filter(item => {
-        const itemDate = new Date(item.time.split('T')[0]);
-        return itemDate >= startOfLastWeek && itemDate <= endOfLastWeek;
+        // const itemDate = new Date(item.time.split('T')[0]);
+        // return itemDate >= startOfLastWeek && itemDate <= endOfLastWeek;
+        const itemDate = new Date(item.time);
+        const startDate = toUTC(startOfLastWeek);
+        const endDate = toUTC(endOfLastWeek);
+        return itemDate >= startDate && itemDate <= endDate;
       });
-
+      // console.log('here', filteredData);
       const groupedByDate = filteredData.reduce((acc, item) => {
         const date = item.time.split('T')[0];
         if (!acc[date]) acc[date] = [];
@@ -237,14 +255,16 @@ function processRoomDataForLastWeek(dd2) {
 
     return { type, data: aggregatedByDate };
   });
-  console.log('finalData', finalData);
+
+  // console.log('finalData:', finalData);
   return finalData;
 }
 
 function updateApexChartData(jsonData, chartInstance) {
-  const today = new Date();
+  const a = new Date();
+  const today = toUTC(a);
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const todayIndex = today.getDay();
+  const todayIndex = today.getUTCDay();
 
   const categories = [];
   for (let i = 0; i < 7; i++) {
@@ -253,8 +273,10 @@ function updateApexChartData(jsonData, chartInstance) {
   }
 
   const startDate = new Date(today);
-  startDate.setDate(today.getDate() - 7);
-
+  startDate.setDate(today.getUTCDate() - 7);
+  // console.log('-7', today.getUTCDate());
+  // console.log('startDate', startDate);
+  // console.log('today', today);
   const filteredData = jsonData
     .filter(item => {
       const itemDate = new Date(item.date);
@@ -267,13 +289,14 @@ function updateApexChartData(jsonData, chartInstance) {
     const targetDate = new Date(today);
     targetDate.setDate(today.getDate() - (6 - index));
 
-    const targetDateString = targetDate.toISOString().split('T')[0];
+    const targetDateString = toUTC(targetDate).toISOString().split('T')[0];
 
     const date = filteredData.find(item => {
       return item.date === targetDateString;
     });
     return date ? parseFloat(date.average.toFixed(2)) : 0;
   });
+  // console.log([seriesData, categories]);
   if (chartInstance == null) return [seriesData, categories];
   chartInstance.updateOptions({
     xaxis: {
@@ -289,44 +312,50 @@ function updateApexChartData(jsonData, chartInstance) {
 }
 
 function updateApexChartDataForLastWeek(jsonData, chartInstance) {
-  const today = new Date();
-
-  const startOfCurrentWeek = new Date(today);
-  startOfCurrentWeek.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
-
-  const startOfLastWeek = new Date(startOfCurrentWeek);
-  startOfLastWeek.setDate(startOfCurrentWeek.getDate() - 8);
-
-  const endOfLastWeek = new Date(startOfCurrentWeek);
-  endOfLastWeek.setDate(startOfCurrentWeek.getDate() - 1);
-
+  const a = new Date();
+  const today = toUTC(a);
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const todayIndex = today.getUTCDay();
+
   const categories = [];
   for (let i = 0; i < 7; i++) {
-    const day = new Date(startOfLastWeek);
-    day.setDate(startOfLastWeek.getDate() + i);
-    categories.push(weekdays[day.getDay()]);
+    const dayIndex = (todayIndex - i + 7) % 7;
+    categories.unshift(weekdays[dayIndex]);
   }
 
+  const startDate = new Date(today);
+  startDate.setDate(today.getUTCDate() - 14);
+  const endDate = new Date(today);
+  endDate.setDate(today.getUTCDate() - 6);
+  // console.log('-7', today.getUTCDate());
+  // console.log('startDate', startDate);
+  // console.log('today', today);
   const filteredData = jsonData
     .filter(item => {
       const itemDate = new Date(item.date);
-      return itemDate >= startOfLastWeek && itemDate <= endOfLastWeek;
+      return itemDate >= startDate && itemDate <= endDate;
     })
     .sort((a, b) => new Date(a.date) - new Date(b.date));
-  console.log('filteredData', filteredData);
-  const seriesData = categories.map((category, index) => {
-    const targetDate = new Date(startOfLastWeek);
-    targetDate.setDate(startOfLastWeek.getDate() + index + 1);
+  // console.log('filteredData', filteredData);
 
-    const targetDateString = targetDate.toISOString().split('T')[0];
+  const seriesData = categories.map((category, index) => {
+    const targetDate = new Date(today);
+    targetDate.setDate(today.getDate() - (13 - index));
+
+    const targetDateString = toUTC(targetDate).toISOString().split('T')[0];
 
     const date = filteredData.find(item => {
       return item.date === targetDateString;
     });
     return date ? parseFloat(date.average.toFixed(2)) : 0;
   });
-
+  // console.log([seriesData, categories]);
+  if (chartInstance == null) return [seriesData, categories];
+  // console.log('startOfLastWeek:', startOfLastWeek.toISOString());
+  // console.log('endOfLastWeek:', endOfLastWeek.toISOString());
+  // console.log('filteredData:', filteredData);
+  // console.log('categories:', categories);
+  // console.log('seriesData:', seriesData);
   chartInstance.updateOptions({
     xaxis: {
       categories: categories
@@ -1207,7 +1236,7 @@ $(function () {
       // console.log(room_data);
       if (!isLoading) {
         dd2.forEach(element => {
-          console.log(element);
+          // console.log(element);
           var room_title = element.room_title.replace(/\s+/g, '-');
           var r_d = room_data.find(r => r.room_id === element.room_id)['now'];
           $('.nav.nav-tabs').append(`
@@ -1327,10 +1356,10 @@ $(function () {
             `;
           }
           if (r_d.find(r => r.type === 'pir')) {
-            console.log(
-              room_title,
-              r_d.find(r => r.type === 'pir')
-            );
+            // console.log(
+            //   room_title,
+            //   r_d.find(r => r.type === 'pir')
+            // );
             html_postfix += `
               <div class="col-lg-4 col-md-6 col-sm-6 mb-0">
                 <div class="card">
@@ -1444,9 +1473,10 @@ $(function () {
           element['time_data'].forEach(e => {
             var c = processData(e['data'], 'week');
             // console.log(room_title);
-            // console.log(c);
             var series = updateApexChartData(c)[0],
               categories = updateApexChartData(c)[1];
+            c = c.sort((a, b) => new Date(a.date) - new Date(b.date)).slice(-7);
+            console.log(c);
             // console.log(series, categories);
             if (e['type'] === 'temperature') {
               temp = processData(e['data'], 'weeks');
@@ -1582,6 +1612,8 @@ $(function () {
               }
             } else if (e['type'] === 'pir') {
               pir = processData(e['data'], 'weeks');
+              // console.log('categories', categories);
+              // console.log('series', series);
               $('.pir-' + room_title).text(calculateAverage(c));
               const usersChartEl = document.querySelector('#action-' + room_title),
                 usersChartConfig = {
@@ -1650,13 +1682,14 @@ $(function () {
               light = processData(e['data'], 'weeks');
             }
           });
-          console.log(temp, humi, light, pir);
+          // console.log(temp, humi, light, pir);
           var lineChartJSRoom = document.querySelector('#lineChartJS-' + room_title);
-          console.log(lineChartJSRoom);
+          // console.log(lineChartJSRoom);
           if (lineChartJSRoom) {
             if (lineChartJSRoom.chartInstance) {
               lineChartJSRoom.chartInstance.destroy();
             }
+            console.log(pir);
             var lineChartVarRoom = new Chart(lineChartJSRoom, {
               type: 'line',
               data: {
@@ -1848,6 +1881,7 @@ $(function () {
         result_weeked.forEach(element => {
           if (element['type'] === 'pir') {
             $('.sum-pir-main').text(calculateTotal(element['data']));
+            // console.log(element['data']);
             updateApexChartDataForLastWeek(element['data'], activityAreaChart);
           }
         });
