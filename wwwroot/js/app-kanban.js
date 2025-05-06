@@ -16,7 +16,7 @@ $('.app-kanban').block({
     opacity: 0.2
   }
 });
-
+let classicPicker;
 let loading = false;
 let boards;
 let userId = $('#user-id').val();
@@ -52,9 +52,10 @@ function transformApiDataToKanban(apiData) {
       on: device.on_off,
       temp: device.type === 'ac' ? device.value : null,
       mood: null,
-      light: device.type === 'light' ? device.value : null,
+      light: device.type === 'led' ? device.value : null,
       voilume: null,
-      speed: device.type === 'fan' ? device.value : null
+      speed: device.type === 'fan' ? device.value : null,
+      pump: device.type === 'waterpump' ? device.value : null
     }))
   }));
 }
@@ -175,6 +176,7 @@ function transformApiDataToKanban(apiData) {
       // const label = kanbanItem.querySelector('#label').value;
       const pinned = sidebar.querySelector('#pin').checked;
       const value = document.querySelector('#slider-light');
+      const color = $('.pcr-button');
       const eid = kanbanItem.getAttribute('data-eid');
       const id = eid.replace('device-', '');
       // if (kanbanItem.getAttribute('data-on') == 'true') {
@@ -194,19 +196,79 @@ function transformApiDataToKanban(apiData) {
       }
       if (value) {
         const e = $('[data-eid="' + eid + '"]');
+        if (e.find('.footer-value').length < 1) {
+          e.find('.d-flex.justify-content-between.align-items-center.flex-wrap.mt-2.pt-1').append(
+            `<span class="switch-label"><i class='bx bx-tachometer'></i><span class="footer-value">${parseInt(
+              speed.slice(-3)
+            )}</span></span>`
+          );
+          // e.append('<span class="footer-value"></span>');
+        }
         e.find('.footer-value').text(parseInt(value.noUiSlider.get()));
+      }
+      var color_gen;
+      if (color) {
+        const e = $('[data-eid="' + eid + '"]');
+        // e.attr('data-color', color.getColor().toHEXA().toString());
+        // console.log(color.getColor().toHEXA().toString());
+        // console.log(color);
+        // console.log(classicPicker.getColor().toHEXA().toString());
+        if (classicPicker) {
+          console.log(classicPicker.getColor().toHEXA().toString());
+          color_gen = classicPicker.getColor().toHEXA().toString();
+        }
+        // console.log(color[0].style.cssText);
+      }
+      var on_off = kanbanItem.getAttribute('data-on') == 'true' ? true : false;
+
+      // value_gen += value ? '0' + String(parseInt(value.noUiSlider.get())) : '000';
+      var url;
+      if (color_gen) {
+        console.log('LED');
+        url = API + `/postDeviceDataLED`;
+      } else {
+        console.log('NO LED');
+        url = API + `/postDeviceData`;
+      }
+      var value_gen = String(id).length < 2 ? '0' + String(id) : String(id);
+      if (value) {
+        var num_value = parseInt(value.noUiSlider.get());
+        if (!on_off) {
+          if (color_gen) {
+            value_gen = '000000000' + value_gen;
+          } else {
+            value_gen += '000';
+          }
+        } else {
+          if (color_gen) {
+            if (num_value < 100) {
+              value_gen = '0' + String(parseInt(value.noUiSlider.get())) + color_gen.replace('#', '') + value_gen;
+            } else {
+              value_gen = String(parseInt(value.noUiSlider.get())) + color_gen.replace('#', '') + value_gen;
+            }
+          } else {
+            value_gen = value_gen + '0' + String(parseInt(value.noUiSlider.get()));
+          }
+        }
+      } else {
+        // console.log('vo day');
+        if (!on_off) {
+          value_gen += '000';
+        } else {
+          value_gen += '001';
+        }
       }
       console.log(
         JSON.stringify({
           device_id: id,
           on_off: kanbanItem.getAttribute('data-on') == 'true' ? true : false,
-          value: value ? String(parseInt(value.noUiSlider.get())) : '0',
+          value: value_gen,
           pinned: pinned,
           id: userId
         })
       );
       try {
-        const response = await customFetch(API + `/postDeviceData`, {
+        const response = await customFetch(url, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -214,7 +276,7 @@ function transformApiDataToKanban(apiData) {
           body: JSON.stringify({
             device_id: id,
             on_off: kanbanItem.getAttribute('data-on') == 'true' ? true : false,
-            value: value ? String(parseInt(value.noUiSlider.get())) : '0',
+            value: value_gen,
             pinned: pinned,
             id: userId
           })
@@ -349,8 +411,8 @@ function transformApiDataToKanban(apiData) {
       '-book-content': 'primary',
       fan: 'info',
       '-door-open': 'danger',
-      light: 'warning',
-      '-speaker': 'dark',
+      led: 'warning',
+      waterpump: 'dark',
       default: 'success'
     };
     return (
@@ -368,7 +430,7 @@ function transformApiDataToKanban(apiData) {
   }
 
   // Render footer
-  function renderFooter(on, temp, light, speed) {
+  function renderFooter(on, temp, light, speed, pump) {
     let value;
     if (on == 'true') {
       value = 'checked';
@@ -379,13 +441,23 @@ function transformApiDataToKanban(apiData) {
       var html = `
       <span class="switch-label"><i class='bx bxs-thermometer'></i><span class="footer-value">${temp}</span></span>
       `;
-    } else if (light > 0) {
+    } else if (parseInt(light.slice(-3)) > 0) {
       var html = `
-        <span class="switch-label"><i class='bx bx-bulb'></i><span class="footer-value">${light}</span></span>
+        <span class="switch-label"><i class='bx bx-bulb'></i><span class="footer-value">${parseInt(
+          light.slice(0, 3)
+        )}</span><i class='bx bx-palette'></i><span class="footer-color">${light.slice(3, 9)}</span></span>
       `;
-    } else if (speed > 0) {
+    } else if (parseInt(speed.slice(-3)) > 0) {
       var html = `
-        <span class="switch-label"><i class='bx bx-tachometer'></i><span class="footer-value">${speed}</span></span>
+        <span class="switch-label"><i class='bx bx-tachometer'></i><span class="footer-value">${parseInt(
+          speed.slice(-3)
+        )}</span></span>
+      `;
+    } else if (parseInt(pump.slice(-3)) > 0) {
+      var html = `
+        <span class="switch-label"><i class='bx bx-volume'></i><span class="footer-value">${parseInt(
+          pump.slice(-3)
+        )}</span></span>
       `;
     }
     return (
@@ -457,8 +529,9 @@ function transformApiDataToKanban(apiData) {
         temp = element.getAttribute('data-temp'),
         mood = element.getAttribute('data-mood'),
         light = element.getAttribute('data-light'),
-        voilume = element.getAttribute('data-voilume'),
-        speed = element.getAttribute('data-speed');
+        pump = element.getAttribute('data-pump'),
+        speed = element.getAttribute('data-speed').slice(-3);
+      // console.log('speed', speed);
       $('.optional').empty();
       $('.optional').append(`
           <div class="mb-2">
@@ -544,20 +617,69 @@ function transformApiDataToKanban(apiData) {
           `);
       }
       var result, value;
-      if (light > 0) {
+      if (parseInt(light.slice(0, 3)) > -1) {
         result = 'Độ Sáng';
-        value = light;
+        value = parseInt(light.slice(0, 3));
       }
-      if (voilume > 0) {
-        result = 'Âm Lượng';
-        value = voilume;
-      }
-      if (speed > 0) {
+      // if (parseInt(pump) > -1) {
+      //   result = 'Máy Bơm';
+      //   value = pump;
+      // }
+      if (parseInt(speed) > -1) {
         result = 'Tốc Độ';
         value = speed;
       }
       //render
       if (!result) {
+      } else if (result == 'Độ Sáng') {
+        $('.optional').append(`
+          <div class="mb-2">
+                <label class="form-label">${result}</label>
+                <div id="slider-light" class="my-3"></div>
+              </div>
+        `);
+        noUiSlider.create(document.getElementById('slider-light'), {
+          start: [value],
+          connect: [true, false],
+          range: {
+            min: 0,
+            max: 100
+          }
+        });
+        $('.optional').append(`
+          <div class="mb-2">
+                <label class="form-label">Màu sắc</label>
+                <div id="color-light" class="my-3"></div>
+              </div>
+        `);
+        classicPicker = pickr.create({
+          el: '#color-light',
+          theme: 'classic',
+          default: 'rgba(102, 108, 232, 1)',
+          swatches: [
+            'rgba(102, 108, 232, 1)',
+            'rgba(40, 208, 148, 1)',
+            'rgba(255, 73, 97, 1)',
+            'rgba(255, 145, 73, 1)',
+            'rgba(30, 159, 242, 1)'
+          ],
+          components: {
+            preview: true,
+            opacity: true,
+            hue: true,
+
+            interaction: {
+              hex: true,
+              rgba: true,
+              hsla: true,
+              hsva: true,
+              cmyk: true,
+              input: true,
+              clear: true,
+              save: true
+            }
+          }
+        });
       } else {
         $('.optional').append(`
           <div class="mb-2">
@@ -781,9 +903,9 @@ function transformApiDataToKanban(apiData) {
     '-bulb': 'bx-bulb',
     ac: 'bx-cloud-snow',
     fan: 'bx-wind',
-    light: 'bx-bulb',
+    led: 'bx-bulb',
     default: 'bx-cog',
-    '-volume': 'bx-volume',
+    waterpump: 'bx-volume',
     '-speed': 'bx-tachometer'
   };
   // Render custom items
@@ -823,7 +945,8 @@ function transformApiDataToKanban(apiData) {
             el.getAttribute('data-on'),
             el.getAttribute('data-temp'),
             el.getAttribute('data-light'),
-            el.getAttribute('data-speed')
+            el.getAttribute('data-speed'),
+            el.getAttribute('data-pump')
           )
         );
       }

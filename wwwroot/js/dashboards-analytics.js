@@ -431,6 +431,12 @@ $(function () {
         opacity: 0.8
       }
     });
+    var gen_value;
+    if (on_off) {
+      gen_value = (String(deviceid).length > 1 ? String(deviceid) : '0' + String(deviceid)) + '030';
+    } else {
+      gen_value = (String(deviceid).length > 1 ? String(deviceid) : '0' + String(deviceid)) + '000';
+    }
     try {
       const response = await customFetch(API + `/postDeviceData`, {
         method: 'POST',
@@ -440,7 +446,7 @@ $(function () {
         body: JSON.stringify({
           device_id: deviceid,
           on_off: on_off,
-          value: '20',
+          value: gen_value,
           pinned: true,
           id: userId
         })

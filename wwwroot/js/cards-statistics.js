@@ -3,6 +3,7 @@
  */
 
 'use strict';
+
 $('.content-wrapper').block({
   message:
     '<div class="d-flex justify-content-center"><p class="me-2 mb-0">Please wait...</p> <div class="sk-wave sk-primary m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
@@ -87,6 +88,7 @@ function processData(jsonData, option) {
   } else if (option === 'week') {
     const now = new Date();
     const startOfWeek = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 7));
+    // const startOfWeek = new Date(now - 7);
     const filteredData = jsonData.filter(item => {
       const itemDate = new Date(item.time);
       return itemDate >= startOfWeek && itemDate <= now;
@@ -97,12 +99,14 @@ function processData(jsonData, option) {
       acc[date].push(item.value);
       return acc;
     }, {});
-    // console.log(groupedByDate);
+    console.log(groupedByDate);
     const cleanedData = Object.entries(groupedByDate).map(([date, values]) => {
-      const average = values.reduce((sum, val) => sum + val, 0) / values.length;
+      console.log(date, values);
+      // const value2 = parseFloat(values[0]);
+      const average = values.reduce((sum, val) => sum + parseFloat(val), 0) / values.length;
       return { date, average: parseFloat(average.toFixed(2)) };
     });
-
+    console.log('cleanedData', cleanedData);
     return cleanedData;
   } else if (option === 'weeks') {
     const a = new Date();
@@ -120,7 +124,7 @@ function processData(jsonData, option) {
     }, {});
     // console.log(groupedByDate);
     const cleanedData = Object.entries(groupedByDate).map(([date, values]) => {
-      const average = values.reduce((sum, val) => sum + val, 0) / values.length;
+      const average = values.reduce((sum, val) => sum + parseFloat(val), 0) / values.length;
       return { date, average: parseFloat(average.toFixed(2)) };
     });
 
@@ -165,11 +169,13 @@ function processRoomData(dd2) {
       const data = sensor.data;
 
       const groupedByDate = data.reduce((acc, item) => {
-        // const date = new Date(item.time).toISOString().split('T')[0];
-        const date = item.time.split('T')[0];
-        // if (date === '2025-04-28') console.log(item.time);
-        if (!acc[date]) acc[date] = [];
-        acc[date].push(item.value);
+        // const date = new Date(item.time);
+        // date.setHours(23, 59, 59, 999);
+        const formattedDate = item.time.split('T')[0];
+
+        // if (formattedDate === '2025-05-06') console.log(formattedDate, item.time);
+        if (!acc[formattedDate]) acc[formattedDate] = [];
+        acc[formattedDate].push(item.value);
         return acc;
       }, {});
 
@@ -206,7 +212,7 @@ function processRoomDataForLastWeek(dd2) {
   startOfLastWeek.setDate(today.getDate() - 14);
 
   const endOfLastWeek = new Date(today);
-  endOfLastWeek.setDate(today.getDate() - 7);
+  endOfLastWeek.setDate(today.getDate() - 6);
 
   // console.log('startOfLastWeek:', toUTC(startOfLastWeek));
   // console.log('endOfLastWeek:', toUTC(endOfLastWeek));
@@ -273,14 +279,18 @@ function updateApexChartData(jsonData, chartInstance) {
   }
 
   const startDate = new Date(today);
-  startDate.setDate(today.getUTCDate() - 7);
+  startDate.setDate(today.getDate() - 7);
+  startDate.setHours(0, 0, 0, 0);
+  const endDate = new Date(today);
+  endDate.setDate(today.getDate());
+  endDate.setHours(23, 59, 59, 999);
   // console.log('-7', today.getUTCDate());
   // console.log('startDate', startDate);
-  // console.log('today', today);
+  // console.log('endDate', endDate);
   const filteredData = jsonData
     .filter(item => {
       const itemDate = new Date(item.date);
-      return itemDate >= startDate && itemDate <= today;
+      return itemDate >= startDate && itemDate <= endDate;
     })
     .sort((a, b) => new Date(a.date) - new Date(b.date));
   // console.log('filteredData', filteredData);
@@ -1471,6 +1481,7 @@ $(function () {
           // console.log(registrationChartEl);
           var temp, humi, light, pir;
           element['time_data'].forEach(e => {
+            console.log(e);
             var c = processData(e['data'], 'week');
             // console.log(room_title);
             var series = updateApexChartData(c)[0],
@@ -1689,7 +1700,7 @@ $(function () {
             if (lineChartJSRoom.chartInstance) {
               lineChartJSRoom.chartInstance.destroy();
             }
-            console.log(pir);
+            // console.log(pir);
             var lineChartVarRoom = new Chart(lineChartJSRoom, {
               type: 'line',
               data: {
@@ -1881,7 +1892,7 @@ $(function () {
         result_weeked.forEach(element => {
           if (element['type'] === 'pir') {
             $('.sum-pir-main').text(calculateTotal(element['data']));
-            // console.log(element['data']);
+            console.log(element['data']);
             updateApexChartDataForLastWeek(element['data'], activityAreaChart);
           }
         });

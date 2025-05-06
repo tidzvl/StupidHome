@@ -176,8 +176,8 @@ public class ApiService
             .Where(room => !string.IsNullOrEmpty(room.RoomId))
             .ToList();
 
-            var startTime = DateTime.UtcNow.AddMonths(-1).ToString("yyyy-MM-ddTHH:mm:ss");
-            var endTime = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss");
+            var startTime = DateTime.UtcNow.AddMonths(-1).AddHours(7).ToString("yyyy-MM-ddTHH:mm:ss");
+            var endTime = DateTime.UtcNow.AddHours(7).ToString("yyyy-MM-ddTHH:mm:ss");
 
             var sensorTasks = roomData.Select(async room =>
             {
