@@ -99,14 +99,14 @@ function processData(jsonData, option) {
       acc[date].push(item.value);
       return acc;
     }, {});
-    console.log(groupedByDate);
+    // console.log(groupedByDate);
     const cleanedData = Object.entries(groupedByDate).map(([date, values]) => {
-      console.log(date, values);
+      // console.log(date, values);
       // const value2 = parseFloat(values[0]);
       const average = values.reduce((sum, val) => sum + parseFloat(val), 0) / values.length;
       return { date, average: parseFloat(average.toFixed(2)) };
     });
-    console.log('cleanedData', cleanedData);
+    // console.log('cleanedData', cleanedData);
     return cleanedData;
   } else if (option === 'weeks') {
     const a = new Date();
@@ -1226,7 +1226,8 @@ $(function () {
   var light = document.querySelector('.light'),
     temp_in = document.querySelector('.temp-in'),
     temp_out = document.querySelector('.temp-out'),
-    humidity = document.querySelector('.humidity');
+    humidity = document.querySelector('.humidity'),
+    soil = document.querySelector('.soil');
   setInterval(() => {
     var dd = localStorage.getItem('d');
     var dd2 = localStorage.getItem('d2');
@@ -1235,9 +1236,10 @@ $(function () {
       if ($('.content-wrapper').data('blockUI.isBlocked')) $('.content-wrapper').unblock();
       dd = JSON.parse(Base64.decode(dd));
       dd2 = JSON.parse(Base64.decode(dd2));
-      temp_in.textContent = dd.find(sensor => sensor.type === 'temperature').average_value;
-      light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
-      humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
+      temp_in.textContent = dd.find(sensor => sensor.type === 'temp').average_value.toFixed(1);
+      light.textContent = dd.find(sensor => sensor.type === 'light').average_value.toFixed(1) + '%';
+      humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value.toFixed(1) + '%';
+      soil.textContent = dd.find(sensor => sensor.type === 'soilhumidity').average_value.toFixed(1) + '%';
       $('.device-on').text(dd[dd.length - 1]['devices_on']);
       // var rooms = dd2;
       // console.log(dd2);
@@ -1276,7 +1278,7 @@ $(function () {
                   </div>
           `;
           // console.log('here', r_d['now']);
-          if (r_d.find(r => r.type === 'temperature')) {
+          if (r_d.find(r => r.type === 'temp')) {
             // console.log(r_d.find(r => r.type === 'humidity')['average_value']);
             html += `
               <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
@@ -1286,7 +1288,7 @@ $(function () {
                       <span class="avatar-initial rounded-circle bg-label-info"><i class='bx bx bxl-c-plus-plus fs-3'></i></span>
                     </div>
                     <span class="d-block mb-1 text-nowrap">Nhiệt Độ</span>
-                    <h2 class="mb-0 temp-${room_title}">${r_d.find(r => r.type === 'temperature')['average_value']}</h2>
+                    <h2 class="mb-0 temp-${room_title}">${r_d.find(r => r.type === 'temp')['average_value']}</h2>
                     <span class="d-block mb-1 text-nowrap"><strong>°C</strong></span>
                   </div>
                 </div>
@@ -1390,6 +1392,42 @@ $(function () {
               </div>
             `;
           }
+          if (r_d.find(r => r.type === 'soilhumidity')) {
+            html += `
+              <div class="col-xl-2 col-lg-2 col-md-4 col-sm-4 col-6 mb-4">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <div class="avatar avatar-md mx-auto mb-3">
+                      <span class="avatar-initial rounded-circle bg-label-success"><i class='bx bxs-tree bx-sm fs-3'></i></span>
+                    </div>
+                    <span class="d-block mb-1 text-nowrap">Độ ẩm đất</span>
+                    <h2 class="mb-0 soil-${room_title}">${
+              r_d.find(r => r.type === 'soilhumidity')['average_value']
+            }</h2>
+                    <span class="d-block mb-1 text-nowrap"><strong>%</strong></span>
+                  </div>
+                </div>
+              </div>
+            `;
+            html_postfix += `
+              <div class="col-lg-4 col-md-6 col-sm-6 mb-0">
+                <div class="card">
+                  <div class="card-header d-flex align-items-start justify-content-between">
+                    <div class="m-0 me-2">
+                      <h5 class="card-title mb-0">Độ Ẩm Vườn</h5>
+                      <small class="text-muted">Độ ẩm đất trong tuần qua</small>
+                    </div>
+                    <div class="d-flex flex-row gap-2">
+                      <h5 class="mb-0"><span class="soil-avg-${room_title}">-</span>%</h5>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div id="action-${room_title}"></div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }
           html_postfix += `
           </div>
             </div>
@@ -1479,18 +1517,20 @@ $(function () {
           $('.tab-content').append(html);
           // const registrationChartEl = document.querySelector('#registrationsChart-' + room_title);
           // console.log(registrationChartEl);
-          var temp, humi, light, pir;
+          var temp, humi, light, soil;
           element['time_data'].forEach(e => {
-            console.log(e);
+            // console.log(e);
             var c = processData(e['data'], 'week');
+            console.log(c);
             // console.log(room_title);
             var series = updateApexChartData(c)[0],
               categories = updateApexChartData(c)[1];
             c = c.sort((a, b) => new Date(a.date) - new Date(b.date)).slice(-7);
-            console.log(c);
+            // console.log(c);
             // console.log(series, categories);
-            if (e['type'] === 'temperature') {
+            if (e['type'] === 'temp') {
               temp = processData(e['data'], 'weeks');
+              console.log('temp', temp);
               $('.temp-avg-' + room_title).text(calculateAverage(c));
               const registrationChartEl = document.querySelector('#registrationsChart-' + room_title),
                 registrationChartConfig = {
@@ -1621,11 +1661,12 @@ $(function () {
                 const expensesChartRoom = new ApexCharts(expensesChartEl, expensesChartConfig);
                 expensesChartRoom.render();
               }
-            } else if (e['type'] === 'pir') {
-              pir = processData(e['data'], 'weeks');
+            } else if (e['type'] === 'soilhumidity') {
+              soil = processData(e['data'], 'weeks');
+              $('.soil-avg-' + room_title).text(calculateAverage(c));
               // console.log('categories', categories);
               // console.log('series', series);
-              $('.pir-' + room_title).text(calculateAverage(c));
+              $('.soil-' + room_title).text(calculateAverage(c));
               const usersChartEl = document.querySelector('#action-' + room_title),
                 usersChartConfig = {
                   series: [
@@ -1765,7 +1806,9 @@ $(function () {
                     pointHoverBackgroundColor: yellowColor
                   },
                   {
-                    data: pir ? pir.sort((a, b) => new Date(a.date) - new Date(b.date)).map(item => item.average) : [],
+                    data: soil
+                      ? soil.sort((a, b) => new Date(a.date) - new Date(b.date)).map(item => item.average)
+                      : [],
                     label: 'Chuyển động',
                     borderColor: yellowGreen,
                     tension: 0.5,
@@ -1875,32 +1918,48 @@ $(function () {
         isLoading = true;
         // console.log(dd2);
         const result = processRoomData(dd2);
-        console.log(result);
+        // console.log(result);
         result.forEach(element => {
-          if (element['type'] === 'temperature') {
+          if (element['type'] === 'temp') {
             $('.temp-main-avg').text(calculateAverage(element['data']));
+            // console.log(element['data']);
             updateApexChartData(element['data'], registrationChart);
           } else if (element['type'] === 'humidity') {
             $('.humi-main-avg').text(calculateAverage(element['data']));
             updateApexChartData(element['data'], expensesChart);
-          } else if (element['type'] === 'pir') {
+          } else if (element['type'] === 'soilhumidity') {
             $('.pir-main').text(calculateAverage(element['data']));
             updateApexChartData(element['data'], usersChart);
           }
         });
-        const result_weeked = processRoomDataForLastWeek(dd2);
-        result_weeked.forEach(element => {
-          if (element['type'] === 'pir') {
-            $('.sum-pir-main').text(calculateTotal(element['data']));
-            console.log(element['data']);
-            updateApexChartDataForLastWeek(element['data'], activityAreaChart);
-          }
-        });
+        // const result_weeked = processRoomDataForLastWeek(dd2);
+        // result_weeked.forEach(element => {
+        //   if (element['type'] === 'pir') {
+        //     $('.sum-pir-main').text(calculateTotal(element['data']));
+        //     console.log(element['data']);
+        //     updateApexChartDataForLastWeek(element['data'], activityAreaChart);
+        //   }
+        // });
       }
       room_data.forEach(room => {
         //update data
         // console.log(room);
         var r = $('[room-id="' + room.room_id + '"]');
+        var room_title = r.text().replace(/\s+/g, '-');
+        // console.log(room_title);
+        room['now'].forEach(e => {
+          if (e['type'] === 'temp') {
+            $('.temp-' + room_title).text(e['average_value']);
+          } else if (e['type'] === 'humidity') {
+            $('.humidity-' + room_title).text(e['average_value']);
+          } else if (e['type'] === 'light') {
+            $('.light-' + room_title).text(e['average_value']);
+          } else if (e['type'] === 'soilhumidity') {
+            $('.soil-' + room_title).text(e['average_value']);
+          } else if (e['type'] === 'pir') {
+            $('.pir-' + room_title).text(e['average_value']);
+          }
+        });
       });
     }
   }, 500);
@@ -1910,13 +1969,13 @@ $(function () {
     const result = processRoomData(dd2);
     // console.log(result);
     result.forEach(element => {
-      if (element['type'] === 'temperature') {
+      if (element['type'] === 'temp') {
         $('.temp-main-avg').text(calculateAverage(element['data']));
         updateApexChartData(element['data'], registrationChart);
       } else if (element['type'] === 'humidity') {
         $('.humi-main-avg').text(calculateAverage(element['data']));
         updateApexChartData(element['data'], expensesChart);
-      } else if (element['type'] === 'pir') {
+      } else if (element['type'] === 'soilhumidity') {
         $('.pir-main').text(calculateAverage(element['data']));
         updateApexChartData(element['data'], usersChart);
       }

@@ -19,8 +19,8 @@
 @section PageScripts {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.12/signalr.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.7/base64.min.js"></script>
-<script src="~/js/background-service.js"></script>
-<script src="~/js/cards-statistics.js"></script>
+<script src="~/js/background-service.dist.js"></script>
+<script src="~/js/cards-statistics.dist.js"></script>
 }
 
 
@@ -263,7 +263,7 @@
               </div>
               <div class="d-flex flex-row gap-2">
                 <h5 class="mb-0"><span class="temp-main-avg">-</span>°C</h5>
-                <span class="badge bg-label-success">+2%</span>
+                <!-- <span class="badge bg-label-success">+2%</span>-->
               </div>
             </div>
             <div class="card-body">
@@ -280,7 +280,7 @@
               </div>
               <div class="d-flex flex-row gap-2">
                 <h5 class="mb-0"><span class="humi-main-avg">-</span>%</h5>
-                <span class="badge bg-label-danger">-18%</span>
+                <!-- <span class="badge bg-label-danger">-18%</span>-->
               </div>
             </div>
             <div class="card-body">
@@ -292,12 +292,12 @@
           <div class="card">
             <div class="card-header d-flex align-items-start justify-content-between">
               <div class="m-0 me-2">
-                <h5 class="card-title mb-0">Hoạt Động Trong Nhà</h5>
-                <small class="text-muted">Tương tác của người dùng</small>
+                <h5 class="card-title mb-0">Độ Ẩm Vườn</h5>
+                <small class="text-muted">Độ ẩm vườn tuần qua</small>
               </div>
               <div class="d-flex flex-row gap-2">
-                <h5 class="mb-0"><span class="pir-main">-</span>/day</h5>
-                <span class="badge bg-label-success">+67%</span>
+                <h5 class="mb-0"><span class="pir-main">-</span>%</h5>
+                <!-- <span class="badge bg-label-success">+67%</span>-->
               </div>
             </div>
             <div class="card-body">
@@ -309,6 +309,7 @@
       <!--/ Cards with Chart -->
 
       <!-- Cards with unicons & charts -->
+      <!--
       <div class="row">
         <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
           <div class="card h-100">
@@ -393,6 +394,7 @@
           </div>
         </div>
       </div>
+      -->
       <!-- Card Border Shadow -->
       <div class="row g-4">
         <div class="col-sm-6 col-lg-3">

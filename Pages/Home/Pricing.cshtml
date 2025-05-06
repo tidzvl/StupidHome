@@ -5,12 +5,26 @@
   ViewData["Title"] = "Thanh Toán";
 }
 
+
+
 @section PageStyles{
 <link rel="stylesheet" href="~/vendor/css/pages/page-pricing.dist.css" />
+<link rel="stylesheet" href="~/vendor/libs/&#64;form-validation/umd/styles/index.min.css" />
+<link rel="stylesheet" href="~/vendor/libs/bs-stepper/bs-stepper.dist.css" />
+}
+
+@section VendorScripts {
+<script src="~/vendor/libs/cleavejs/cleave.dist.js"></script>
+<script src="~/vendor/libs/cleavejs/cleave-phone.dist.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/umd/bundle/popular.min.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/umd/plugin-bootstrap5/index.min.js"></script>
+<script src="~/vendor/libs/&#64;form-validation/umd/plugin-auto-focus/index.min.js"></script>
 }
 
 @section PageScripts {
-<script src="~/js/pages-pricing.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-base64@3.7.7/base64.min.js"></script>
+<script src="~/js/modal-add-new-cc.dist.js"></script>
+<script src="~/js/pages-pricing.dist.js"></script>
 }
 
 @* ************** Content ************** *@
@@ -97,7 +111,7 @@
                   Trợ giúp trong vòng 24 giờ
                 </li>
               </ul>
-              <a href="/Home" class="btn btn-label-primary d-grid w-100">Bắt Đầu</a>
+              <a data-bs-toggle="modal" data-bs-target="#addNewCCModal" class="btn btn-label-primary d-grid w-100">Bắt Đầu</a>
             </div>
           </div>
         </div>
@@ -164,7 +178,7 @@
                   Trợ giúp trong vòng 1 giờ
                 </li>
               </ul>
-              <a href="/Home" class="btn btn-primary d-grid w-100">Bắt Đầu</a>
+              <a data-bs-toggle="modal" data-bs-target="#addNewCCModal" class="btn btn-primary d-grid w-100">Bắt Đầu</a>
             </div>
           </div>
         </div>
@@ -228,7 +242,7 @@
                   Có mặt ngay lặp tức
                 </li>
               </ul>
-              <a href="/Home" class="btn btn-label-primary d-grid w-100">Bắt Đầu</a>
+              <a data-bs-toggle="modal" data-bs-target="#addNewCCModal" class="btn btn-label-primary d-grid w-100">Bắt Đầu</a>
             </div>
           </div>
         </div>
@@ -238,3 +252,4 @@
   </div>
   <!--/ Pricing Plans -->
 </div>
+@await Html.PartialAsync("../_Partials/_Modals/ModalAddNewCc")

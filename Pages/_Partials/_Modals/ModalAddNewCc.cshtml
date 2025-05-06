@@ -1,0 +1,69 @@
+<!-- Add New Credit Card Modal -->
+<div class="modal fade" id="addNewCCModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-4">
+          <h3>Thanh Toán</h3>
+          <p>Thêm Card để thanh toán</p>
+        </div>
+        <form id="addNewCCForm" class="row g-3" onsubmit="return false">
+          <div class="col-12">
+            <label class="form-label w-100" for="modalAddCard">Card Number</label>
+            <div class="input-group input-group-merge">
+              <input id="modalAddCard" name="modalAddCard" class="form-control credit-card-mask" type="text" placeholder="1356 3215 6548 7898" aria-describedby="modalAddCard2" />
+              <span class="input-group-text cursor-pointer p-1" id="modalAddCard2"><span class="card-type"></span></span>
+            </div>
+          </div>
+          <div class="col-12 col-md-6">
+            <label class="form-label" for="modalAddCardName">Name</label>
+            <input type="text" id="modalAddCardName" class="form-control" placeholder="John Doe" />
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label" for="modalAddCardExpiryDate">Exp. Date</label>
+            <input type="text" id="modalAddCardExpiryDate" class="form-control expiry-date-mask" placeholder="MM/YY" />
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label" for="modalAddCardCvv">CVV Code</label>
+            <div class="input-group input-group-merge">
+              <input type="text" id="modalAddCardCvv" class="form-control cvv-code-mask" maxlength="3" placeholder="654" />
+              <span class="input-group-text cursor-pointer" id="modalAddCardCvv2"><i class="bx bx-help-circle text-muted" data-bs-toggle="tooltip" data-bs-placement="top" title="Card Verification Value"></i></span>
+            </div>
+          </div>
+          <div class="col-12 text-center mt-4">
+            <button type="submit" class="btn btn-primary me-sm-3 me-1" data-bs-target="#create-house" data-bs-toggle="modal" data-bs-dismiss="modal">Hoàn tất</button>
+            <button type="reset" class="btn btn-label-secondary btn-reset" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Add New Credit Card Modal -->
+<div class="modal fade" id="create-house" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-4">
+          <h3 class="mb-4">Hãy Nhập Địa Chỉ Nhà Của Bạn</h3>
+        </div>
+        <p class="fw-medium alert alert-success" role="alert">Chúc mừng bạn đã thanh toán thành công!</p>
+        <p>Bây giờ, hãy tự tay nhập vào đây địa chỉ nhà của bạn để chúng tôi có thể bán thông tin đó!</p>
+        <form id="create-new-house" class="row g-3 mt-3" onsubmit="return false">
+          <div class="col-12">
+            <label class="form-label" for="modalEnableOTPPhone">Địa Chỉ</label>
+            <div class="input-group input-group-merge">
+              <input type="text" id="address" name="modalEnableOTPPhone" class="form-control" placeholder="158 Lạc Long Quân" />
+            </div>
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-success me-sm-3 me-1">Hoàn Tất</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Hủy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

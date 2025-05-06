@@ -171,7 +171,7 @@ function transformApiDataToKanban(apiData) {
         });
       }
     } else {
-      // const title = kanbanItem.querySelector('#title').value;
+      const title = kanbanItem.querySelector('#title').value;
       // const dueDate = kanbanItem.querySelector('#due-date').value;
       // const label = kanbanItem.querySelector('#label').value;
       const pinned = sidebar.querySelector('#pin').checked;
@@ -199,14 +199,16 @@ function transformApiDataToKanban(apiData) {
         if (e.find('.footer-value').length < 1) {
           e.find('.d-flex.justify-content-between.align-items-center.flex-wrap.mt-2.pt-1').append(
             `<span class="switch-label"><i class='bx bx-tachometer'></i><span class="footer-value">${parseInt(
-              speed.slice(-3)
+              value.noUiSlider.get()
             )}</span></span>`
           );
           // e.append('<span class="footer-value"></span>');
+        } else {
+          e.find('.footer-value').text(parseInt(value.noUiSlider.get()));
         }
-        e.find('.footer-value').text(parseInt(value.noUiSlider.get()));
       }
       var color_gen;
+      var cate = kanbanItem.getAttribute('data-category');
       if (color) {
         const e = $('[data-eid="' + eid + '"]');
         // e.attr('data-color', color.getColor().toHEXA().toString());
@@ -223,9 +225,19 @@ function transformApiDataToKanban(apiData) {
 
       // value_gen += value ? '0' + String(parseInt(value.noUiSlider.get())) : '000';
       var url;
-      if (color_gen) {
+      if (cate == 'led') {
         console.log('LED');
         url = API + `/postDeviceDataLED`;
+        const e = $('[data-eid="' + eid + '"]');
+        if (e.find('.footer-color').length < 1) {
+          e.find('.d-flex.justify-content-between.align-items-center.flex-wrap.mt-2.pt-1')
+            .find('.switch-label')
+            .append(
+              `<span class="switch-label"><i class='bx bx-palette'></i><span class="footer-color">${color_gen}</span></span>`
+            );
+        } else {
+          e.find('.footer-color').text(color_gen);
+        }
       } else {
         console.log('NO LED');
         url = API + `/postDeviceData`;
@@ -267,6 +279,17 @@ function transformApiDataToKanban(apiData) {
           id: userId
         })
       );
+      if (cate == 'led') $('[data-eid="' + eid + '"]').attr('data-light', value_gen);
+      else if (cate == 'ac') $('[data-eid="' + eid + '"]').attr('data-temp', value_gen);
+      else if (cate == 'fan') $('[data-eid="' + eid + '"]').attr('data-speed', value_gen);
+      else if (cate == 'waterpump') {
+        $('[data-eid="' + eid + '"]').attr('data-pump', value_gen);
+        if (on_off) {
+          value_gen = '00001';
+        } else {
+          value_gen = '00000';
+        }
+      }
       try {
         const response = await customFetch(url, {
           method: 'POST',
@@ -568,54 +591,54 @@ function transformApiDataToKanban(apiData) {
           }
         });
       }
-      if (mood > 0) {
-        let mood0, mood1, mood2;
-        if (mood == 1) {
-          mood0 = 'checked';
-        } else if (mood == 2) {
-          mood1 = 'checked';
-        } else if (mood == 3) {
-          mood2 = 'checked';
-        }
-        $('.optional').append(`
-            <label class="form-label">Chọn Chế Độ</label>
-            <div class="d-flex flex-row mb-2">
-              <div class="col-md-4 mb-md-0 mb-2">
-                  <div class="form-check custom-option custom-option-icon">
-                      <label class="form-check-label custom-option-content" for="customRadioIcon1">
-                          <span class="custom-option-body">
-                              <i class="bx bx-cloud-snow"></i>
-                              <span class="custom-option-title">Cool</span>
-                          </span>
-                          <input name="customRadioIcon" class="form-check-input" type="radio" value="" id="customRadioIcon1" ${mood0} />
-                      </label>
-                  </div>
-              </div>
-              <div class="col-md-4 mb-md-0 mb-2">
-                  <div class="form-check custom-option custom-option-icon">
-                      <label class="form-check-label custom-option-content" for="customRadioIcon2">
-                          <span class="custom-option-body">
-                              <i class="bx bx-wind"></i>
-                              <span class="custom-option-title">Wind</span>
-                          </span>
-                          <input name="customRadioIcon" class="form-check-input" type="radio" value="" id="customRadioIcon2" ${mood1}/>
-                      </label>
-                  </div>
-              </div>
-              <div class="col-md-4">
-                  <div class="form-check custom-option custom-option-icon">
-                      <label class="form-check-label custom-option-content" for="customRadioIcon3">
-                          <span class="custom-option-body">
-                              <i class="bx bx-analyse"></i>
-                              <span class="custom-option-title">Auto</span>
-                          </span>
-                          <input name="customRadioIcon" class="form-check-input" type="radio" value="" id="customRadioIcon3" ${mood2}/>
-                      </label>
-                  </div>
-              </div>
-            </div>
-          `);
-      }
+      // if (mood > 0) {
+      //   let mood0, mood1, mood2;
+      //   if (mood == 1) {
+      //     mood0 = 'checked';
+      //   } else if (mood == 2) {
+      //     mood1 = 'checked';
+      //   } else if (mood == 3) {
+      //     mood2 = 'checked';
+      //   }
+      //   $('.optional').append(`
+      //       <label class="form-label">Chọn Chế Độ</label>
+      //       <div class="d-flex flex-row mb-2">
+      //         <div class="col-md-4 mb-md-0 mb-2">
+      //             <div class="form-check custom-option custom-option-icon">
+      //                 <label class="form-check-label custom-option-content" for="customRadioIcon1">
+      //                     <span class="custom-option-body">
+      //                         <i class="bx bx-cloud-snow"></i>
+      //                         <span class="custom-option-title">Cool</span>
+      //                     </span>
+      //                     <input name="customRadioIcon" class="form-check-input" type="radio" value="" id="customRadioIcon1" ${mood0} />
+      //                 </label>
+      //             </div>
+      //         </div>
+      //         <div class="col-md-4 mb-md-0 mb-2">
+      //             <div class="form-check custom-option custom-option-icon">
+      //                 <label class="form-check-label custom-option-content" for="customRadioIcon2">
+      //                     <span class="custom-option-body">
+      //                         <i class="bx bx-wind"></i>
+      //                         <span class="custom-option-title">Wind</span>
+      //                     </span>
+      //                     <input name="customRadioIcon" class="form-check-input" type="radio" value="" id="customRadioIcon2" ${mood1}/>
+      //                 </label>
+      //             </div>
+      //         </div>
+      //         <div class="col-md-4">
+      //             <div class="form-check custom-option custom-option-icon">
+      //                 <label class="form-check-label custom-option-content" for="customRadioIcon3">
+      //                     <span class="custom-option-body">
+      //                         <i class="bx bx-analyse"></i>
+      //                         <span class="custom-option-title">Auto</span>
+      //                     </span>
+      //                     <input name="customRadioIcon" class="form-check-input" type="radio" value="" id="customRadioIcon3" ${mood2}/>
+      //                 </label>
+      //             </div>
+      //         </div>
+      //       </div>
+      //     `);
+      // }
       var result, value;
       if (parseInt(light.slice(0, 3)) > -1) {
         result = 'Độ Sáng';
@@ -655,7 +678,7 @@ function transformApiDataToKanban(apiData) {
         classicPicker = pickr.create({
           el: '#color-light',
           theme: 'classic',
-          default: 'rgba(102, 108, 232, 1)',
+          default: '#' + light.slice(3, 9),
           swatches: [
             'rgba(102, 108, 232, 1)',
             'rgba(40, 208, 148, 1)',
@@ -905,7 +928,7 @@ function transformApiDataToKanban(apiData) {
     fan: 'bx-wind',
     led: 'bx-bulb',
     default: 'bx-cog',
-    waterpump: 'bx-volume',
+    waterpump: 'bx-gas-pump',
     '-speed': 'bx-tachometer'
   };
   // Render custom items

@@ -185,15 +185,15 @@ $(function () {
   const categoryIcon = {
     '-tv': 'bx-tv',
     '-book-content': 'bx-book-content',
-    '-door-open': 'bx-door-open',
+    light: 'bx-bulb',
     pir: 'bx-child',
     humidity: 'bx-droplet',
     ac: 'bx-cloud-snow',
     fan: 'bx-wind',
-    light: 'bx-bulb',
+    led: 'bx-bulb',
     default: 'bx-cog',
-    temperature: 'bx-log-in-circle',
-    '-speed': 'bx-tachometer'
+    temp: 'bx-log-in-circle',
+    waterpump: 'bx-gas-pump'
   };
   const appModal = document.getElementById('createApp');
   appModal.addEventListener('show.bs.modal', function (event) {

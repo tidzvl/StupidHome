@@ -114,8 +114,10 @@ function logout() {
           return response.json();
         })
         .then(data => {
+          console.log(data);
           if (data['admin_house'].length <= 0) window.location.href = '/Home/Pricing';
           localStorage.setItem('user', Base64.encode(JSON.stringify(data)));
+          localStorage.setItem('ha', data.admin_house[0]);
           if ($('.user-name').length > 0) {
             $('.user-name').each(function (item, index) {
               $(index).text(data.first_name + ' ' + data.last_name);
@@ -126,6 +128,14 @@ function logout() {
           $('.user-home-name').length > 0 ? $('.user-home-name').text(data.home_name) : '';
           $('.user-home-name').unblock();
           $('.user-address').length > 0 ? $('.user-address').text(data.address) : '';
+          // var list_house = [...user.admin_house, ...user.member_house];
+          // if (list_house.length > 0) {
+          //   list_house.forEach(item => {
+          //     $('#user-home-list').append(
+          //       '<li><a class="dropdown-item" value=' + item + '"> Nhà ' + item + '</a></li>'
+          //     );
+          //   });
+          // }
           $('.user-address').unblock();
         })
         .catch(error => console.error('There was an error:', error));
@@ -136,6 +146,7 @@ function logout() {
     await ft();
   } else {
     user = JSON.parse(Base64.decode(localStorage.getItem('user')));
+    console.log(user);
     if (user['admin_house'].length <= 0) window.location.href = '/Home/Pricing';
     if ($('.user-name').length > 0) {
       $('.user-name').each(function (item, index) {
@@ -148,7 +159,24 @@ function logout() {
     $('.user-address').length > 0
       ? ($('.user-address').text(user.address), $('.user-address').attr('value', user.admin_house[0]))
       : '';
+    var list_house = [...user.admin_house, ...user.member_house];
+    if (list_house.length > 0) {
+      list_house.forEach(item => {
+        $('#user-home-list').append(
+          '<li><a class="dropdown-item house-item" value=' + item + '> Nhà ' + item + '</a></li>'
+        );
+      });
+    }
     $('.user-address').unblock();
+    $('.house-item').on('click', function () {
+      var house_id = $(this).attr('value');
+      localStorage.setItem('ha', house_id);
+      localStorage.removeItem('d');
+      localStorage.removeItem('d2');
+      localStorage.removeItem('d3');
+      localStorage.removeItem('t_o');
+      window.location.reload();
+    });
   }
   await fc();
   const connection = new signalR.HubConnectionBuilder().withUrl('/Hubs').build();
@@ -172,7 +200,13 @@ function logout() {
     .start()
     .then(() => {
       // console.log(currentUrl, localStorage.getItem('user'), localStorage.getItem('t'));
-      connection.invoke('SetCurrentUrl', currentUrl, localStorage.getItem('user'), localStorage.getItem('t'));
+      connection.invoke(
+        'SetCurrentUrl',
+        currentUrl,
+        localStorage.getItem('user'),
+        localStorage.getItem('t'),
+        String(localStorage.getItem('ha'))
+      );
     })
     .catch(err => console.error(err));
 })();

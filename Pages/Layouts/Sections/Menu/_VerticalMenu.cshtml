@@ -31,8 +31,8 @@
     <div class="avatar avatar-lg me-2">
       <img alt="Avatar" class="rounded-circle shadow" src="/img/avatars/house.png">
     </div>
-    <a class="menu-text mt-3 mb-1 h5 dropdown-toggle hide-arrow user-home-name" data-bs-toggle="dropdown" aria-expanded="false"></a>
-    <ul class="dropdown-menu">
+    <a class="menu-text mt-3 mb-1 h5 dropdown-toggle hide-arrow user-home-name" data-bs-toggle="dropdown" aria-expanded="false">Thay Đổi Nhà</a>
+    <ul class="dropdown-menu" id="user-home-list">
       <!-- <li> <a class="dropdown-item" href="javascript:void(0);">Nhà Của Dũng</a> </li>
       <li> <a class="dropdown-item" href="javascript:void(0);">Nhà Mẹ Vợ Dũng</a> </li> -->
     </ul>
@@ -83,12 +83,12 @@
       </a>
     </li>
     <li class='menu-item@(currentPage == "/Home/Settings" ? " active" : "")'>
-      <a asp-page="/Home/Settings" class="menu-link">
+      <a data-bs-toggle="modal" data-bs-target="#shareProject" class="menu-link">
         <i class="menu-icon tf-icons bx bx-cog"></i>
         <div>Cài đặt</div>
       </a>
     </li>
   </ul>
-
 </aside>
 <!-- / Menu -->
+@await Html.PartialAsync("../_Partials/_Modals/ModalAddMember")

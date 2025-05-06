@@ -322,9 +322,9 @@ $(function () {
     '-bulb': 'bx-bulb',
     ac: 'bx-cloud-snow',
     fan: 'bx-wind',
-    light: 'bx-bulb',
+    led: 'bx-bulb',
     default: 'bx-cog',
-    '-volume': 'bx-volume',
+    waterpump: 'bx-gas-pump',
     '-speed': 'bx-tachometer'
   };
   function calculateLastUsage(lastUpdate) {
@@ -351,7 +351,7 @@ $(function () {
             // console.log(item.on_off);
             let isOn = item.on_off ? 'success' : 'dark';
             let html = `
-            <div class="col-lg-3 col-md-6 col-sm-12 mb-4" data-eid="${item.device_id}">
+            <div class="col-lg-3 col-md-6 col-sm-12 mb-4" data-eid="${item.device_id}" data-type="${item.type}">
               <div class="card drag-item cursor-move mb-lg-0 mb-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
                   <label class="switch switch-success me-0">
@@ -367,7 +367,6 @@ $(function () {
                     <i class="bx ${icon[item.type]} text-${isOn} display-6"></i>
                   </h2>
                   <h5>${item.name}</h5>
-                  <h6>${last_used}</h6>
                 </div>
               </div>
             </div>
@@ -398,9 +397,9 @@ $(function () {
       const deviceOn = dd.find(item => item.devices_on !== undefined);
       growthRadialChart.updateSeries([deviceCount]);
       onDevice.textContent = deviceOn ? deviceData.devices_on : null;
-      temp_in.textContent = dd.find(sensor => sensor.type === 'temperature').average_value;
-      light.textContent = dd.find(sensor => sensor.type === 'light').average_value + '%';
-      humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value + '%';
+      temp_in.textContent = dd.find(sensor => sensor.type === 'temp').average_value.toFixed(1);
+      light.textContent = dd.find(sensor => sensor.type === 'light').average_value.toFixed(1) + '%';
+      humidity.textContent = dd.find(sensor => sensor.type === 'humidity').average_value.toFixed(1) + '%';
     }
   }, 500);
   render_pin_devices();
@@ -432,11 +431,19 @@ $(function () {
       }
     });
     var gen_value;
+    var cate = card.attr('data-type');
     if (on_off) {
       gen_value = (String(deviceid).length > 1 ? String(deviceid) : '0' + String(deviceid)) + '030';
     } else {
       gen_value = (String(deviceid).length > 1 ? String(deviceid) : '0' + String(deviceid)) + '000';
     }
+    if (cate == 'led') {
+      gen_value =
+        String(deviceid).length > 1 ? String(deviceid) + 'ffffff' + '050' : '0' + String(deviceid) + 'ffffff' + '050';
+    }
+    if (cate == 'fan') gen_value = (String(deviceid).length > 1 ? String(deviceid) : '0' + String(deviceid)) + '030';
+    if (cate == 'waterpump') on_off ? (gen_value = '00001') : (gen_value = '00000');
+    console.log(gen_value);
     try {
       const response = await customFetch(API + `/postDeviceData`, {
         method: 'POST',

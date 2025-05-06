@@ -142,18 +142,19 @@ public class ApiService
         return finalJsonArray.ToString(Formatting.Indented);
     }
 
-    public async Task FetchAndSendDataAsync(string c_url, string user, string token)
+    public async Task FetchAndSendDataAsync(string c_url, string user, string token, string house_id)
     {
         if(user == null || c_url == null) return;
         byte[] u_db = Convert.FromBase64String(user);
         string u = Encoding.UTF8.GetString(u_db);
         JObject userJson = JObject.Parse(u);
-        var house_id = userJson["admin_house"]?.ToString();
-        if (!string.IsNullOrEmpty(house_id))
-        {
-            var houseArray = JArray.Parse(house_id);
-            house_id = houseArray.FirstOrDefault()?.ToString();
-        }
+        // var house_id = userJson["admin_house"]?.ToString();
+        // if (!string.IsNullOrEmpty(house_id))
+        // {
+        //     var houseArray = JArray.Parse(house_id);
+        //     house_id = houseArray.FirstOrDefault()?.ToString();
+        // }
+        Console.WriteLine($"House ID: {house_id}");
         byte[] tokenBytes = Convert.FromBase64String(token);
         string decodedToken = Encoding.UTF8.GetString(tokenBytes);
         var allDevice = await SendApiRequestAsync($"{_api}/getAllDevices/{house_id}", decodedToken);

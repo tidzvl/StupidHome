@@ -1,0 +1,59 @@
+<!-- Share Project Modal -->
+<div class="modal fade" id="shareProject" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-simple modal-enable-otp modal-dialog-centered">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center">
+          <h3 class="mb-2">Thêm Thành Viên</h3>
+          <p>Quà nào bằng gia đình sum họp, Tết nào vui bằng tết đoàn viên!</p>
+        </div>
+      </div>
+      <div class="mb-4 pb-2">
+        <label for="select2Basic" class="form-label">Vui lòng nhập username của thành viên</label>
+        <input type="text" class="form-control" id="username-invite" placeholder="Hãy nhập username" aria-describedby="defaultFormControlHelp" />
+      </div>
+      <div class="d-flex align-items-center mt-4 align-items-sm-center">
+        <i class="bx bx-user me-2"></i>
+        <div class="d-flex justify-content-between flex-grow-1 align-items-center flex-wrap gap-2">
+          <h6 class="mb-0">Thêm vào @TempData.Peek("appName") - @TempData.Peek("authorName")</h6>
+          <button class="btn btn-success">Thêm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Share Project Modal -->
+
+<script>
+    //console.log('@TempData.Peek("domain")');
+    (function () {
+        document.querySelector('#shareProject .btn-success').addEventListener('click', async function () {
+          const houseId = localStorage.getItem('ha');
+          var domain = '@TempData.Peek("domain")';
+          const username = document.querySelector('#username-invite').value;
+            console.log(domain, username);
+            if (username.length > 0) {
+                await customFetch(domain + '/users/addUserToHouse/'+houseId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user: username
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 201) {
+                        window.location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                });
+            } else {
+                alert('Vui lòng nhập username');
+            }
+        });
+    })();
+</script>
